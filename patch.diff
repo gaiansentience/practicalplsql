@@ -1,0 +1,2085 @@
+From 6615c866e1088a7336b2ea2b2107e612f856ead2 Mon Sep 17 00:00:00 2001
+From: Anthony Harper <gaiansentience@gmail.com>
+Date: Mon, 29 May 2023 14:21:18 -0600
+Subject: [PATCH] Cursor Basics Files
+
+---
+ .../21c_cursor_iterator_bulk_optimization.sql | 103 ++++++++
+ .../cursor-basics/employees_example.sql       | 133 ++++++++++
+ .../explicit_cursor_bulk_collect.sql          |  17 ++
+ .../explicit_cursor_bulk_collect_limit.sql    |  19 ++
+ ...t_cursor_bulk_collect_limit_wrong_exit.sql |  25 ++
+ .../cursor-basics/explicit_cursor_fetch.sql   |  26 ++
+ .../explicit_cursor_fetch_rowtype.sql         |  17 ++
+ .../explicit_cursor_fetch_wrong_exit.sql      |  26 ++
+ .../explicit_cursor_for_loop.sql              |  19 ++
+ ...icit_cursor_for_loop_bulk_optimization.sql | 103 ++++++++
+ .../implicit_cursor_for_loop.sql              |  11 +
+ .../cursor-basics/performance_comparison.sql  | 239 +++++++++++++++++
+ .../strong_cursor_variable_fetch.sql          |  18 ++
+ .../weak_cursor_variable_fetch.sql            |  17 ++
+ scripts/create.user.practicalplsql.sql        |  25 ++
+ .../github.links.alphabetizer.sql             | 244 ++++++++++++++++++
+ .../open-source-directory/github.links.txt    | 152 +++++++++++
+ .../sample-data/many-orders/create.tables.sql |  39 +++
+ .../sample-data/many-orders/drop.tables.sql   |  13 +
+ .../sample-data/many-orders/load.tables.sql   |  52 ++++
+ .../sample-data/many-orders/order_summary.sql |  27 ++
+ .../simple-company/create.simple_company.sql  | 166 ++++++++++++
+ .../simple-company/drop.simple_company.sql    |  25 ++
+ .../load.simple_company.customers.sql         |  42 +++
+ ...load.simple_company.products.computers.sql |  94 +++++++
+ .../load.simple_company.products.misc.sql     |  71 +++++
+ .../simple-company/load.simple_company.sql    |   3 +
+ .../simple-company/test.generate_orders.sql   |  41 +++
+ .../test.generate_shipments.sql               |  50 ++++
+ 29 files changed, 1817 insertions(+)
+ create mode 100644 scripts/articles/cursor-basics/21c_cursor_iterator_bulk_optimization.sql
+ create mode 100644 scripts/articles/cursor-basics/employees_example.sql
+ create mode 100644 scripts/articles/cursor-basics/explicit_cursor_bulk_collect.sql
+ create mode 100644 scripts/articles/cursor-basics/explicit_cursor_bulk_collect_limit.sql
+ create mode 100644 scripts/articles/cursor-basics/explicit_cursor_bulk_collect_limit_wrong_exit.sql
+ create mode 100644 scripts/articles/cursor-basics/explicit_cursor_fetch.sql
+ create mode 100644 scripts/articles/cursor-basics/explicit_cursor_fetch_rowtype.sql
+ create mode 100644 scripts/articles/cursor-basics/explicit_cursor_fetch_wrong_exit.sql
+ create mode 100644 scripts/articles/cursor-basics/explicit_cursor_for_loop.sql
+ create mode 100644 scripts/articles/cursor-basics/explicit_cursor_for_loop_bulk_optimization.sql
+ create mode 100644 scripts/articles/cursor-basics/implicit_cursor_for_loop.sql
+ create mode 100644 scripts/articles/cursor-basics/performance_comparison.sql
+ create mode 100644 scripts/articles/cursor-basics/strong_cursor_variable_fetch.sql
+ create mode 100644 scripts/articles/cursor-basics/weak_cursor_variable_fetch.sql
+ create mode 100644 scripts/create.user.practicalplsql.sql
+ create mode 100644 scripts/open-source-directory/github.links.alphabetizer.sql
+ create mode 100644 scripts/open-source-directory/github.links.txt
+ create mode 100644 scripts/sample-data/many-orders/create.tables.sql
+ create mode 100644 scripts/sample-data/many-orders/drop.tables.sql
+ create mode 100644 scripts/sample-data/many-orders/load.tables.sql
+ create mode 100644 scripts/sample-data/many-orders/order_summary.sql
+ create mode 100644 scripts/sample-data/simple-company/create.simple_company.sql
+ create mode 100644 scripts/sample-data/simple-company/drop.simple_company.sql
+ create mode 100644 scripts/sample-data/simple-company/load.simple_company.customers.sql
+ create mode 100644 scripts/sample-data/simple-company/load.simple_company.products.computers.sql
+ create mode 100644 scripts/sample-data/simple-company/load.simple_company.products.misc.sql
+ create mode 100644 scripts/sample-data/simple-company/load.simple_company.sql
+ create mode 100644 scripts/sample-data/simple-company/test.generate_orders.sql
+ create mode 100644 scripts/sample-data/simple-company/test.generate_shipments.sql
+
+diff --git a/scripts/articles/cursor-basics/21c_cursor_iterator_bulk_optimization.sql b/scripts/articles/cursor-basics/21c_cursor_iterator_bulk_optimization.sql
+new file mode 100644
+index 0000000..0f1a67f
+--- /dev/null
++++ b/scripts/articles/cursor-basics/21c_cursor_iterator_bulk_optimization.sql
+@@ -0,0 +1,103 @@
++set feedback off;
++set serveroutput on;
++--grant select on v_$sqlarea to script user
++--update seed_sql_text literal for each execution to get new fetch counts
++alter session set plsql_optimize_level = 0;
++declare
++    l_records number := 1000;
++    l_fetches number;
++    cursor cur_data is
++    select level as id, 'item seed_sql_text0yyya ' || level as info
++    from dual connect by level <= l_records;    
++    type t_rows is table of cur_data%rowtype index by pls_integer;
++    l_row_table t_rows;
++begin
++    l_row_table := t_rows(for r in cur_data sequence => r);
++
++    select fetches into l_fetches
++    from v$sqlarea 
++    where 
++        instr(sql_text, 'seed_sql_text0yyya') > 0 
++        and instr(upper(sql_text), 'DECLARE') = 0 
++        and instr(upper(sql_text), 'V$SQLAREA') = 0;
++    
++    dbms_output.put_line('plsql_optimize_level = 0: ' || l_fetches || ' fetches for ' || l_records || ' records');
++end;
++/
++
++alter session set plsql_optimize_level = 1;
++declare
++    l_records number := 1000;
++    l_fetches number;
++    cursor cur_data is
++    select level as id, 'item seed_sql_text1yyya ' || level as info
++    from dual connect by level <= l_records;
++    type t_rows is table of cur_data%rowtype index by pls_integer;
++    l_row_table t_rows;
++begin
++    l_row_table := t_rows(for r in cur_data sequence => r);
++
++    select fetches into l_fetches
++    from v$sqlarea 
++    where 
++        instr(sql_text, 'seed_sql_text1yyya') > 0 
++        and instr(upper(sql_text), 'DECLARE') = 0 
++        and instr(upper(sql_text), 'V$SQLAREA') = 0;
++    
++    dbms_output.put_line('plsql_optimize_level = 1: ' || l_fetches || ' fetches for ' || l_records || ' records');
++end;
++/
++
++alter session set plsql_optimize_level = 2;
++declare
++    l_records number := 1000;
++    l_fetches number;
++    cursor cur_data is
++    select level as id, 'item seed_sql_text2yyya ' || level as info
++    from dual connect by level <= l_records;    
++    type t_rows is table of cur_data%rowtype index by pls_integer;
++    l_row_table t_rows;
++begin
++    l_row_table := t_rows(for r in cur_data sequence => r);
++
++    select fetches into l_fetches
++    from v$sqlarea 
++    where 
++        instr(sql_text, 'seed_sql_text2yyya') > 0 
++        and instr(upper(sql_text), 'DECLARE') = 0 
++        and instr(upper(sql_text), 'V$SQLAREA') = 0;
++    
++    dbms_output.put_line('plsql_optimize_level = 2: ' || l_fetches || ' fetches for ' || l_records || ' records');
++end;
++/
++
++alter session set plsql_optimize_level = 3;
++declare
++    l_records number := 1000;
++    l_fetches number;
++    cursor cur_data is
++    select level as id, 'item seed_sql_text3yyya ' || level as info
++    from dual connect by level <= l_records;   
++    type t_rows is table of cur_data%rowtype index by pls_integer;
++    l_row_table t_rows;
++begin
++    l_row_table := t_rows(for r in cur_data sequence => r);
++
++    select fetches into l_fetches
++    from v$sqlarea 
++    where 
++        instr(sql_text, 'seed_sql_text3yyya') > 0 
++        and instr(upper(sql_text), 'DECLARE') = 0 
++        and instr(upper(sql_text), 'V$SQLAREA') = 0;
++    
++    dbms_output.put_line('plsql_optimize_level = 3: ' || l_fetches || ' fetches for ' || l_records || ' records');
++end;
++/
++--reset plsql_optimize_level to default level of 2
++alter session set plsql_optimize_level = 2;
++/*
++plsql_optimize_level = 0: 1001 fetches for 1000 records
++plsql_optimize_level = 1: 1001 fetches for 1000 records
++plsql_optimize_level = 2: 11 fetches for 1000 records
++plsql_optimize_level = 3: 11 fetches for 1000 records
++*/
+\ No newline at end of file
+diff --git a/scripts/articles/cursor-basics/employees_example.sql b/scripts/articles/cursor-basics/employees_example.sql
+new file mode 100644
+index 0000000..1189ddb
+--- /dev/null
++++ b/scripts/articles/cursor-basics/employees_example.sql
+@@ -0,0 +1,133 @@
++create table pp_employees (
++    name varchar2(50)
++    , job varchar2(50)
++    , constraint pp_employees_pk primary key (name, job)
++);
++/
++
++Prompt Load Employees Table
++declare
++    procedure insert_employee(p_name in varchar2, p_job in varchar2)
++    is
++    begin
++        insert into pp_employees (name, job)
++        values(p_name, p_job);
++    end insert_employee;
++begin
++    insert_employee('Gina', 'SALES_EXEC');
++    insert_employee('Ann', 'SALES_MGR');
++    insert_employee('Tobias', 'SALES_MGR');
++    insert_employee('John', 'SALES_REP');
++    insert_employee('Jane', 'SALES_REP');
++    insert_employee('Julie', 'SALES_REP');
++    insert_employee('Alex', 'SALES_REP');
++    insert_employee('Sarah', 'SALES_REP');
++    insert_employee('Thomas', 'SALES_REP');
++    insert_employee('George', 'SALES_SUPPORT');
++    insert_employee('Martin', 'SALES_SUPPORT');
++    
++    commit;
++exception
++    when others then
++        rollback;
++        dbms_output.put_line(sqlerrm);
++        raise;
++end;
++/
++
++Prompt Method 1: Open, Fetch, Close
++declare
++    cursor c_emp is
++        select e.name, e.job
++        from pp_employees e
++        order by e.job, e.name;
++    type t_emp_rec is record(
++        name varchar2(50), job varchar2(50));
++    r_emp t_emp_rec;  
++    --r_emp c_emp%rowtype
++begin
++    open c_emp;
++    loop
++        fetch c_emp into r_emp;
++        exit when c_emp%notfound;
++        dbms_output.put_line(r_emp.name || ' ' || r_emp.job);
++    end loop;
++    close c_emp;
++exception
++    when others then
++        if c_emp%isopen then
++            close c_emp;
++        end if;
++        raise;
++end;
++/
++
++Prompt Method 2: Cursor For Loop
++declare
++    cursor c_emp is
++        select e.name, e.job
++        from pp_employees e
++        order by e.job, e.name;
++begin
++    for r in c_emp loop
++        dbms_output.put_line(r.name || ' ' || r.job);
++    end loop;
++end;
++/
++
++Prompt Method 3: Bulk Bind
++declare
++    cursor c_emp is
++         select e.name, e.job
++         from pp_employees e
++         order by e.job, e.name;
++    type t_emps is table of c_emp%rowtype;
++    l_emps t_emps;
++begin
++    open c_emp;
++    fetch c_emp bulk collect into l_emps;
++    close c_emp;
++    for i in indices of l_emps loop
++        dbms_output.put_line(l_emps(i).name || ' ' || l_emps(i).job);
++    end loop;
++end;
++/
++
++Prompt Method 4: Bulk Bind With Limit Clause
++declare
++    cursor c_emp is
++        select e.name, e.job
++        from pp_employees e
++        order by e.job, e.name;
++    type t_emps is table of c_emp%rowtype;
++    l_emps t_emps;
++begin
++    open c_emp;
++    loop
++        fetch c_emp bulk collect into l_emps limit 3;
++        exit when l_emps.count = 0;
++        for i in indices of l_emps loop
++            dbms_output.put_line(l_emps(i).name || ' ' || l_emps(i).job);
++        end loop;
++    end loop;
++    close c_emp;
++end;
++/
++
++Prompt Method 5: 21c Cursor Iteration Control
++declare
++    cursor c_emp is
++        select e.name, e.job
++        from pp_employees e
++        order by e.job, e.name;
++    type t_emps is table of c_emp%rowtype;
++    l_emps t_emps;
++begin
++    l_emps := t_emps(for r in c_emp sequence => r);
++    for i in indices of l_emps loop
++        dbms_output.put_line(l_emps(i).name || ' ' || l_emps(i).job);
++    end loop;
++end;
++/
++
++drop table pp_employees purge;
+\ No newline at end of file
+diff --git a/scripts/articles/cursor-basics/explicit_cursor_bulk_collect.sql b/scripts/articles/cursor-basics/explicit_cursor_bulk_collect.sql
+new file mode 100644
+index 0000000..51368d1
+--- /dev/null
++++ b/scripts/articles/cursor-basics/explicit_cursor_bulk_collect.sql
+@@ -0,0 +1,17 @@
++set feedback off;
++set serveroutput on;
++declare
++    cursor cur_data is
++    select level as id, 'item ' || level as info
++    from dual connect by level <= 5;
++    type t_record_table is table of cur_data%rowtype index by pls_integer;
++    l_recs t_record_table;
++begin
++    open cur_data;
++    fetch cur_data bulk collect into l_recs;
++    close cur_data;
++    for i in 1..l_recs.count loop
++        dbms_output.put_line('processing ' || l_recs(i).info);
++    end loop;
++end;
++/
+\ No newline at end of file
+diff --git a/scripts/articles/cursor-basics/explicit_cursor_bulk_collect_limit.sql b/scripts/articles/cursor-basics/explicit_cursor_bulk_collect_limit.sql
+new file mode 100644
+index 0000000..9910d27
+--- /dev/null
++++ b/scripts/articles/cursor-basics/explicit_cursor_bulk_collect_limit.sql
+@@ -0,0 +1,19 @@
++set serveroutput on;
++declare
++    cursor cur_data is
++    select level as id, 'item ' || level as info
++    from dual connect by level <= 5;
++    type t_record_table is table of cur_data%rowtype index by pls_integer;
++    l_recs t_record_table;
++begin
++    open cur_data;
++    loop
++        fetch cur_data bulk collect into l_recs limit 100;
++        exit when l_recs.count = 0;
++        for i in 1..l_recs.count loop
++            dbms_output.put_line('processing ' || l_recs(i).info);
++        end loop;
++    end loop;
++    close cur_data;    
++end;
++/
+\ No newline at end of file
+diff --git a/scripts/articles/cursor-basics/explicit_cursor_bulk_collect_limit_wrong_exit.sql b/scripts/articles/cursor-basics/explicit_cursor_bulk_collect_limit_wrong_exit.sql
+new file mode 100644
+index 0000000..32b976a
+--- /dev/null
++++ b/scripts/articles/cursor-basics/explicit_cursor_bulk_collect_limit_wrong_exit.sql
+@@ -0,0 +1,25 @@
++set feedback off;
++set serveroutput on;
++declare
++    cursor cur_data is
++    select level as id, 'item ' || level as info
++    from dual connect by level <= 5;
++    type t_record_table is table of cur_data%rowtype index by pls_integer;
++    l_recs t_record_table;
++begin
++    open cur_data;
++    loop
++        fetch cur_data bulk collect into l_recs limit 3;
++        exit when cur_data%notfound;  --wrong exit condition, doesn't always process the final fetch
++        for i in 1..l_recs.count loop
++            dbms_output.put_line('processing ' || l_recs(i).info);
++        end loop;
++    end loop;
++    close cur_data;    
++end;
++/
++/*
++processing item 1
++processing item 2
++processing item 3
++*/
+\ No newline at end of file
+diff --git a/scripts/articles/cursor-basics/explicit_cursor_fetch.sql b/scripts/articles/cursor-basics/explicit_cursor_fetch.sql
+new file mode 100644
+index 0000000..ccbaf5c
+--- /dev/null
++++ b/scripts/articles/cursor-basics/explicit_cursor_fetch.sql
+@@ -0,0 +1,26 @@
++set feedback off;
++set serveroutput on;
++declare
++    type rec_t is record(id number, info varchar2(100));
++    cursor cur_data return rec_t is
++    select level as id, 'item ' || level as info
++    from dual connect by level <= 5;
++    l_rec rec_t;
++begin
++
++    open cur_data;
++    loop
++        fetch cur_data into l_rec;
++        exit when cur_data%notfound;
++        dbms_output.put_line('processing ' || l_rec.info);
++    end loop;
++    close cur_data;
++
++exception
++    when others then
++        if cur_data%isopen then
++            close cur_data;
++        end if;
++        raise;
++end;
++/
+\ No newline at end of file
+diff --git a/scripts/articles/cursor-basics/explicit_cursor_fetch_rowtype.sql b/scripts/articles/cursor-basics/explicit_cursor_fetch_rowtype.sql
+new file mode 100644
+index 0000000..9f15e6f
+--- /dev/null
++++ b/scripts/articles/cursor-basics/explicit_cursor_fetch_rowtype.sql
+@@ -0,0 +1,17 @@
++set serveroutput on;
++declare
++    cursor cur_data is
++    select level as id, 'item ' || level as info
++    from dual 
++    connect by level <= 5;
++    l_rec cur_data%rowtype;
++begin
++    open cur_data;
++    loop
++        fetch cur_data into l_rec;
++        exit when cur_data%notfound;
++        dbms_output.put_line('processing ' || l_rec.info);
++    end loop;
++    close cur_data;
++end;
++/
+\ No newline at end of file
+diff --git a/scripts/articles/cursor-basics/explicit_cursor_fetch_wrong_exit.sql b/scripts/articles/cursor-basics/explicit_cursor_fetch_wrong_exit.sql
+new file mode 100644
+index 0000000..6e003c6
+--- /dev/null
++++ b/scripts/articles/cursor-basics/explicit_cursor_fetch_wrong_exit.sql
+@@ -0,0 +1,26 @@
++set feedback off;
++set serveroutput on;
++declare
++    type rec_t is record(id number, info varchar2(100));
++    cursor cur_data return rec_t is
++    select level as id, 'item ' || level as info
++    from dual connect by level <= 5;
++    l_rec rec_t;
++begin
++    open cur_data;
++    loop
++        fetch cur_data into l_rec;
++        dbms_output.put_line('processing ' || l_rec.info);
++        exit when cur_data%notfound;   --processes last record twice
++    end loop;
++    close cur_data;
++end;
++/
++/*
++processing item 1
++processing item 2
++processing item 3
++processing item 4
++processing item 5
++processing item 5
++*/
+\ No newline at end of file
+diff --git a/scripts/articles/cursor-basics/explicit_cursor_for_loop.sql b/scripts/articles/cursor-basics/explicit_cursor_for_loop.sql
+new file mode 100644
+index 0000000..47bfcb2
+--- /dev/null
++++ b/scripts/articles/cursor-basics/explicit_cursor_for_loop.sql
+@@ -0,0 +1,19 @@
++set serveroutput on;
++declare
++    cursor cur_data is
++    select level as id, 'item ' || level as info
++    from dual connect by level <= 5;    
++begin
++    for r in cur_data loop
++        dbms_output.put_line('Processing ' || r.info);
++    end loop;
++end;
++/
++
++/*
++Processing item 1
++Processing item 2
++Processing item 3
++Processing item 4
++Processing item 5
++*/
+diff --git a/scripts/articles/cursor-basics/explicit_cursor_for_loop_bulk_optimization.sql b/scripts/articles/cursor-basics/explicit_cursor_for_loop_bulk_optimization.sql
+new file mode 100644
+index 0000000..b456e46
+--- /dev/null
++++ b/scripts/articles/cursor-basics/explicit_cursor_for_loop_bulk_optimization.sql
+@@ -0,0 +1,103 @@
++set feedback off;
++set serveroutput on;
++--grant select on v_$sqlarea to script user
++--update seed_sql_text literal for each execution to get new fetch counts
++alter session set plsql_optimize_level = 0;
++declare
++    l_records number := 1000;
++    l_fetches number;
++    cursor cur_data is
++    select level as id, 'item seed_sql_text0zzza ' || level as info
++    from dual connect by level <= l_records;    
++begin
++    for r in cur_data loop
++        null;
++    end loop;
++
++    select fetches into l_fetches
++    from v$sqlarea 
++    where 
++        instr(sql_text, 'seed_sql_text0zzza') > 0 
++        and instr(upper(sql_text), 'DECLARE') = 0 
++        and instr(upper(sql_text), 'V$SQLAREA') = 0;
++    
++    dbms_output.put_line('plsql_optimize_level = 0: ' || l_fetches || ' fetches for ' || l_records || ' records');
++end;
++/
++
++alter session set plsql_optimize_level = 1;
++declare
++    l_records number := 1000;
++    l_fetches number;
++    cursor cur_data is
++    select level as id, 'item seed_sql_text1zzza ' || level as info
++    from dual connect by level <= l_records;
++begin
++    for r in cur_data loop
++        null;
++    end loop;
++
++    select fetches into l_fetches
++    from v$sqlarea 
++    where 
++        instr(sql_text, 'seed_sql_text1zzza') > 0 
++        and instr(upper(sql_text), 'DECLARE') = 0 
++        and instr(upper(sql_text), 'V$SQLAREA') = 0;
++    
++    dbms_output.put_line('plsql_optimize_level = 1: ' || l_fetches || ' fetches for ' || l_records || ' records');
++end;
++/
++
++alter session set plsql_optimize_level = 2;
++declare
++    l_records number := 1000;
++    l_fetches number;
++    cursor cur_data is
++    select level as id, 'item seed_sql_text2zzza ' || level as info
++    from dual connect by level <= l_records;    
++begin
++    for r in cur_data loop
++        null;
++    end loop;
++
++    select fetches into l_fetches
++    from v$sqlarea 
++    where 
++        instr(sql_text, 'seed_sql_text2zzza') > 0 
++        and instr(upper(sql_text), 'DECLARE') = 0 
++        and instr(upper(sql_text), 'V$SQLAREA') = 0;
++    
++    dbms_output.put_line('plsql_optimize_level = 2: ' || l_fetches || ' fetches for ' || l_records || ' records');
++end;
++/
++
++alter session set plsql_optimize_level = 3;
++declare
++    l_records number := 1000;
++    l_fetches number;
++    cursor cur_data is
++    select level as id, 'item seed_sql_text3zzza ' || level as info
++    from dual connect by level <= l_records;    
++begin
++    for r in cur_data loop
++        null;
++    end loop;
++
++    select fetches into l_fetches
++    from v$sqlarea 
++    where 
++        instr(sql_text, 'seed_sql_text3zzza') > 0 
++        and instr(upper(sql_text), 'DECLARE') = 0 
++        and instr(upper(sql_text), 'V$SQLAREA') = 0;
++    
++    dbms_output.put_line('plsql_optimize_level = 3: ' || l_fetches || ' fetches for ' || l_records || ' records');
++end;
++/
++--reset plsql_optimize_level to default level of 2
++alter session set plsql_optimize_level = 2;
++/*
++plsql_optimize_level = 0: 1001 fetches for 1000 records
++plsql_optimize_level = 1: 1001 fetches for 1000 records
++plsql_optimize_level = 2: 11 fetches for 1000 records
++plsql_optimize_level = 3: 11 fetches for 1000 records
++*/
+\ No newline at end of file
+diff --git a/scripts/articles/cursor-basics/implicit_cursor_for_loop.sql b/scripts/articles/cursor-basics/implicit_cursor_for_loop.sql
+new file mode 100644
+index 0000000..b09f1be
+--- /dev/null
++++ b/scripts/articles/cursor-basics/implicit_cursor_for_loop.sql
+@@ -0,0 +1,11 @@
++set serveroutput on;
++declare
++begin
++    for r in (
++        select level as id, 'item ' || level as info
++        from dual connect by level <= 5) 
++    loop
++        dbms_output.put_line('processing ' || r.info);
++    end loop;
++end;
++/
+\ No newline at end of file
+diff --git a/scripts/articles/cursor-basics/performance_comparison.sql b/scripts/articles/cursor-basics/performance_comparison.sql
+new file mode 100644
+index 0000000..d2d7bb1
+--- /dev/null
++++ b/scripts/articles/cursor-basics/performance_comparison.sql
+@@ -0,0 +1,239 @@
++set feedback off;
++set serveroutput on;
++alter session set plsql_optimize_level = 2;
++declare
++    c_hundred constant number := 100;
++    c_thousand constant number := 1000;
++    c_million constant number := 1000000;
++    c_total_records constant number := c_million;
++    l_bulk_limit number := c_hundred;
++    
++    l_start timestamp := localtimestamp;
++    type t_timings is table of varchar2(1000) index by varchar2(100);
++    l_timings t_timings;
++    
++    procedure print_timing(p_message in varchar2)
++    is
++        l_duration varchar2(100) := to_char(localtimestamp - l_start);
++    begin
++        l_timings (l_duration || p_message) := rpad(p_message, 60, '.') || l_duration || ' for ' || c_total_records || ' records';
++        l_start := localtimestamp;
++    end print_timing;
++begin
++
++    --test explicit cursor approaches
++    declare
++        cursor c is
++        select level as id, 'item ' || level  as info
++        from dual connect by level <= c_total_records;
++        l_row c%rowtype;
++        type t_rows is table of c%rowtype index by pls_integer;
++        l_row_table t_rows;
++    begin
++        -------------------------------------
++        open c;
++        loop
++            fetch c into l_row;
++            exit when c%notfound;
++            null;
++        end loop;
++        close c;
++        print_timing('explicit cursor open, fetch, close');
++        -------------------------------------    
++        for r in c loop
++            null;
++        end loop;
++        print_timing('explicit cursor for loop');
++        -------------------------------------    
++        open c;
++        fetch c bulk collect into l_row_table;
++        close c;
++        for i in 1..l_row_table.count loop
++            null;
++        end loop;
++        print_timing('explicit cursor bulk bind all*');
++        -------------------------------------
++        l_bulk_limit := c_hundred;
++        open c;
++        loop
++            fetch c bulk collect into l_row_table limit l_bulk_limit;
++            exit when l_row_table.count = 0;
++            for i in 1..l_row_table.count loop
++                null;
++            end loop;
++        end loop;
++        close c;
++        print_timing('explicit cursor bulk bind limit ' || l_bulk_limit);
++        -------------------------------------  
++        l_bulk_limit := c_thousand;
++        open c;
++        loop
++            fetch c bulk collect into l_row_table limit l_bulk_limit;
++            exit when l_row_table.count = 0;
++            for i in 1..l_row_table.count loop
++                null;
++            end loop;
++        end loop;
++        close c;
++        print_timing('explicit cursor bulk bind limit** ' || l_bulk_limit);
++        -------------------------------------    
++        l_bulk_limit := c_thousand * 10;
++        open c;
++        loop
++            fetch c bulk collect into l_row_table limit l_bulk_limit;
++            exit when l_row_table.count = 0;
++            for i in 1..l_row_table.count loop
++                null;
++            end loop;
++        end loop;
++        close c;
++        print_timing('explicit cursor bulk bind limit** ' || l_bulk_limit);
++        -------------------------------------
++        l_row_table := t_rows(for r in c sequence => r);
++        for i in 1..l_row_table.count loop
++            null;
++        end loop;
++        print_timing('21c cursor iterator control');
++    
++    end;
++
++    --test cursor variable approaches
++    declare
++        type t_rec is record(id number, info varchar2(100));
++        type t_rec_tab is table of t_rec index by pls_integer;
++        l_rec t_rec;
++        l_rec_table t_rec_tab;
++        type strong_cursor_variable is ref cursor return t_rec;
++        cv_strong strong_cursor_variable;
++        cv_weak sys_refcursor;
++    begin
++        -------------------------------------    
++        open cv_strong for 
++        select level as id, 'item ' || level  as info
++        from dual connect by level <= c_total_records;
++        loop
++            fetch cv_strong into l_rec;
++            exit when cv_strong%notfound;
++            null;
++        end loop;
++        close cv_strong;
++        print_timing('strong cursor variable open, fetch, close');
++        -------------------------------------    
++        open cv_strong for 
++        select level as id, 'item ' || level  as info
++        from dual connect by level <= c_total_records;    
++        fetch cv_strong bulk collect into l_rec_table;
++        close cv_strong;
++        for i in 1..l_rec_table.count loop
++            null;
++        end loop;
++        print_timing('strong cursor variable bulk bind all*');
++        -------------------------------------    
++        l_bulk_limit := c_hundred;
++        open cv_strong for 
++        select level as id, 'item ' || level  as info
++        from dual connect by level <= c_total_records;    
++        loop
++            fetch cv_strong bulk collect into l_rec_table limit l_bulk_limit;
++            exit when l_rec_table.count = 0;
++            for i in 1..l_rec_table.count loop
++                null;
++            end loop;
++        end loop;
++        close cv_strong;
++        print_timing('strong cursor variable bulk bind limit ' || l_bulk_limit);
++        -------------------------------------
++        open cv_weak for 
++        select level as id, 'item ' || level  as info
++        from dual connect by level <= c_total_records;
++        loop
++            fetch cv_weak into l_rec;
++            exit when cv_weak%notfound;
++            null;
++        end loop;
++        close cv_weak;
++        print_timing('weak cursor variable open, fetch, close');
++        -------------------------------------
++        open cv_weak for 
++        select level as id, 'item ' || level  as info
++        from dual connect by level <= c_total_records;
++        fetch cv_weak bulk collect into l_rec_table;
++        close cv_weak;    
++        for i in 1..l_rec_table.count loop
++            null;
++        end loop;
++        print_timing('weak cursor variable bulk bind all*');
++        -------------------------------------
++        l_bulk_limit := c_hundred;
++        open cv_weak for 
++        select level as id, 'item ' || level  as info
++        from dual connect by level <= c_total_records;
++        loop
++            fetch cv_weak bulk collect into l_rec_table limit l_bulk_limit;
++            exit when l_rec_table.count = 0;
++            for i in 1..l_rec_table.count loop
++                null;
++            end loop;
++        end loop;
++        close cv_weak;
++        print_timing('weak cursor variable bulk bind limit ' || l_bulk_limit);
++        -------------------------------------
++        l_bulk_limit := c_hundred;
++        open cv_weak for 
++        q'[select level as id, 'item ' || level  as info
++        from dual connect by level <= ]' || c_total_records;
++        loop
++            fetch cv_weak into l_rec;
++            exit when cv_weak%notfound;
++        end loop;
++        close cv_weak;
++        print_timing('dynamic sql open, fetch, close');    
++        -------------------------------------
++        l_bulk_limit := c_hundred;
++        open cv_weak for 
++        q'[select level as id, 'item ' || level  as info
++        from dual connect by level <= ]' || c_total_records;
++        loop
++            fetch cv_weak bulk collect into l_rec_table limit l_bulk_limit;
++            exit when l_rec_table.count = 0;
++            for i in 1..l_rec_table.count loop
++                null;
++            end loop;
++        end loop;
++        close cv_weak;
++        print_timing('dynamic sql bulk bind limit ' || l_bulk_limit);    
++    end;
++
++    dbms_output.put_line('results are ordered from fastest to slowest');
++    dbms_output.put_line('results will vary with multiple test runs');
++    dbms_output.put_line('*bulk bind without limit can use excessive PGA memory');
++    dbms_output.put_line('**bulk bind with large limit can use excessive PGA memory');
++
++    for i in indices of l_timings loop
++        dbms_output.put_line(l_timings(i));
++    end loop;
++
++end;
++/
++
++/*
++results are ordered from fastest to slowest
++results will vary with multiple test runs
++*bulk bind without limit can use excessive PGA memory
++**bulk bind with large limit can use excessive PGA memory
++weak cursor variable bulk bind all*.........................+000000000 00:00:00.379000000 for 1000000 records
++weak cursor variable bulk bind limit 100....................+000000000 00:00:00.392000000 for 1000000 records
++explicit cursor bulk bind limit** 10000.....................+000000000 00:00:00.395000000 for 1000000 records
++strong cursor variable bulk bind limit 100..................+000000000 00:00:00.395000000 for 1000000 records
++dynamic sql bulk bind limit 100.............................+000000000 00:00:00.403000000 for 1000000 records
++explicit cursor for loop....................................+000000000 00:00:00.404000000 for 1000000 records
++explicit cursor bulk bind limit 100.........................+000000000 00:00:00.421000000 for 1000000 records
++explicit cursor bulk bind limit** 1000......................+000000000 00:00:00.429000000 for 1000000 records
++strong cursor variable bulk bind all*.......................+000000000 00:00:00.583000000 for 1000000 records
++explicit cursor bulk bind all*..............................+000000000 00:00:00.619000000 for 1000000 records
++21c cursor iterator control.................................+000000000 00:00:00.712000000 for 1000000 records
++strong cursor variable open, fetch, close...................+000000000 00:00:01.653000000 for 1000000 records
++weak cursor variable open, fetch, close.....................+000000000 00:00:01.658000000 for 1000000 records
++dynamic sql open, fetch, close..............................+000000000 00:00:01.746000000 for 1000000 records
++explicit cursor open, fetch, close..........................+000000000 00:00:02.053000000 for 1000000 records
++*/
+\ No newline at end of file
+diff --git a/scripts/articles/cursor-basics/strong_cursor_variable_fetch.sql b/scripts/articles/cursor-basics/strong_cursor_variable_fetch.sql
+new file mode 100644
+index 0000000..fac675a
+--- /dev/null
++++ b/scripts/articles/cursor-basics/strong_cursor_variable_fetch.sql
+@@ -0,0 +1,18 @@
++set serveroutput on;
++declare
++    type rec_t is record(id number, info varchar2(100));
++    type t_cur_data is ref cursor return rec_t;
++    cur_data t_cur_data;
++    l_rec rec_t;
++begin
++    open cur_data for 
++    select level as id, 'item ' || level as info
++    from dual connect by level <= 5;
++    loop
++        fetch cur_data into l_rec;
++        exit when cur_data%notfound;
++        dbms_output.put_line('processing ' || l_rec.info);
++    end loop;
++    close cur_data;
++end;
++/
+\ No newline at end of file
+diff --git a/scripts/articles/cursor-basics/weak_cursor_variable_fetch.sql b/scripts/articles/cursor-basics/weak_cursor_variable_fetch.sql
+new file mode 100644
+index 0000000..674efee
+--- /dev/null
++++ b/scripts/articles/cursor-basics/weak_cursor_variable_fetch.sql
+@@ -0,0 +1,17 @@
++set serveroutput on;
++declare
++    type rec_t is record(id number, info varchar2(100));
++    cur_data sys_refcursor;
++    l_rec rec_t;
++begin
++    open cur_data for 
++    select level as id, 'item ' || level as info
++    from dual connect by level <= 5;
++    loop
++        fetch cur_data into l_rec;
++        exit when cur_data%notfound;
++        dbms_output.put_line('processing ' || l_rec.info);
++    end loop;
++    close cur_data;
++end;
++/
+\ No newline at end of file
+diff --git a/scripts/create.user.practicalplsql.sql b/scripts/create.user.practicalplsql.sql
+new file mode 100644
+index 0000000..5834a64
+--- /dev/null
++++ b/scripts/create.user.practicalplsql.sql
+@@ -0,0 +1,25 @@
++create user practicalplsql identified by oracle;
++
++grant create session to practicalplsql;
++grant resource to practicalplsql;
++
++alter user practicalplsql
++default tablespace users
++ quota unlimited on users
++container = current;
++
++grant create synonym to practicalplsql;
++grant create public synonym to practicalplsql;
++
++grant create table to practicalplsql;
++grant create sequence to practicalplsql;
++
++grant create view to practicalplsql;
++grant create materialized view to practicalplsql;
++
++grant create procedure to practicalplsql;
++grant create type to practicalplsql;
++
++grant create role to practicalplsql with admin option;
++
++grant alter system to practicalplsql;
+diff --git a/scripts/open-source-directory/github.links.alphabetizer.sql b/scripts/open-source-directory/github.links.alphabetizer.sql
+new file mode 100644
+index 0000000..ff19736
+--- /dev/null
++++ b/scripts/open-source-directory/github.links.alphabetizer.sql
+@@ -0,0 +1,244 @@
++set feedback off;
++set define off;
++set serveroutput on;
++declare
++    l_raw_links varchar2(32000);
++    c_divider constant varchar2(20) := '##START-ENTRY##';
++    subtype t_str is varchar2(4000);
++    c_project constant t_str := 'TITLE';
++    c_github constant t_str := 'GITHUB';
++    c_website constant t_str := 'WEBSITE';
++    type t_dtl is record(offset number, next_offset number, length number, contents t_str);
++    type t_dtls is table of t_dtl index by t_str;
++    type t_lnks is table of t_dtls index by t_str;
++    l_parser t_dtls;
++    l_os_links t_lnks;
++    l_offset number;
++    l_next_item number;
++    l_item t_str;
++begin
++
++l_raw_links := 
++q'[##START-ENTRY##
++Source Code For PracticalPlsql.org Articles By Anthony Harper
++https://practicalplsql.org/
++https://github.com/gaiansentience/practicalplsql
++##START-ENTRY##
++Tools and Examples For PL/SQL API Development and Administration.
++https://practicalplsql.org/
++https://github.com/gaiansentience/oracle-architect-tools
++##START-ENTRY##
++Oracle PL/SQL API: Event Management Demo
++https://practicalplsql.org/
++https://github.com/gaiansentience/oracle-events-system-demo
++##START-ENTRY##
++Oracle APEX on GitHub
++https://apex.oracle.com/en/
++https://github.com/oracle/apex.git
++##START-ENTRY##
++oracle-db-examples
++https://www.oracle.com/database/technologies/
++https://github.com/oracle-samples/oracle-db-examples
++##START-ENTRY##
++Oracle Database Sample Schemas
++https://docs.oracle.com/en/database/oracle/oracle-database/21/comsc/index.html
++https://github.com/oracle-samples/db-sample-schemas
++##START-ENTRY##
++Oracle Database Sample Schemas 23c
++https://docs.oracle.com/en/database/oracle/oracle-database/23/
++https://github.com/oracle-samples/db-sample-schemas/releases
++##START-ENTRY##
++Oracle Database Tools
++https://github.com/oracle/oracle-db-tools
++https://github.com/oracle/oracle-db-tools
++##START-ENTRY##
++Oracle LiveLabs: A Collection of Open Source Repositories From Oracle
++https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/home
++https://github.com/oracle-livelabs
++##START-ENTRY##
++Oracle LiveLabs: Analytics-AI
++https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/home
++https://github.com/oracle-livelabs/analytics-ai
++##START-ENTRY##
++Oracle Livelabs: Database
++https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/home
++https://github.com/oracle-livelabs/database
++##START-ENTRY##
++Oracle LiveLabs: University
++https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/home
++https://github.com/oracle-livelabs/university
++##START-ENTRY##
++Oracle PL/SQL Utility Library
++https://github.com/mortenbra/alexandria-plsql-utils
++https://github.com/mortenbra/alexandria-plsql-utils
++##START-ENTRY##
++Code generator for Oracle PL/SQL based on a simple markup language
++https://github.com/mortenbra/quick-plsql
++https://github.com/mortenbra/quick-plsql
++##START-ENTRY##
++oracle-base.com scripts
++https://oracle-base.com/dba/scripts
++https://github.com/oraclebase/dba
++##START-ENTRY##
++Tales From A Lazy Fat DBA: My Oracle DB Scripts
++https://fatdba.com/
++https://github.com/fatdba/Oracle-Database-Scripts
++##START-ENTRY##
++SQL scripts for Oracle Database Tuning
++https://github.com/bobbydurrett/OracleDatabaseTuningSQL
++https://github.com/bobbydurrett/OracleDatabaseTuningSQL
++##START-ENTRY##
++Common PL/SQL utility scripts
++https://github.com/OraOpenSource/oos-utils
++https://github.com/OraOpenSource/oos-utils
++##START-ENTRY##
++PL/JSON
++https://pljson.github.io/pljson/
++https://github.com/pljson/pljson
++##START-ENTRY##
++Liquibase extension to add improved Oracle support
++https://github.com/liquibase/liquibase-oracle
++https://github.com/liquibase/liquibase-oracle
++##START-ENTRY##
++OakAcademy: Oracle Basic SQL
++https://github.com/OakAcademy/Oracle.git
++https://github.com/OakAcademy/Oracle.git
++##START-ENTRY##
++ReneNyffenegger: oracle-patterns
++https://github.com/ReneNyffenegger/oracle-patterns
++https://github.com/ReneNyffenegger/oracle-patterns
++##START-ENTRY##
++ReneNyffenegger: Creating Excel workbooks (xlsx) with PL/SQL
++https://github.com/ReneNyffenegger/xlsx_writer-Oracle
++https://github.com/ReneNyffenegger/xlsx_writer-Oracle
++##START-ENTRY##
++Source code for "Practical Oracle SQL" by Kim Berg Hansen
++https://link.springer.com/book/10.1007/978-1-4842-5617-6
++https://github.com/Apress/practical-oracle-sql
++##START-ENTRY##
++Example of a basic blockchain within the Oracle Database
++https://github.com/Dani3lSun/oracle-blockchain
++https://github.com/Dani3lSun/oracle-blockchain
++##START-ENTRY##
++Source code for "Expert Oracle Database Architecture" by Thomas Kyte
++https://link.springer.com/book/10.1007/978-1-4302-2947-6
++https://github.com/Apress/exp-oracle-db-architecture
++##START-ENTRY##
++Source code for "Expert Oracle Database Architecture" by Thomas Kyte and Darl Kuhn
++https://link.springer.com/book/10.1007/978-1-4302-6299-2
++https://github.com/Apress/exp-oracle-db-architecture-14
++##START-ENTRY##
++Logger is used by Oracle developers to instrument their PL/SQL code
++https://github.com/OraOpenSource/Logger
++https://github.com/OraOpenSource/Logger
++##START-ENTRY##
++utPLSQL: Testing Framework for PL/SQL
++https://www.utplsql.org/about.html
++https://github.com/utPLSQL/utPLSQL
++##START-ENTRY##
++Oracle PL/SQL Package for Microsoft Word Documents Generation
++https://github.com/zorantica/plsql-word
++https://github.com/zorantica/plsql-word
++##START-ENTRY##
++PLSQL_LEXER 2.2.0: A PL/SQL package to solve real-world language problems
++https://github.com/method5/plsql_lexer
++https://github.com/method5/plsql_lexer
++##START-ENTRY##
++The Complete PL/SQL Bootcamp : "Beginner to Advanced PL/SQL"
++https://www.udemy.com/course/plsql-beginner-to-advanced-become-a-perfect-plsql-developer/
++https://github.com/blackdogcode/OraclePLSQL
++##START-ENTRY##
++ExcelGen - An Oracle PL/SQL Generator for MS Excel Files
++https://github.com/mbleron/ExcelGen
++https://github.com/mbleron/ExcelGen
++##START-ENTRY##
++PL/SQL package written by Anton Scheffer which allows us to export Excel XLSX files from an Oracle Database.
++https://github.com/sokolsaiti/as_xlsx
++https://github.com/sokolsaiti/as_xlsx
++##START-ENTRY##
++ORACLE PLSQL LOGGER: A super simple logger used in PLSQL procedure, package and functions...
++https://github.com/matitaweb/oracle-plsql-logger
++https://github.com/matitaweb/oracle-plsql-logger
++##START-ENTRY##
++Oracle PL/SQL General Utilities Module
++https://github.com/BrenPatF/oracle_plsql_utils
++https://github.com/BrenPatF/oracle_plsql_utils
++##START-ENTRY##
++Expert SQL & PL/SQL Book : Advice from the Experts (Oracle Press) Sample Code
++https://www.amazon.com/gp/product/1259640973/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=1259640973&linkCode=as2&tag=brendantierne-20&linkId=KICPN2S7XXCS6MY5
++https://github.com/Oralytics/SQL-and-PLSQL-from-the-Experts-Sample-code
++##START-ENTRY##
++Oracle PL/SQL API Demos: Demonstrating Oracle PL/SQL API procedures for getting and setting database data, with code timing, message logging and unit testing
++https://github.com/BrenPatF/oracle_plsql_api_demos
++https://github.com/BrenPatF/oracle_plsql_api_demos
++##START-ENTRY##
++Oracle PLSQL: Scripts PLSQL DW
++https://github.com/eniltonsp/Oracle-PLSQL
++https://github.com/eniltonsp/Oracle-PLSQL
++##START-ENTRY##
++Oracle PL/SQL utility code
++https://github.com/scott-swank/plsql-util
++https://github.com/scott-swank/plsql-util
++##START-ENTRY##
++PL/SQL Logger: Simple and effective logger framework for Oracle Database
++https://github.com/ValeriyTyutyunnik/plsql-logger
++https://github.com/ValeriyTyutyunnik/plsql-logger
++##START-ENTRY##
++wtPLSQL - Whitebox Testing for PL/SQL
++https://github.com/wtPLSQL/wtPLSQL
++https://github.com/wtPLSQL/wtPLSQL
++##START-ENTRY##
++Trivadis PL/SQL & SQL Coding Guidelines
++https://trivadis.github.io/plsql-and-sql-coding-guidelines/v4.2/
++https://github.com/Trivadis/plsql-and-sql-coding-guidelines
++##START-ENTRY##
++Source code for "Modern Oracle Database Programming: Level Up Your Skill Set to Oracle's Latest and Most Powerful Features in SQL, PL/SQL, and JSON" by Alex Nuijten and Patrick Barel
++https://github.com/Apress/modern-oracle-database-programming
++https://github.com/Apress/modern-oracle-database-programming
++##START-ENTRY##
++Title: (From Github About)
++Website: (From GitHub About: Use Github URL if not provided)
++GitUrl: (Github URL)
++]';
++
++--l_total_length := length(l_raw_links);
++--dbms_output.put_line('total length='||l_total_length);
++l_offset := 1 + length(c_divider);
++
++loop
++    l_next_item := instr(l_raw_links, c_divider, l_offset);
++    exit when l_next_item = 0;
++
++    l_item := substr(l_raw_links, l_offset, l_next_item - l_offset);
++    
++    l_parser(c_project).offset := 2;
++    l_parser(c_project).next_offset := instr(l_item,chr(10),l_parser(c_project).offset);
++    l_parser(c_project).length := l_parser(c_project).next_offset - l_parser(c_project).offset;
++    l_parser(c_project).contents := substr(l_item, l_parser(c_project).offset, l_parser(c_project).length);
++    
++    l_parser(c_website).offset := l_parser(c_project).next_offset + 1;
++    l_parser(c_website).next_offset := instr(l_item,chr(10),l_parser(c_website).offset);
++    l_parser(c_website).length := l_parser(c_website).next_offset - l_parser(c_website).offset;
++    l_parser(c_website).contents := substr(l_item, l_parser(c_website).offset, l_parser(c_website).length);
++    
++    l_parser(c_github).offset := l_parser(c_website).next_offset + 1;
++    l_parser(c_github).next_offset := instr(l_item,chr(10),l_parser(c_github).offset);
++    l_parser(c_github).length := l_parser(c_github).next_offset - l_parser(c_github).offset;
++    l_parser(c_github).contents := substr(l_item, l_parser(c_github).offset, l_parser(c_github).length);
++    
++    l_os_links(l_parser(c_github).contents) := l_parser;
++    
++    l_offset := l_next_item + length(c_divider);
++end loop;
++
++for i_entry in indices of l_os_links loop
++    dbms_output.put_line(l_os_links(i_entry)(c_project).contents);
++    dbms_output.put_line(l_os_links(i_entry)(c_github).contents);
++    if l_os_links(i_entry)(c_github).contents <> l_os_links(i_entry)(c_website).contents then
++        dbms_output.put_line('More Info at ' || l_os_links(i_entry)(c_website).contents);
++    end if;
++    dbms_output.put_line(null);
++end loop;
++
++end;
++/
+\ No newline at end of file
+diff --git a/scripts/open-source-directory/github.links.txt b/scripts/open-source-directory/github.links.txt
+new file mode 100644
+index 0000000..ca747d7
+--- /dev/null
++++ b/scripts/open-source-directory/github.links.txt
+@@ -0,0 +1,152 @@
++Source code for "Expert Oracle Database Architecture" by Thomas Kyte
++https://github.com/Apress/exp-oracle-db-architecture
++More Info at https://link.springer.com/book/10.1007/978-1-4302-2947-6
++
++Source code for "Expert Oracle Database Architecture" by Thomas Kyte and Darl Kuhn
++https://github.com/Apress/exp-oracle-db-architecture-14
++More Info at https://link.springer.com/book/10.1007/978-1-4302-6299-2
++
++Source code for "Modern Oracle Database Programming: Level Up Your Skill Set to Oracle's Latest and Most Powerful Features in SQL, PL/SQL, and JSON" by Alex Nuijten and Patrick Barel
++https://github.com/Apress/modern-oracle-database-programming
++
++Source code for "Practical Oracle SQL" by Kim Berg Hansen
++https://github.com/Apress/practical-oracle-sql
++More Info at https://link.springer.com/book/10.1007/978-1-4842-5617-6
++
++Oracle PL/SQL API Demos: Demonstrating Oracle PL/SQL API procedures for getting and setting database data, with code timing, message logging and unit testing
++https://github.com/BrenPatF/oracle_plsql_api_demos
++
++Oracle PL/SQL General Utilities Module
++https://github.com/BrenPatF/oracle_plsql_utils
++
++Example of a basic blockchain within the Oracle Database
++https://github.com/Dani3lSun/oracle-blockchain
++
++OakAcademy: Oracle Basic SQL
++https://github.com/OakAcademy/Oracle.git
++
++Logger is used by Oracle developers to instrument their PL/SQL code
++https://github.com/OraOpenSource/Logger
++
++Common PL/SQL utility scripts
++https://github.com/OraOpenSource/oos-utils
++
++Expert SQL & PL/SQL Book : Advice from the Experts (Oracle Press) Sample Code
++https://github.com/Oralytics/SQL-and-PLSQL-from-the-Experts-Sample-code
++More Info at https://www.amazon.com/gp/product/1259640973/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=1259640973&linkCode=as2&tag=brendantierne-20&linkId=KICPN2S7XXCS6MY5
++
++ReneNyffenegger: oracle-patterns
++https://github.com/ReneNyffenegger/oracle-patterns
++
++ReneNyffenegger: Creating Excel workbooks (xlsx) with PL/SQL
++https://github.com/ReneNyffenegger/xlsx_writer-Oracle
++
++Trivadis PL/SQL & SQL Coding Guidelines
++https://github.com/Trivadis/plsql-and-sql-coding-guidelines
++More Info at https://trivadis.github.io/plsql-and-sql-coding-guidelines/v4.2/
++
++PL/SQL Logger: Simple and effective logger framework for Oracle Database
++https://github.com/ValeriyTyutyunnik/plsql-logger
++
++The Complete PL/SQL Bootcamp : "Beginner to Advanced PL/SQL"
++https://github.com/blackdogcode/OraclePLSQL
++More Info at https://www.udemy.com/course/plsql-beginner-to-advanced-become-a-perfect-plsql-developer/
++
++SQL scripts for Oracle Database Tuning
++https://github.com/bobbydurrett/OracleDatabaseTuningSQL
++
++Oracle PLSQL: Scripts PLSQL DW
++https://github.com/eniltonsp/Oracle-PLSQL
++
++Tales From A Lazy Fat DBA: My Oracle DB Scripts
++https://github.com/fatdba/Oracle-Database-Scripts
++More Info at https://fatdba.com/
++
++Tools and Examples For PL/SQL API Development and Administration.
++https://github.com/gaiansentience/oracle-architect-tools
++More Info at https://practicalplsql.org/
++
++Oracle PL/SQL API: Event Management Demo
++https://github.com/gaiansentience/oracle-events-system-demo
++More Info at https://practicalplsql.org/
++
++Source Code For PracticalPlsql.org Articles By Anthony Harper
++https://github.com/gaiansentience/practicalplsql
++More Info at https://practicalplsql.org/
++
++Liquibase extension to add improved Oracle support
++https://github.com/liquibase/liquibase-oracle
++
++ORACLE PLSQL LOGGER: A super simple logger used in PLSQL procedure, package and functions...
++https://github.com/matitaweb/oracle-plsql-logger
++
++ExcelGen - An Oracle PL/SQL Generator for MS Excel Files
++https://github.com/mbleron/ExcelGen
++
++PLSQL_LEXER 2.2.0: A PL/SQL package to solve real-world language problems
++https://github.com/method5/plsql_lexer
++
++Oracle PL/SQL Utility Library
++https://github.com/mortenbra/alexandria-plsql-utils
++
++Code generator for Oracle PL/SQL based on a simple markup language
++https://github.com/mortenbra/quick-plsql
++
++Oracle LiveLabs: A Collection of Open Source Repositories From Oracle
++https://github.com/oracle-livelabs
++More Info at https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/home
++
++Oracle LiveLabs: Analytics-AI
++https://github.com/oracle-livelabs/analytics-ai
++More Info at https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/home
++
++Oracle Livelabs: Database
++https://github.com/oracle-livelabs/database
++More Info at https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/home
++
++Oracle LiveLabs: University
++https://github.com/oracle-livelabs/university
++More Info at https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/home
++
++Oracle Database Sample Schemas
++https://github.com/oracle-samples/db-sample-schemas
++More Info at https://docs.oracle.com/en/database/oracle/oracle-database/21/comsc/index.html
++
++Oracle Database Sample Schemas 23c
++https://github.com/oracle-samples/db-sample-schemas/releases
++More Info at https://docs.oracle.com/en/database/oracle/oracle-database/23/
++
++oracle-db-examples
++https://github.com/oracle-samples/oracle-db-examples
++More Info at https://www.oracle.com/database/technologies/
++
++Oracle APEX on GitHub
++https://github.com/oracle/apex.git
++More Info at https://apex.oracle.com/en/
++
++Oracle Database Tools
++https://github.com/oracle/oracle-db-tools
++
++oracle-base.com scripts
++https://github.com/oraclebase/dba
++More Info at https://oracle-base.com/dba/scripts
++
++PL/JSON
++https://github.com/pljson/pljson
++More Info at https://pljson.github.io/pljson/
++
++Oracle PL/SQL utility code
++https://github.com/scott-swank/plsql-util
++
++PL/SQL package written by Anton Scheffer which allows us to export Excel XLSX files from an Oracle Database.
++https://github.com/sokolsaiti/as_xlsx
++
++utPLSQL: Testing Framework for PL/SQL
++https://github.com/utPLSQL/utPLSQL
++More Info at https://www.utplsql.org/about.html
++
++wtPLSQL - Whitebox Testing for PL/SQL
++https://github.com/wtPLSQL/wtPLSQL
++
++Oracle PL/SQL Package for Microsoft Word Documents Generation
++https://github.com/zorantica/plsql-word
+\ No newline at end of file
+diff --git a/scripts/sample-data/many-orders/create.tables.sql b/scripts/sample-data/many-orders/create.tables.sql
+new file mode 100644
+index 0000000..cd48807
+--- /dev/null
++++ b/scripts/sample-data/many-orders/create.tables.sql
+@@ -0,0 +1,39 @@
++
++create table accounts (
++    account_id number generated by default as identity primary key
++    , account_name varchar2(50)
++);
++
++create table customers (
++    customer_id number generated by default as identity primary key
++    , customer_name varchar2(50)
++    , account_id number not null references accounts(account_id)
++);
++
++create table product_types (
++    product_type_id number generated by default as identity primary key
++    , product_type_name varchar2(50)
++);
++
++create table products (
++    product_id number generated by default as identity primary key
++    , product_type_id number references product_types(product_type_id)
++    , product_name varchar2(50)
++    , unit_price number
++);
++
++create table orders (
++    order_id number generated always as identity primary key
++    , customer_id number not null references customers (customer_id)
++    , order_date date
++);
++
++create table order_details(
++    order_detail_id number generated always as identity primary key
++    , order_id number not null references orders (order_id)
++    , product_id number not null references products (product_id)
++    , quantity number not null check (quantity > 0)
++);
++
++
++prompt many orders example tables created
+\ No newline at end of file
+diff --git a/scripts/sample-data/many-orders/drop.tables.sql b/scripts/sample-data/many-orders/drop.tables.sql
+new file mode 100644
+index 0000000..34b8f62
+--- /dev/null
++++ b/scripts/sample-data/many-orders/drop.tables.sql
+@@ -0,0 +1,13 @@
++drop table order_details purge;
++
++drop table orders purge;
++
++drop table products purge;
++
++drop table product_types purge;
++
++drop table customers purge;
++
++drop table accounts purge;
++
++prompt many orders example tables dropped
+\ No newline at end of file
+diff --git a/scripts/sample-data/many-orders/load.tables.sql b/scripts/sample-data/many-orders/load.tables.sql
+new file mode 100644
+index 0000000..64c8740
+--- /dev/null
++++ b/scripts/sample-data/many-orders/load.tables.sql
+@@ -0,0 +1,52 @@
++truncate table order_details drop storage;
++
++truncate table orders drop storage;
++
++truncate table products drop storage;
++
++truncate table product_types drop storage;
++
++truncate table customers drop storage;
++
++truncate table accounts drop storage;
++
++insert into accounts (account_id, account_name)
++select level, 'account ' || level
++from dual connect by level <= 20;
++
++insert into customers (customer_id, customer_name, account_id)
++select level, 'customer ' || level, mod(level,20)+1
++from dual connect by level <= 10000;
++
++insert into product_types (product_type_id, product_type_name)
++select level, 'product type ' || level
++from dual connect by level <= 10;
++
++insert into products (product_id, product_type_id, product_name, unit_price)
++select level, mod(level, 10) + 1, 'product ' || level, round(dbms_random.value(1, 100)) 
++from dual connect by level <= 100;
++
++insert into orders (customer_id, order_date)
++with customer_orders as
++(select c.customer_id, round(dbms_random.value(mod(c.customer_id, 7) + 1, 10)) as order_count 
++from customers c
++)
++select co.customer_id, trunc(sysdate - o.order_sequence) as order_date
++from customer_orders co 
++cross apply (select level * 7 as order_sequence from dual connect by level <= co.order_count) o
++order by order_date;
++
++insert into order_details (order_id, product_id, quantity)
++with order_base as (
++select o.order_id, round(dbms_random.value(mod(o.order_id, 7) + 1, 10)) as item_count
++from orders o
++)
++select b.order_id, p.product_id, round(dbms_random.value(1,20)) as quantity
++from order_base b
++cross apply (select level as item_sequence from dual connect by level <= b.item_count) d
++inner join lateral (select product_id from products order by dbms_random.value() offset d.item_sequence rows fetch first 1 row only) p on 1 = 1;
++
++commit;
++
++
++prompt many orders tables sample data loaded
+\ No newline at end of file
+diff --git a/scripts/sample-data/many-orders/order_summary.sql b/scripts/sample-data/many-orders/order_summary.sql
+new file mode 100644
+index 0000000..02ddd39
+--- /dev/null
++++ b/scripts/sample-data/many-orders/order_summary.sql
+@@ -0,0 +1,27 @@
++--declare
++--
++--cursor c is
++with order_detail_base as
++(
++select 
++a.account_id, a.account_name, 
++c.customer_id, c.customer_name, 
++o.order_id, o.order_date, 
++--pt.product_type_id, pt.product_type_name, 
++d.product_id, p.product_name, 
++d.quantity, p.unit_price, d.quantity * p.unit_price as extended_price
++from 
++accounts a
++join customers c on c.account_id = a.account_id
++join orders o on c.customer_id = o.customer_id
++join order_details d on o.order_id = d.order_id
++join products p on d.product_id = p.product_id
++--join product_types pt on p.product_type_id = pt.product_type_id
++--order by customer_id, order_id, product_type_id, product_id
++)
++select account_id, min(order_date), max(order_date), count(distinct customer_id) as customer_count, count(distinct order_id) as order_count, sum(extended_price) as total_sales, sum(extended_price) / count(distinct order_id) as average_order
++from order_detail_base
++group by account_id;
++
++
++select * from order_details order by order_id, product_id;
+\ No newline at end of file
+diff --git a/scripts/sample-data/simple-company/create.simple_company.sql b/scripts/sample-data/simple-company/create.simple_company.sql
+new file mode 100644
+index 0000000..27d146d
+--- /dev/null
++++ b/scripts/sample-data/simple-company/create.simple_company.sql
+@@ -0,0 +1,166 @@
++create table sc#product_categories(
++    product_category_id number generated always as identity primary key
++    , product_category_name varchar2(50 char)
++    , product_category_description varchar2(100 char)
++    , created_date date default sysdate
++    , created_by varchar2(30 char) default user
++    , updated_date date
++    , updated_by varchar2(30 char)
++);
++    
++
++create table sc#product_types(
++    product_type_id number generated always as identity primary key
++    , product_type_name varchar2(50 char)
++    , product_type_description varchar2(100 char)
++    , product_category_id number references sc#product_categories(product_category_id)
++    , created_date date default sysdate
++    , created_by varchar2(30 char) default user
++    , updated_date date
++    , updated_by varchar2(30 char)
++);
++
++create table sc#products(
++    product_id number generated always as identity primary key
++    , product_code varchar2(50 char)
++    , product_name varchar2(100 char)
++    , product_description varchar2(4000 char)
++    , product_type_id number references sc#product_types(product_type_id)
++    , msrp_price number
++    , created_date date default sysdate
++    , created_by varchar2(30 char) default user
++    , updated_date date
++    , updated_by varchar2(30 char)
++);
++
++create table sc#product_prices(
++    product_price_id number generated always as identity primary key
++    , product_id number references sc#products(product_id)
++    , price number not null check (price > 0)
++    , effective_date date
++    , expiry_date date
++    , created_date date default sysdate
++    , created_by varchar2(30 char) default user
++);
++
++create table sc#regions(
++    region_id number generated always as identity primary key
++    , region_name varchar2(50 char)
++    , region_description varchar2(100 char)
++    , created_date date default sysdate
++    , created_by varchar2(30 char) default user
++    , updated_date date
++    , updated_by varchar2(30 char)
++);
++
++create table sc#customers(
++    customer_id number generated always as identity primary key
++    , customer_name varchar2(1000 char)
++    , customer_notes varchar2(4000 char)
++    , region_id number references sc#regions(region_id)
++    , is_b2b number default 0 not null check (is_b2b in (0,1))
++    , created_date date default sysdate
++    , created_by varchar2(30 char) default user
++    , updated_date date
++    , updated_by varchar2(30 char)
++);
++
++create table sc#orders(
++    order_id number generated always as identity primary key
++    , purchase_order varchar2(50 char)
++    , customer_id number references sc#customers(customer_id)
++    , order_reference varchar2(100 char) generated always as ('O' || to_char(order_id,'fm09999') || 'C' || to_char(customer_id,'fm09999')) virtual
++    , order_total number default 0 not null check (order_total >= 0)
++    , open_date date
++    , closed_date date
++    , created_date date default sysdate
++    , created_by varchar2(30 char) default user
++    , updated_date date
++    , updated_by varchar2(30 char)
++);
++
++create table sc#order_details(
++    order_detail_id number generated always as identity primary key
++    , order_id number references sc#orders(order_id)
++    , product_id number references sc#products(product_id)
++    , quantity number not null check (quantity > 0)
++    , backorder_quantity number generated always as (quantity - shipped_quantity) check (backorder_quantity >= 0)
++    , shipped_quantity number default 0 not null
++    , unit_price number not null
++    , extended_price number generated always as (quantity * unit_price) virtual
++    , created_date date default sysdate
++    , created_by varchar2(30 char) default user
++    , updated_date date
++    , updated_by varchar2(30 char)
++    , check (shipped_quantity >= 0 and shipped_quantity <= quantity)
++);
++
++create table sc#shipments(
++    shipment_id number generated always as identity primary key
++    , order_id number references sc#orders(order_id)
++    , shipment_reference varchar2(100 char) generated always as ('O' || to_char(order_id,'fm09999') || 'S' || to_char(shipment_id,'fm09999')) virtual
++    , requested_date date
++    , requested_by varchar2(30 char)
++    , prepared_date date
++    , prepared_by varchar2(30 char) 
++    , shipped_date date
++    , shipped_by varchar2(30 char)
++    , created_date date default sysdate
++    , created_by varchar2(30 char) default user
++    , updated_date date
++    , updated_by varchar2(30 char)
++);
++
++create table sc#shipment_details(
++    shipment_detail_id number generated always as identity primary key
++    , shipment_id number references sc#orders(order_id)
++    , order_detail_id number references sc#order_details(order_detail_id)
++    , quantity number not null check (quantity > 0)
++    , created_date date default sysdate
++    , created_by varchar2(30 char) default user
++);    
++
++create table sc#invoices(
++    invoice_id number generated always as identity primary key
++    , customer_id number references sc#customers(customer_id)
++    , order_id number references sc#orders(order_id)
++    , shipment_id number references sc#shipments(shipment_id)
++    , invoice_reference varchar2(100 char) generated always as ('O' || to_char(order_id,'fm09999') || 'S' || to_char(shipment_id,'fm09999') || 'I' || to_char(invoice_id,'fm09999')) virtual
++    , invoice_total number not null check (invoice_total > 0)
++    , payments_total number not null check (payments_total >= 0)
++    , amount_due number generated always as (invoice_total - payments_total) virtual 
++    , issue_date date
++    , issue_by varchar2(30 char)
++    , payment_due_date generated always as (issue_date + 90) virtual
++    , closed_date date
++    , closed_by varchar2(30 char)
++    , created_date date default sysdate
++    , created_by varchar2(30 char) default user
++    , updated_date date
++    , updated_by varchar2(30 char)
++    , check (amount_due <= invoice_total)
++);
++
++create table sc#invoice_details(
++    invoice_detail_id number generated always as identity primary key
++    , invoice_id number references sc#invoices(invoice_id)
++    , line_number number not null check (line_number > 0)
++    , quantity number not null check(quantity > 0)
++    , unit_amount number not null check (unit_amount > 0)
++    , extended_amount number generated always as (quantity * unit_amount) virtual not null check (extended_amount > 0)
++    , unit_discount number default 0 not null check (unit_discount > 0)
++    , net_amount number generated always as ((quantity * (unit_amount - unit_discount))) virtual not null
++    , description varchar2(4000)
++    , created_date date default sysdate
++    , created_by varchar2(30 char) default user
++);
++
++create table sc#invoice_payments(
++    invoice_payment_id number generated always as identity primary key
++    , invoice_id number references sc#invoices(invoice_id)
++    , payment_amount number not null check (payment_amount > 0)
++    , received_date date
++    , received_by varchar2(30 char)
++    , created_date date default sysdate
++    , created_by varchar2(30 char) default user
++);
+\ No newline at end of file
+diff --git a/scripts/sample-data/simple-company/drop.simple_company.sql b/scripts/sample-data/simple-company/drop.simple_company.sql
+new file mode 100644
+index 0000000..cd4da63
+--- /dev/null
++++ b/scripts/sample-data/simple-company/drop.simple_company.sql
+@@ -0,0 +1,25 @@
++drop table sc#invoice_details purge;
++
++drop table sc#invoice_payments purge;
++
++drop table sc#invoices purge;
++
++drop table sc#shipment_details purge;
++
++drop table sc#shipments purge;
++
++drop table sc#order_details purge;
++
++drop table sc#orders purge;
++
++drop table sc#customers purge;
++
++drop table sc#regions purge;
++
++drop table sc#product_prices purge;
++
++drop table sc#products purge;
++
++drop table sc#product_types purge;
++
++drop table sc#product_categories purge;
+diff --git a/scripts/sample-data/simple-company/load.simple_company.customers.sql b/scripts/sample-data/simple-company/load.simple_company.customers.sql
+new file mode 100644
+index 0000000..e5375ad
+--- /dev/null
++++ b/scripts/sample-data/simple-company/load.simple_company.customers.sql
+@@ -0,0 +1,42 @@
++insert into sc#regions(region_name, region_description) values ('east', 'eastern sales region');
++insert into sc#regions(region_name, region_description) values ('west', 'western sales region');
++insert into sc#regions(region_name, region_description) values ('north', 'northern sales region');
++insert into sc#regions(region_name, region_description) values ('south', 'southern sales region');
++insert into sc#regions(region_name, region_description) values ('central', 'central sales region');
++
++insert into sc#customers(customer_name, region_id, is_b2b) 
++with base as (select level as n from dual connect by level <= 26
++), prefixes as (select lpad(' ',4,chr(b.n + 64))  as prefix from base b
++), business_type as (select case n when 1 then 'Inc' when 2 then 'Co' when 3 then 'Supply' when 4 then 'Repair' when 5 then 'Ltd' end as b_type from base b where n <= 5
++), business_line as (select case n when 1 then 'Food' when 2 then 'Tool' when 3 then 'Office' when 4 then 'Clothes' when 5 then 'Appliance' when 6 then 'Electronics' end as b_line from base where n <= 6
++) select p.prefix || l.b_line || ' ' || t.b_type as customer_name, mod(rownum, 5) + 1 as region_id, 1 as is_b2b
++from prefixes p cross join business_type t cross join business_line l;
++
++insert into sc#customers(customer_name, region_id) 
++with n_base as (select level as n from dual connect by level <= 25
++) ,first_names as (
++select 
++    case b.n 
++        when 1 then 'John' when 2 then 'Joan' when 3 then 'Edward' when 4 then 'Edith' when 5 then 'Sarah' 
++        when 6 then 'Stan' when 7 then 'Susan' when 8 then 'Sam' when 9 then 'Carl' when 10 then 'Cynthia'
++        when 11 then 'Hillary' when 12 then 'Howard' when 13 then 'Katelyn' when 14 then 'Kimberly' when 15 then 'Arthur'
++        when 16 then 'Albert' when 17 then 'Marie' when 18 then 'Nikola' when 19 then 'Ben' when 20 then 'Michael'
++        when 21 then 'April' when 22 then 'May' when 23 then 'June' when 24 then 'Alex' when 25 then 'Alexa'
++    end as f_name
++from n_base b
++), last_names as (
++select 
++    case b.n
++        when 1 then 'Green' when 2 then 'Jett' when 3 then 'Bernstein' when 4 then 'Bridges' when 5 then 'Silvers'
++        when 6 then 'Rogers' when 7 then 'Connors' when 8 then 'Davis' when 9 then 'Sagan' when 10 then 'Marx'
++        when 11 then 'White' when 12 then 'Hughes' when 13 then 'Faraday' when 14 then 'Friedmann' when 15 then 'Ashe'
++        when 16 then 'Einstein' when 17 then 'Curie' when 18 then 'Tesla' when 19 then 'Bova' when 20 then 'Burton'
++        when 21 then 'Hayward' when 22 then 'Delacroix' when 23 then 'Baker' when 24 then 'Conway' when 25 then 'Hill'
++    end as l_name    
++from n_base b)
++select f.f_name || ' ' || substr(m.f_name,1,1) || '. ' || l.l_name as customer_name, mod(rownum,5) + 1 as region_id
++from first_names f cross join first_names m cross join last_names l;
++
++commit;
++
++prompt loaded customer base
+\ No newline at end of file
+diff --git a/scripts/sample-data/simple-company/load.simple_company.products.computers.sql b/scripts/sample-data/simple-company/load.simple_company.products.computers.sql
+new file mode 100644
+index 0000000..4f0a4c9
+--- /dev/null
++++ b/scripts/sample-data/simple-company/load.simple_company.products.computers.sql
+@@ -0,0 +1,94 @@
++
++insert into sc#product_categories (product_category_name)
++with n_base as (select level as n from dual connect by level <= 7)
++select case n when 1 then 'Appliances' when 2 then 'Computers' when 3 then 'Clothing' when 4 then 'Gardening' 
++    when 5 then 'Automotive' when 6 then 'Kitchenware' when 7 then 'Furniture'
++    end as product_category_name 
++from n_base where n = 2;
++
++
++insert into sc#product_types (product_type_name, product_category_id)
++with n_base as (select level as n from dual connect by level <= 10)
++select
++    case b.n 
++        when 1 then 'Desktops' when 2 then 'Notebooks' when 3 then 'Servers' when 4 then 'Monitors' when 5 then 'Power Management' 
++        when 6 then 'Networking' when 7 then 'Accessories' when 8 then 'Printers' when 9 then 'Operating Systems' when 10 then 'Application Software'
++        end as product_type_name
++    , c.product_category_id
++from n_base b cross join sc#product_categories c
++where c.product_category_name = 'Computers';
++
++insert into sc#products (product_code, product_name, product_description, product_type_id, msrp_price)
++with n_base as (select level as n from dual connect by level <= 12
++), system_cores as (select case when n = 9 then 24 when n = 10 then 40 when n = 11 then 14 else power(2,n - 1) end as cores from n_base where n <= 11
++), system_ram_speed as (
++select n as ram_code, 'DDR' || n as ram_type, (n * 1100)  || ' Mhz' as ram_speed, n * 1.50 || '-' || n * 2.500 || ' Thz' as chipset_speed, case n when 7 then .7 when 8 then 1 when 9 then 1.3 end as ram_modifier
++from n_base where n between 7 and 9
++), system_ram as (
++select s.ram_code, s.ram_type, s.ram_speed, chipset_speed, s.ram_modifier, power(2,b.n) as gb 
++from n_base b cross join system_ram_speed s where b.n between 2 and 9
++), system_hdd as (select case n when 1 then .5 when 2 then 1 when 3 then 2 when 4 then 4  when 5 then 6 when 6 then 8 when 7 then 10 when 8 then 12 when 9 then 16 when 10 then 20 when 11 then 36 when 12 then 40 end as tb from n_base
++), form_factors as (
++select 
++case when n in (1,2,3,4) then 'Notebooks' when n in (5,6,7,8) then 'Desktops' when n in (9,10,11) then 'Servers' end as product_type_name
++, case n when 1 then .9 when 2 then 1 when 3 then 1.1 when 4 then 1.2
++when 5 then .8 when 6 then .9 when 7 then 1 when 8 then 1.1 
++when 9 then 1.1 when 10 then 1 when 11 then .9 end as price_modifier
++,case n when 1 then '14 inch Notebook' when 2 then '15 inch Notebook' when 3 then '16 inch Notebook' when 4 then '17 inch Notebook' 
++when 5 then 'Micro Desktop' when 6 then 'Compact Desktop' when 7 then 'Mid Tower Desktop' when 8 then 'Tower Desktop' 
++when 9 then 'Compact Server' when 10 then 'Tower Server' when 11 then 'Rack Mount Server' end as ff_description 
++,case n when 1 then '14C' when 2 then '15A' when 3 then '16L' when 4 then '17LX' 
++when 5 then 'MZ' when 6 then 'CQ' when 7 then 'TE' when 8 then 'TS' 
++when 9 then 'SC' when 10 then 'STX' when 11 then 'SRX' end as ff_code
++from n_base where n <= 11
++), base_systems as (
++select
++t.product_type_id
++, t.product_type_name
++, ff.ff_description
++, ff.ff_code || sr.ram_code || to_char(sc.cores,'fm099') || to_char(sr.gb,'fm099') || sh.tb * 1000 as product_code
++, case when t.product_type_name = 'Notebooks' then 
++case round(cores/4) when 0 then 'Pixie' when 1 then 'Shark' when 2 then 'Elemental' when 4 then 'Dragon' when 6 then 'Phoenix' else 'undefined' end
++|| ' ' || (((round(cores/4)+1) * 1000) + cores) || 'N'
++when t.product_type_name = 'Desktops' then 
++case round(cores/6) when 1 then 'Brickton' when 2 then 'Urbana' when 3 then 'Navigator' when 4 then 'Solaria' else 'Galactron' end
++|| ' ' ||  (((round(cores/4)+3) * 1000) + cores) || 'L'
++when t.product_type_name = 'Servers' then 
++case round(cores/16) when 1 then 'Paris' when 2 then 'Copenhagen' when 3 then 'Rio' when 4 then 'Fuji' else 'Everest' end
++|| ' ' ||  (((round(cores/4)+5) * 1000) + cores) || 'U' 
++end || sr.ram_code || case when sr.ram_code = 9 then 'xs' end
++|| ' ' || sc.cores || ' core CPU (' || sc.cores * 2 || ' threads ' || sr.chipset_speed || ')' as cpu_type
++, 'Memory '  || sr.gb || ' GB (' || sr.ram_type || ' ' || sr.ram_speed || ')' as memory_type
++, 'Storage ' || sh.tb || ' Terabytes ' as storage_type
++, sc.cores
++, sc.cores * 2 as threads
++, sr.chipset_speed
++, sr.ram_type
++, sr.gb
++, sh.tb
++, case when sh.tb < 1 then (sh.tb * 1000) || ' Gb' else sh.tb || ' Tb' end || ' Storage' as storage_description
++, ((sc.cores * 50) + (sh.tb * 200) + (trunc(sh.tb/4)*200) + (sr.gb * 20)  + (trunc(sr.gb/100)*1000)) * ff.price_modifier * sr.ram_modifier as base_price
++, dense_rank() over (partition by t.product_type_id order by (sc.cores * sh.tb * sr.gb * sr.ram_modifier)) as power_rating
++from 
++sc#product_types t
++join sc#product_categories c on t.product_category_id = c.product_category_id
++join form_factors ff on t.product_type_name = ff.product_type_name
++cross join system_ram sr cross join system_hdd sh cross join system_cores sc
++where c.product_category_name = 'Computers' and t.product_type_name in ('Desktops','Notebooks','Servers')
++and (cores >= gb/8 and gb >= cores * 2)
++and ((cores between 1 and 7 and tb <= 1) or (cores between 8 and 16 and tb between 1 and 8) or (cores > 16 and tb > 4))
++and (
++(t.product_type_name = 'Notebooks' and cores <= 24 and tb <= 8)
++or (t.product_type_name = 'Desktops' and cores between 4 and 32 and tb < 20)
++or (t.product_type_name = 'Servers' and cores >= 8  and tb >= 4 and gb >= 32)
++)
++)
++select s.product_code
++, 'Class ' || ntile(5) over (partition by s.product_type_id order by power_rating) || ' ' || s.ff_description 
++|| ' ' || s.cores || ' Core CPU ' || s.gb || ' Gb RAM ' || s.ram_type || ' ' || case when s.tb < 1 then (s.tb * 1000) || ' Gb' else s.tb || ' Tb' end || ' Storage' as product_name
++, s.ff_description || ' with ' || s.cpu_type || ' ' || s.memory_type || ' ' || s.storage_description as product_description, s.product_type_id, round(s.base_price,-2) as msrp_price
++from base_systems s order by s.product_type_name, s.power_rating, s.base_price
++;
++
++
++commit;
+\ No newline at end of file
+diff --git a/scripts/sample-data/simple-company/load.simple_company.products.misc.sql b/scripts/sample-data/simple-company/load.simple_company.products.misc.sql
+new file mode 100644
+index 0000000..fc925be
+--- /dev/null
++++ b/scripts/sample-data/simple-company/load.simple_company.products.misc.sql
+@@ -0,0 +1,71 @@
++
++insert into sc#product_categories (product_category_name)
++with n_base as (select level as n from dual connect by level <= 7)
++select case n when 1 then 'Appliances' when 2 then 'Computers' when 3 then 'Clothing' when 4 then 'Gardening' 
++    when 5 then 'Automotive' when 6 then 'Kitchenware' when 7 then 'Furniture'
++    end as product_category_name 
++from n_base where n <> 2;
++
++insert into sc#product_types (product_type_name, product_category_id)
++with n_base as (select level as n from dual connect by level <= 9)
++select
++    case b.n 
++        when 1 then 'Toasters' when 2 then 'Coffeemakers' when 3 then 'Blenders' when 4 then 'Microwave Ovens' when 5 then 'Refrigerators' 
++        when 6 then 'Ranges' when 7 then 'Washing Machines' when 8 then 'Dryers' when 9 then 'Air Systems' 
++        end as product_type_name
++    , c.product_category_id
++from n_base b cross join sc#product_categories c
++where c.product_category_name = 'Appliances';
++
++insert into sc#product_types (product_type_name, product_category_id)
++with n_base as (select level as n from dual connect by level <= 8)
++select
++    case b.n 
++        when 1 then 'Shirts' when 2 then 'Shorts' when 3 then 'Pants' when 4 then 'Skirts' when 5 then 'Dresses' 
++        when 6 then 'Socks' when 7 then 'Coats' when 8 then 'Hats' 
++        end as product_type_name
++    , c.product_category_id
++from n_base b cross join sc#product_categories c
++where c.product_category_name = 'Clothing';
++
++insert into sc#product_types (product_type_name, product_category_id)
++with n_base as (select level as n from dual connect by level <= 8)
++select
++    case b.n 
++        when 1 then 'Tools' when 2 then 'Seeds' when 3 then 'Pots' when 4 then 'Soil' when 5 then 'Soil Amendments' 
++        when 6 then 'Pest Prevention' when 7 then 'Plants' when 8 then 'Garden Decor' 
++        end as product_type_name
++    , c.product_category_id
++from n_base b cross join sc#product_categories c
++where c.product_category_name = 'Gardening';
++
++insert into sc#product_types (product_type_name, product_category_id)
++with n_base as (select level as n from dual connect by level <= 4)
++select
++    case b.n 
++        when 1 then 'Batteries' when 2 then 'Tires' when 3 then 'Stereos' when 4 then 'Chargers'
++        end as product_type_name
++    , c.product_category_id
++from n_base b cross join sc#product_categories c
++where c.product_category_name = 'Automotive';
++
++insert into sc#product_types (product_type_name, product_category_id)
++with n_base as (select level as n from dual connect by level <= 6)
++select
++    case b.n 
++        when 1 then 'Pots' when 2 then 'Pans' when 3 then 'Utensils' when 4 then 'Dishes' when 5 then 'Glassware' when 6 then 'Gadgets'
++        end as product_type_name
++    , c.product_category_id
++from n_base b cross join sc#product_categories c
++where c.product_category_name = 'Kitchenware';
++
++insert into sc#product_types (product_type_name, product_category_id)
++with n_base as (select level as n from dual connect by level <= 4)
++select
++    case b.n 
++        when 1 then 'Beds' when 2 then 'Chairs' when 3 then 'Tables' when 4 then 'Desks'
++        end as product_type_name
++    , c.product_category_id
++from n_base b cross join sc#product_categories c
++where c.product_category_name = 'Furniture';
++
+diff --git a/scripts/sample-data/simple-company/load.simple_company.sql b/scripts/sample-data/simple-company/load.simple_company.sql
+new file mode 100644
+index 0000000..4c7d625
+--- /dev/null
++++ b/scripts/sample-data/simple-company/load.simple_company.sql
+@@ -0,0 +1,3 @@
++@@load.simple_company.customers.sql;
++@@load.simple_company.products.misc.sql;
++@@load.simple_company.products.computers.sql;
+\ No newline at end of file
+diff --git a/scripts/sample-data/simple-company/test.generate_orders.sql b/scripts/sample-data/simple-company/test.generate_orders.sql
+new file mode 100644
+index 0000000..3141d36
+--- /dev/null
++++ b/scripts/sample-data/simple-company/test.generate_orders.sql
+@@ -0,0 +1,41 @@
++declare
++l_order_id number;
++l_order_total number;
++begin
++
++for r_c in (
++select customer_id, case is_b2b when 0 then round(dbms_random.value(1,5)) else round(dbms_random.value(5,40)) end as items, is_b2b
++from sc#customers
++order by dbms_random.value()
++fetch first 5000 rows only) loop
++
++insert into sc#orders (customer_id,order_total,open_date)
++values (r_c.customer_id,0,sysdate + round(dbms_random.value(0,60)))
++returning order_id into l_order_id;
++
++insert into sc#order_details(order_id, product_id, quantity, unit_price,shipped_quantity)
++select l_order_id, product_id, case r_c.is_b2b when 0 then round(dbms_random.value(1,3)) else round(dbms_random.value(5,20)) end as quantity, msrp_price,0
++from sc#products
++order by dbms_random.value()
++fetch first r_c.items rows only;
++
++--select sum(extended_price) into l_order_total
++--from sc#order_details where order_id = l_order_id;
++--
++--update sc#orders set order_total = l_order_total where order_id = l_order_id;
++
++merge into sc#orders dest using (
++select order_id, sum(extended_price) as order_total
++from sc#order_details where order_id = l_order_id
++group by order_id
++) src on (dest.order_id = src.order_id)
++when matched then
++    update set dest.order_total = src.order_total;
++    
++end loop;
++
++
++commit;
++
++
++end;
+\ No newline at end of file
+diff --git a/scripts/sample-data/simple-company/test.generate_shipments.sql b/scripts/sample-data/simple-company/test.generate_shipments.sql
+new file mode 100644
+index 0000000..d926e36
+--- /dev/null
++++ b/scripts/sample-data/simple-company/test.generate_shipments.sql
+@@ -0,0 +1,50 @@
++declare
++l_shipment_id number;
++begin
++
++for r_o in (
++    select o.order_id, min(o.open_date) as min_open_date, sum(od.backorder_quantity) as on_backorder
++    from sc#orders o join sc#order_details od on o.order_id = od.order_id
++    where o.closed_date is null 
++    group by o.order_id
++    having sum(od.backorder_quantity) > 0
++    order by min(o.open_date) fetch first 200 rows only) loop
++
++insert into sc#shipments(order_id, requested_by) 
++values (r_o.order_id, 'order-processing') 
++returning shipment_id into l_shipment_id;
++
++insert into sc#shipment_details(shipment_id, order_detail_id, quantity)
++select l_shipment_id, od.order_detail_id
++, case when od.backorder_quantity <= 3 then od.backorder_quantity else trunc(dbms_random.value(2,od.backorder_quantity)) end as quantity
++from sc#orders o join sc#order_details od on o.order_id = od.order_id
++where od.order_id = r_o.order_id and od.backorder_quantity > 0;
++
++merge into sc#order_details dest using
++(select o.order_id, od.order_detail_id, s.shipment_id, od.shipped_quantity + sd.quantity as shipped_quantity
++from sc#orders o join sc#order_details od on o.order_id = od.order_id join sc#shipments s on o.order_id = s.order_id 
++join sc#shipment_details sd on s.shipment_id = sd.shipment_id and od.order_detail_id = sd.order_detail_id
++where s.shipment_id = l_shipment_id) src
++on (dest.order_detail_id = src.order_detail_id)
++when matched then
++    update set dest.shipped_quantity = src.shipped_quantity, dest.updated_date = sysdate, dest.updated_by = 'shipping'; 
++    
++
++merge into sc#orders dest using
++(select o.order_id, sum(od.quantity) as order_quantity, sum(od.shipped_quantity) as reported_shipped_quantity, sum(sd.quantity) as actual_shipped_quantity
++from sc#orders o join sc#order_details od on o.order_id = od.order_id join sc#shipments s on o.order_id = s.order_id join sc#shipment_details sd on s.shipment_id = sd.shipment_id and od.order_detail_id = sd.order_detail_id
++where o.order_id = r_o.order_id
++group by o.order_id
++having sum(od.quantity) = sum(od.shipped_quantity) and sum(od.backorder_quantity) = 0 and sum(od.quantity) = sum(sd.quantity)) src
++on (src.order_id = dest.order_id)
++when matched then
++    update set dest.closed_date = sysdate, updated_date = sysdate, updated_by = 'shipping'
++    where src.order_quantity = src.reported_shipped_quantity and src.order_quantity = src.actual_shipped_quantity;
++
++
++commit;
++
++end loop;
++
++end;
++/
+\ No newline at end of file
+-- 
+2.35.1.windows.2
+
