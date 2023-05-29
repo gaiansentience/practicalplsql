@@ -1,0 +1,152 @@
+Source code for "Expert Oracle Database Architecture" by Thomas Kyte
+https://github.com/Apress/exp-oracle-db-architecture
+More Info at https://link.springer.com/book/10.1007/978-1-4302-2947-6
+
+Source code for "Expert Oracle Database Architecture" by Thomas Kyte and Darl Kuhn
+https://github.com/Apress/exp-oracle-db-architecture-14
+More Info at https://link.springer.com/book/10.1007/978-1-4302-6299-2
+
+Source code for "Modern Oracle Database Programming: Level Up Your Skill Set to Oracle's Latest and Most Powerful Features in SQL, PL/SQL, and JSON" by Alex Nuijten and Patrick Barel
+https://github.com/Apress/modern-oracle-database-programming
+
+Source code for "Practical Oracle SQL" by Kim Berg Hansen
+https://github.com/Apress/practical-oracle-sql
+More Info at https://link.springer.com/book/10.1007/978-1-4842-5617-6
+
+Oracle PL/SQL API Demos: Demonstrating Oracle PL/SQL API procedures for getting and setting database data, with code timing, message logging and unit testing
+https://github.com/BrenPatF/oracle_plsql_api_demos
+
+Oracle PL/SQL General Utilities Module
+https://github.com/BrenPatF/oracle_plsql_utils
+
+Example of a basic blockchain within the Oracle Database
+https://github.com/Dani3lSun/oracle-blockchain
+
+OakAcademy: Oracle Basic SQL
+https://github.com/OakAcademy/Oracle.git
+
+Logger is used by Oracle developers to instrument their PL/SQL code
+https://github.com/OraOpenSource/Logger
+
+Common PL/SQL utility scripts
+https://github.com/OraOpenSource/oos-utils
+
+Expert SQL & PL/SQL Book : Advice from the Experts (Oracle Press) Sample Code
+https://github.com/Oralytics/SQL-and-PLSQL-from-the-Experts-Sample-code
+More Info at https://www.amazon.com/gp/product/1259640973/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=1259640973&linkCode=as2&tag=brendantierne-20&linkId=KICPN2S7XXCS6MY5
+
+ReneNyffenegger: oracle-patterns
+https://github.com/ReneNyffenegger/oracle-patterns
+
+ReneNyffenegger: Creating Excel workbooks (xlsx) with PL/SQL
+https://github.com/ReneNyffenegger/xlsx_writer-Oracle
+
+Trivadis PL/SQL & SQL Coding Guidelines
+https://github.com/Trivadis/plsql-and-sql-coding-guidelines
+More Info at https://trivadis.github.io/plsql-and-sql-coding-guidelines/v4.2/
+
+PL/SQL Logger: Simple and effective logger framework for Oracle Database
+https://github.com/ValeriyTyutyunnik/plsql-logger
+
+The Complete PL/SQL Bootcamp : "Beginner to Advanced PL/SQL"
+https://github.com/blackdogcode/OraclePLSQL
+More Info at https://www.udemy.com/course/plsql-beginner-to-advanced-become-a-perfect-plsql-developer/
+
+SQL scripts for Oracle Database Tuning
+https://github.com/bobbydurrett/OracleDatabaseTuningSQL
+
+Oracle PLSQL: Scripts PLSQL DW
+https://github.com/eniltonsp/Oracle-PLSQL
+
+Tales From A Lazy Fat DBA: My Oracle DB Scripts
+https://github.com/fatdba/Oracle-Database-Scripts
+More Info at https://fatdba.com/
+
+Tools and Examples For PL/SQL API Development and Administration.
+https://github.com/gaiansentience/oracle-architect-tools
+More Info at https://practicalplsql.org/
+
+Oracle PL/SQL API: Event Management Demo
+https://github.com/gaiansentience/oracle-events-system-demo
+More Info at https://practicalplsql.org/
+
+Source Code For PracticalPlsql.org Articles By Anthony Harper
+https://github.com/gaiansentience/practicalplsql
+More Info at https://practicalplsql.org/
+
+Liquibase extension to add improved Oracle support
+https://github.com/liquibase/liquibase-oracle
+
+ORACLE PLSQL LOGGER: A super simple logger used in PLSQL procedure, package and functions...
+https://github.com/matitaweb/oracle-plsql-logger
+
+ExcelGen - An Oracle PL/SQL Generator for MS Excel Files
+https://github.com/mbleron/ExcelGen
+
+PLSQL_LEXER 2.2.0: A PL/SQL package to solve real-world language problems
+https://github.com/method5/plsql_lexer
+
+Oracle PL/SQL Utility Library
+https://github.com/mortenbra/alexandria-plsql-utils
+
+Code generator for Oracle PL/SQL based on a simple markup language
+https://github.com/mortenbra/quick-plsql
+
+Oracle LiveLabs: A Collection of Open Source Repositories From Oracle
+https://github.com/oracle-livelabs
+More Info at https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/home
+
+Oracle LiveLabs: Analytics-AI
+https://github.com/oracle-livelabs/analytics-ai
+More Info at https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/home
+
+Oracle Livelabs: Database
+https://github.com/oracle-livelabs/database
+More Info at https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/home
+
+Oracle LiveLabs: University
+https://github.com/oracle-livelabs/university
+More Info at https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/home
+
+Oracle Database Sample Schemas
+https://github.com/oracle-samples/db-sample-schemas
+More Info at https://docs.oracle.com/en/database/oracle/oracle-database/21/comsc/index.html
+
+Oracle Database Sample Schemas 23c
+https://github.com/oracle-samples/db-sample-schemas/releases
+More Info at https://docs.oracle.com/en/database/oracle/oracle-database/23/
+
+oracle-db-examples
+https://github.com/oracle-samples/oracle-db-examples
+More Info at https://www.oracle.com/database/technologies/
+
+Oracle APEX on GitHub
+https://github.com/oracle/apex.git
+More Info at https://apex.oracle.com/en/
+
+Oracle Database Tools
+https://github.com/oracle/oracle-db-tools
+
+oracle-base.com scripts
+https://github.com/oraclebase/dba
+More Info at https://oracle-base.com/dba/scripts
+
+PL/JSON
+https://github.com/pljson/pljson
+More Info at https://pljson.github.io/pljson/
+
+Oracle PL/SQL utility code
+https://github.com/scott-swank/plsql-util
+
+PL/SQL package written by Anton Scheffer which allows us to export Excel XLSX files from an Oracle Database.
+https://github.com/sokolsaiti/as_xlsx
+
+utPLSQL: Testing Framework for PL/SQL
+https://github.com/utPLSQL/utPLSQL
+More Info at https://www.utplsql.org/about.html
+
+wtPLSQL - Whitebox Testing for PL/SQL
+https://github.com/wtPLSQL/wtPLSQL
+
+Oracle PL/SQL Package for Microsoft Word Documents Generation
+https://github.com/zorantica/plsql-word
