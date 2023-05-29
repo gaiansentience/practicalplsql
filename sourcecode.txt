@@ -1,0 +1,14 @@
+SourceCode Branches
+
+development - primary branch.  updated when a release is closed.
+
+
+release/2023 -open for pull requests from feature/2023
+feature/2023 -current working branch
+
+feature/2023-summer
+
+Future branches
+
+release/YYYY
+feature/YYYY 
