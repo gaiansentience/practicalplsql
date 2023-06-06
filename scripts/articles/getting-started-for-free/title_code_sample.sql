@@ -5,36 +5,22 @@ declare
     l_options t_options;
 begin
 
-$if dbms_db_version.version >= 23 $then
-    l_options := t_options(for r in (
-        with base (version, text) as
-        ( 
-            values 
-            (23, 'developer preview'),
-            (23, 'language enhancements')
-        ) , base_plus as
-        (
-            select version, text from base
-            union all select 23, 'unexpected syntax'
-        )
-        select version, text
-        from base_plus
-        ) sequence => r);    
-$elsif dbms_db_version.version >= 21 $then
-    l_options := t_options(for r in (
-        select 21 as version, 'innovation release' as text from dual
-        union all select 21, 'new options' from dual
-        ) sequence => r);
-$elsif dbms_db_version.version >= 19 $then
-    select 19, 'production release'
-    bulk collect into l_options
-    from dual;
-$else
-
-    l_options(1) := t_option(
-        dbms_db_version.version, 'older releases');
-$end
-
+    l_options := t_options(
+        t_option(23, 'container image'),
+        t_option(23, 'virtual box appliance'),
+        t_option(23, 'full installation'),
+        t_option(21, 'oracle express'),
+        t_option(21, 'oci autonomous database'),
+        t_option(21, 'full installation'),
+        t_option(19, 'live sql'),
+        t_option(19, 'virtual box appliance'),
+        t_option(19, 'oci autonomous database'),
+        t_option(19, 'full installation'),
+        t_option(12, 'virtual box appliance')
+        );
+        
+    dbms_output.put_line('There are many options for setting up a development environment');
+    
 $if dbms_db_version.version >= 21 $then
     for i in indices of l_options loop
 $else
