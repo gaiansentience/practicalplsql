@@ -1,15 +1,12 @@
 set serveroutput on;
 declare
     type t_item is record(version number, text varchar2(100));
-    type t_list is table of t_item;
-    l_23 t_list := t_list();
-    l_21 t_list := t_list();
-    l_19 t_list := t_list();
-    l_12 t_list := t_list();
-    l_any t_list := t_list();
+    type t_list is table of t_item index by pls_integer;
+    type t_versions is table of t_list index by pls_integer;
+    l_versions t_versions;
     l_all t_list := t_list();
-    
-    cursor c_any(p_version in number) return t_item is 
+    i number;
+    cursor c_8 return t_item is 
     select
         8 as version,
         decode(level,
@@ -174,33 +171,40 @@ $end
 begin
 
 $if dbms_db_version.version >= 23 $then
-    l_23 := t_list(for r in c_23 sequence => r);
+    l_versions(23) := t_list(for r in c_23 sequence => r);
 $end
 
 $if dbms_db_version.version >= 21 $then
-    l_21 := t_list(for r in c_21 sequence => r);
+    l_versions(21) := t_list(for r in c_21 sequence => r);
 $end
 
 $if dbms_db_version.version >= 19 $then
     open c_19;
-    fetch c_19 bulk collect into l_19;
+    fetch c_19 bulk collect into l_versions(19);
     close c_19;
 $end 
 
 $if dbms_db_version.version >= 12 $then
     open c_12;
-    fetch c_12 bulk collect into l_12;
+    fetch c_12 bulk collect into l_versions(12);
     close c_12;
 $end 
 
-    open c_any(dbms_db_version.version);
-    fetch c_any bulk collect into l_any;
-    close c_any;
+    open c_8;
+    fetch c_8 bulk collect into l_versions(8);
+    close c_8;
 
-    l_all := l_any multiset union l_23 
-        multiset union l_21 
-        multiset union l_19 
-        multiset union l_12;
+$if dbms_db_version.version >= 21 $then
+    for i in indices of l_versions loop
+$else
+    i := l_versions.first;
+    while i is not null loop
+$end
+        l_all := l_all multiset union l_versions(i);
+$if dbms_db_version.version < 21 $then
+        i := l_versions.next(i);
+$end
+    end loop;
 
 $if dbms_db_version.version >= 21 $then
     for i in indices of l_all loop

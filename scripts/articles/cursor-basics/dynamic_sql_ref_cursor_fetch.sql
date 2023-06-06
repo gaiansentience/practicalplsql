@@ -3,7 +3,7 @@ declare
     type t_emp_rec is record (
         name pp_employees.name%type, 
         job pp_employees.job%type);
-    c_emp sys_refcursor;    
+    c_emp sys_refcursor;
     l_emp t_emp_rec;
 begin
     open c_emp for 

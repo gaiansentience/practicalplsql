@@ -1,4 +1,4 @@
-@@create_example_employees.sql;
+--@@create_example_employees.sql;
 
 Prompt Method 1: Open, Fetch, Close
 declare
@@ -46,7 +46,7 @@ declare
          select e.name, e.job
          from pp_employees e
          order by e.job, e.name;
-    type t_emps is table of c%rowtype;
+    type t_emps is table of c_emp%rowtype;
     l_emps t_emps;
 begin
     open c_emp;
@@ -95,4 +95,4 @@ begin
 end;
 /
 
-@@drop_example_employees.sql;
+--@@drop_example_employees.sql;
