@@ -10,11 +10,14 @@ declare
       type  t_emp_cur is ref cursor return t_emp_rec;
     c_emp t_emp_cur;
     r_emp t_emp_rec;
+    l_sql varchar2(100);
 begin
-    open c_emp for 
+    l_sql :=
         'select e.name, e.job
         from employees e
         order by e.job, e.name';
+
+    open c_emp for l_sql;
 end;
 /
 

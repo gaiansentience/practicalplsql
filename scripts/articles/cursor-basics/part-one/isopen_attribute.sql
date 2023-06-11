@@ -1,7 +1,7 @@
 --this script uses objects from examples\simple-employees
 set serveroutput on;
 
-prompt %isopen attribute
+prompt cursor %isopen attribute shows state of cursor
 declare
     cursor c_emp is
         select e.name, e.job
@@ -29,7 +29,7 @@ end;
 /
 
 /* Script Output:
-%isopen attribute
+cursor %isopen attribute shows state of cursor
 before opening the cursor(c_emp%isopen is false)
 after opening the cursor(c_emp%isopen is true)
 after closing the cursor(c_emp%isopen is false)
