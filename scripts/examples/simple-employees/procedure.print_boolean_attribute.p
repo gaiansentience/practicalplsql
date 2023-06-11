@@ -1,4 +1,4 @@
-create or replace procedure print_boolean(
+create or replace procedure print_boolean_attribute(
     p_attribute in boolean, 
     p_name in varchar2)
 is
@@ -8,5 +8,5 @@ begin
         || case when p_attribute then 'true' else 'false' end 
         || ')';
     dbms_output.put_line(l_message);
-end print_boolean;
+end print_boolean_attribute;
 /
