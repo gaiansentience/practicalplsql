@@ -1,0 +1,84 @@
+Oracle Version 19 plsql_optimize_level = 0
+Open, Fetch, Close: 500001 fetches for 500000 records in 1.413121 seconds.
+Cursor For Loop: 500001 fetches for 500000 records in 1.492713 seconds.
+Bulk Collect: 1 fetches for 500000 records in 0.40975 seconds.
+Bulk Collect (Limit 100): 5001 fetches for 500000 records in 0.579033 seconds.
+Cursor Iteration Control Is Not Supported In Version 19
+
+Oracle Version 19 plsql_optimize_level = 1
+Open, Fetch, Close: 500001 fetches for 500000 records in 1.434943 seconds.
+Cursor For Loop: 500001 fetches for 500000 records in 1.496953 seconds.
+Bulk Collect: 1 fetches for 500000 records in 0.413951 seconds.
+Bulk Collect (Limit 100): 5001 fetches for 500000 records in 0.566893 seconds.
+Cursor Iteration Control Is Not Supported In Version 19
+
+Oracle Version 19 plsql_optimize_level = 2
+Open, Fetch, Close: 500001 fetches for 500000 records in 1.434454 seconds.
+Cursor For Loop: 5001 fetches for 500000 records in 0.563951 seconds.
+Bulk Collect: 1 fetches for 500000 records in 0.407175 seconds.
+Bulk Collect (Limit 100): 5001 fetches for 500000 records in 0.557005 seconds.
+Cursor Iteration Control Is Not Supported In Version 19
+
+Oracle Version 19 plsql_optimize_level >= 3
+Open, Fetch, Close: 500001 fetches for 500000 records in 1.442781 seconds.
+Cursor For Loop: 5001 fetches for 500000 records in 0.565149 seconds.
+Bulk Collect: 1 fetches for 500000 records in 0.41191 seconds.
+Bulk Collect (Limit 100): 5001 fetches for 500000 records in 0.562766 seconds.
+Cursor Iteration Control Is Not Supported In Version 19
+
+Oracle Version 21 plsql_optimize_level = 0
+Open, Fetch, Close: 500001 fetches for 500000 records in 1.336 seconds.
+Cursor For Loop: 500001 fetches for 500000 records in 1.333 seconds.
+Bulk Collect: 1 fetches for 500000 records in 0.37 seconds.
+Bulk Collect (Limit 100): 5001 fetches for 500000 records in 0.483 seconds.
+Cursor Iteration Control: 500001 fetches for 500000 records in 1.343 seconds.
+
+Oracle Version 21 plsql_optimize_level = 1
+Open, Fetch, Close: 500001 fetches for 500000 records in 1.326 seconds.
+Cursor For Loop: 500001 fetches for 500000 records in 1.301 seconds.
+Bulk Collect: 1 fetches for 500000 records in 0.361 seconds.
+Bulk Collect (Limit 100): 5001 fetches for 500000 records in 0.456 seconds.
+Cursor Iteration Control: 500001 fetches for 500000 records in 1.333 seconds.
+
+Oracle Version 21 plsql_optimize_level = 2
+Open, Fetch, Close: 500001 fetches for 500000 records in 1.313 seconds.
+Cursor For Loop: 5001 fetches for 500000 records in 0.46 seconds.
+Bulk Collect: 1 fetches for 500000 records in 0.357 seconds.
+Bulk Collect (Limit 100): 5001 fetches for 500000 records in 0.456 seconds.
+Cursor Iteration Control: 5001 fetches for 500000 records in 0.534 seconds.
+
+Oracle Version 21 plsql_optimize_level >= 3
+Open, Fetch, Close: 500001 fetches for 500000 records in 1.322 seconds.
+Cursor For Loop: 5001 fetches for 500000 records in 0.47 seconds.
+Bulk Collect: 1 fetches for 500000 records in 0.369 seconds.
+Bulk Collect (Limit 100): 5001 fetches for 500000 records in 0.453 seconds.
+Cursor Iteration Control: 5001 fetches for 500000 records in 0.523 seconds.
+
+Oracle Version 23 plsql_optimize_level = 0
+Open, Fetch, Close: 500001 fetches for 500000 records in 0.85212 seconds.
+Cursor For Loop: 500001 fetches for 500000 records in 0.718094 seconds.
+Bulk Collect: 1 fetches for 500000 records in 0.232227 seconds.
+Bulk Collect (Limit 100): 5001 fetches for 500000 records in 0.320967 seconds.
+Cursor Iteration Control: 500001 fetches for 500000 records in 0.84535 seconds.
+
+Oracle Version 23 plsql_optimize_level = 1
+Open, Fetch, Close: 500001 fetches for 500000 records in 0.73852 seconds.
+Cursor For Loop: 500001 fetches for 500000 records in 0.71122 seconds.
+Bulk Collect: 1 fetches for 500000 records in 0.227007 seconds.
+Bulk Collect (Limit 100): 5001 fetches for 500000 records in 0.304675 seconds.
+Cursor Iteration Control: 500001 fetches for 500000 records in 0.813803 seconds.
+
+Oracle Version 23 plsql_optimize_level = 2
+Open, Fetch, Close: 500001 fetches for 500000 records in 0.838412 seconds.
+Cursor For Loop: 5001 fetches for 500000 records in 0.348994 seconds.
+Bulk Collect: 1 fetches for 500000 records in 0.25892 seconds.
+Bulk Collect (Limit 100): 5001 fetches for 500000 records in 0.341345 seconds.
+Cursor Iteration Control: 5001 fetches for 500000 records in 0.38793 seconds.
+
+Oracle Version 23 plsql_optimize_level >= 3
+Open, Fetch, Close: 500001 fetches for 500000 records in 0.840266 seconds.
+Cursor For Loop: 5001 fetches for 500000 records in 0.352856 seconds.
+Bulk Collect: 1 fetches for 500000 records in 0.257271 seconds.
+Bulk Collect (Limit 100): 5001 fetches for 500000 records in 0.341649 seconds.
+Cursor Iteration Control: 5001 fetches for 500000 records in 0.396839 seconds.
+
