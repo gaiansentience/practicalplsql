@@ -23,3 +23,5 @@ grant create type to practicalplsql;
 grant create role to practicalplsql with admin option;
 
 grant alter system to practicalplsql;
+
+grant select on v_$sqlarea to practicalplsql;

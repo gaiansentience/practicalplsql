@@ -9,15 +9,18 @@ declare
         job employees.job%type);
     c_emp sys_refcursor;
     r_emp t_emp_rec;
+    l_sql varchar2(200);
 begin
-    open c_emp for 
+    l_sql := 
         'select 
             e.name, e.name as ename1
             , e.job, e.job as ejob2
         from employees e
         order by e.job, e.name';
+    
+    open c_emp for l_sql;
 
-        fetch c_emp into r_emp;
+    fetch c_emp into r_emp;
 
 exception
     when others then

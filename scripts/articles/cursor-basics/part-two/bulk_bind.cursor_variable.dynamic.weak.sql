@@ -1,16 +1,22 @@
 --this script relies on the presence of the simple-employees example
 set serveroutput on;
 
-Prompt Method: Bulk Bind
+Prompt Weakly Typed Cursor Variable Bulk Bind using Dynamic Sql
 declare
-    cursor c_emps is
-         select e.name, e.job
-         from employees e
-         order by e.job, e.name;
-    type t_emps is table of c_emps%rowtype;
+    type t_emp_rec is record(
+        name employees.name%type, 
+        job employees.job%type);
+    c_emps sys_refcursor;
+    type t_emps is table of t_emp_rec;
     l_emps t_emps;
+    l_sql varchar2(100);
 begin
-    open c_emps;
+    l_sql := '
+        select e.name, e.job
+        from employees e
+        order by e.job, e.name';
+        
+    open c_emps for l_sql;
     fetch c_emps bulk collect into l_emps;
     close c_emps;
     
@@ -25,7 +31,7 @@ end;
 /
 
 /* Script Output:
-Method: Bulk Bind
+Weakly Typed Cursor Variable Bulk Bind using Dynamic Sql
 Gina SALES_EXEC
 Ann SALES_MGR
 Tobias SALES_MGR

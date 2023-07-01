@@ -1,7 +1,7 @@
 --this script uses objects from examples\simple-employees
 set serveroutput on;
 
-prompt repeating fetch calls
+prompt repeating fetch calls for multiple records
 declare
     cursor c_emp is
         select e.name, e.job
@@ -20,7 +20,7 @@ begin
 end;
 /
 /* Script Output:
-repeating fetch calls
+repeating fetch calls for multiple records
 Gina SALES_EXEC
 Ann SALES_MGR
 */

@@ -1,25 +1,26 @@
 --this script uses objects from examples\simple-employees
 set serveroutput on;
 
-Prompt Using a rowtype anchor for iteration variable
+Prompt Fetching into separate variables
 declare
     cursor c_emps is
         select e.name, e.job
         from employees e
         order by e.job, e.name;
-    r_emp c_emps%rowtype;
+    l_name employees.name%type;
+    l_job employees.job%type;
 begin
     open c_emps;
     loop
-        fetch c_emps into r_emp;
+        fetch c_emps into l_name, l_job;
         exit when c_emps%notfound;
-        print_employee(r_emp.name, r_emp.job);
+        print_employee(l_name, l_job);
     end loop;
 end;
 /
 
 /* Script Output:
-Using a rowtype anchor for iteration variable
+Fetching into separate variables
 Gina SALES_EXEC
 Ann SALES_MGR
 Tobias SALES_MGR
