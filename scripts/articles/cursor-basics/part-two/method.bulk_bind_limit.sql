@@ -1,7 +1,7 @@
+--this script relies on the presence of the simple-employees example
 set serveroutput on;
-prompt this script relies on the presence of the simple-employees example
 
-Prompt Method 4: Bulk Bind With Limit Clause
+Prompt Method: Bulk Bind With Limit Clause
 declare
     cursor c_emps is
         select e.name, e.job
@@ -23,7 +23,7 @@ $if dbms_db_version.version < 21 $then
 $else
         for i in indices of l_emps loop
 $end
-            dbms_output.put_line(l_emps(i).name || ' ' || l_emps(i).job);
+            print_employee(l_emps(i).name, l_emps(i).job);
         end loop inner;
         
     end loop outer;
@@ -32,7 +32,7 @@ end;
 /
 
 /* Script Output:
-Method 4: Bulk Bind With Limit Clause
+Method: Bulk Bind With Limit Clause
 Gina SALES_EXEC
 Ann SALES_MGR
 Tobias SALES_MGR
