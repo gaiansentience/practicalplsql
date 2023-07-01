@@ -5,11 +5,10 @@ Prompt Method: Cursor For Loop Fails With Dynamic SQL
 declare
     cursor c_emps is
         'select e.name, e.job
-        from employees e
-        order by e.job, e.name';
+        from employees e';
 begin
-    for r_emp t_emp_rec in c_emps loop
-        print_employee(r.name, r.job);
+    for r_emp in c_emps loop
+        print_employee(r_emp.name, r_emp.job);
     end loop;
 end;
 /

@@ -1,7 +1,7 @@
 --this script uses objects from examples\simple-employees
 set serveroutput on;
 
-prompt cursor %isopen attribute shows state of cursor
+prompt trying to open a cursor that is already open
 declare
     cursor c_emp is
         select e.name, e.job
@@ -13,11 +13,8 @@ begin
     open c_emp;
     dbms_output.put('after opening the cursor');
     print_boolean_attribute(c_emp%isopen,'c_emp%isopen');
-    close c_emp;
-    dbms_output.put('after closing the cursor');
-    print_boolean_attribute(c_emp%isopen,'c_emp%isopen');
-    
-    raise program_error;
+    dbms_output.put_line('open the cursor again');
+    open c_emp;
 exception
     when others then
         dbms_output.put_line(sqlerrm);
@@ -29,10 +26,10 @@ end;
 /
 
 /* Script Output:
-cursor %isopen attribute shows state of cursor
+trying to open a cursor that is already open
 before opening the cursor(c_emp%isopen is false)
 after opening the cursor(c_emp%isopen is true)
-after closing the cursor(c_emp%isopen is false)
-ORA-06501: PL/SQL: program error
-(c_emp%isopen is false)
+open the cursor again
+ORA-06511: PL/SQL: cursor already open
+(c_emp%isopen is true)
 */

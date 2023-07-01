@@ -8,4 +8,6 @@ prompt creating simple employees example
 
 @@procedure.print_employee.p;
 
+@@procedure.print_timing.p;
+
 prompt simple employees example created

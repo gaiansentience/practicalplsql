@@ -9,11 +9,13 @@ declare
         job employees.job%type);
     c_emp sys_refcursor;
     r_emp t_emp_rec;
+    l_sql varchar2(100);
 begin
-    open c_emp for 
+    l_sql := 
         'select e.name, e.job
         from employees e
         order by e.job, e.name';
+    open c_emp for l_sql;
     loop
         fetch c_emp into r_emp;
         exit when c_emp%notfound;
