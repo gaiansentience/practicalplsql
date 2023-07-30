@@ -1,0 +1,51 @@
+set serveroutput on;
+
+declare
+    l_sql          clob;
+    l_expanded_sql clob;
+begin
+    l_sql := q'[
+with pivot_base as
+(
+select
+    e.first_name || ' ' || e.last_name as employee
+    , j.code as job
+    , d.name as department
+from
+    employees e
+   , jobs j
+   , departments d
+where
+    e.job_id = j.id
+    and e.department_id = d.id
+    and j.code in ('EXECUTIVE','MANAGER','ASSOCIATE')
+)
+select
+    department,
+    executives,
+    managers,
+    associates
+from 
+    pivot_base
+    pivot (
+        listagg(employee, ', ') for job in 
+        (
+        'EXECUTIVE' as executives,
+        'MANAGER' as managers,
+        'ASSOCIATE' as associates
+        )
+    )
+]';
+        
+    dbms_utility.expand_sql_text(l_sql,l_expanded_sql);
+    dbms_output.put_line(l_expanded_sql);
+end;
+/
+--pivot in 12c
+
+--pivot in 19c
+SELECT "A1"."DEPARTMENT" "DEPARTMENT","A1"."EXECUTIVES" "EXECUTIVES","A1"."MANAGERS" "MANAGERS","A1"."ASSOCIATES" "ASSOCIATES" FROM  (SELECT "A5"."DEPARTMENT" "DEPARTMENT",SYS_OP_PIVOT(LISTAGG("A5"."EMPLOYEE",', '),1) "EXECUTIVES",SYS_OP_PIVOT(LISTAGG("A5"."EMPLOYEE",', '),2) "MANAGERS",SYS_OP_PIVOT(LISTAGG("A5"."EMPLOYEE",', '),3) "ASSOCIATES" FROM  (SELECT "A4"."FIRST_NAME"||' '||"A4"."LAST_NAME" "EMPLOYEE","A3"."CODE" "JOB","A2"."NAME" "DEPARTMENT" FROM "PRACTICALPLSQL"."EMPLOYEES" "A4","PRACTICALPLSQL"."JOBS" "A3","PRACTICALPLSQL"."DEPARTMENTS" "A2" WHERE "A4"."JOB_ID"="A3"."ID" AND "A4"."DEPARTMENT_ID"="A2"."ID" AND ("A3"."CODE"='EXECUTIVE' OR "A3"."CODE"='MANAGER' OR "A3"."CODE"='ASSOCIATE')) "A5" GROUP BY ("A5"."DEPARTMENT",CASE  WHEN ("A5"."JOB"='EXECUTIVE') THEN 1 WHEN ("A5"."JOB"='MANAGER') THEN 2 WHEN ("A5"."JOB"='ASSOCIATE') THEN 3 END )) "A1"
+--pivot in 21c
+SELECT "A1"."DEPARTMENT" "DEPARTMENT","A1"."EXECUTIVES" "EXECUTIVES","A1"."MANAGERS" "MANAGERS","A1"."ASSOCIATES" "ASSOCIATES" FROM  (SELECT "A5"."DEPARTMENT" "DEPARTMENT",SYS_OP_PIVOT(LISTAGG("A5"."EMPLOYEE",', '),1) "EXECUTIVES",SYS_OP_PIVOT(LISTAGG("A5"."EMPLOYEE",', '),2) "MANAGERS",SYS_OP_PIVOT(LISTAGG("A5"."EMPLOYEE",', '),3) "ASSOCIATES" FROM  (SELECT "A4"."FIRST_NAME"||' '||"A4"."LAST_NAME" "EMPLOYEE","A3"."CODE" "JOB","A2"."NAME" "DEPARTMENT" FROM "PRACTICALPLSQL"."EMPLOYEES" "A4","PRACTICALPLSQL"."JOBS" "A3","PRACTICALPLSQL"."DEPARTMENTS" "A2" WHERE "A4"."JOB_ID"="A3"."ID" AND "A4"."DEPARTMENT_ID"="A2"."ID" AND ("A3"."CODE"='EXECUTIVE' OR "A3"."CODE"='MANAGER' OR "A3"."CODE"='ASSOCIATE')) "A5" GROUP BY ("A5"."DEPARTMENT",CASE  WHEN ("A5"."JOB"='EXECUTIVE') THEN 1 WHEN ("A5"."JOB"='MANAGER') THEN 2 WHEN ("A5"."JOB"='ASSOCIATE') THEN 3 END )) "A1";
+--pivot in 23c
+SELECT "A1"."DEPARTMENT" "DEPARTMENT","A1"."EXECUTIVES" "EXECUTIVES","A1"."MANAGERS" "MANAGERS","A1"."ASSOCIATES" "ASSOCIATES" FROM  (SELECT "A5"."DEPARTMENT" "DEPARTMENT",SYS_OP_PIVOT(LISTAGG("A5"."EMPLOYEE",', '),1) "EXECUTIVES",SYS_OP_PIVOT(LISTAGG("A5"."EMPLOYEE",', '),2) "MANAGERS",SYS_OP_PIVOT(LISTAGG("A5"."EMPLOYEE",', '),3) "ASSOCIATES" FROM  (SELECT "A4"."FIRST_NAME"||' '||"A4"."LAST_NAME" "EMPLOYEE","A3"."CODE" "JOB","A2"."NAME" "DEPARTMENT" FROM "PRACTICALPLSQL"."EMPLOYEES" "A4","PRACTICALPLSQL"."JOBS" "A3","PRACTICALPLSQL"."DEPARTMENTS" "A2" WHERE "A4"."JOB_ID"="A3"."ID" AND "A4"."DEPARTMENT_ID"="A2"."ID" AND ("A3"."CODE"='EXECUTIVE' OR "A3"."CODE"='MANAGER' OR "A3"."CODE"='ASSOCIATE')) "A5" GROUP BY ("A5"."DEPARTMENT",CASE  WHEN ("A5"."JOB"='EXECUTIVE') THEN 1 WHEN ("A5"."JOB"='MANAGER') THEN 2 WHEN ("A5"."JOB"='ASSOCIATE') THEN 3 END )) "A1"
