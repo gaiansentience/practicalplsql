@@ -21,20 +21,22 @@ where
     and j.code in ('EXECUTIVE','MANAGER','ASSOCIATE')
 )
 select
-    department,
-    executives,
-    managers,
-    associates
+    department
+    , executives
+    , managers
+    , associates
 from 
-    pivot_base
-    pivot (
-        listagg(employee, ', ') within group (order by employee)
-        for job in 
-        (
-        'EXECUTIVE' as executives,
-        'MANAGER' as managers,
-        'ASSOCIATE' as associates
-        )
+    (
+    select
+        department
+        , listagg(case when job = 'EXECUTIVE' then employee end,', ')
+            within group (order by employee) as executives
+        , listagg(case when job = 'MANAGER' then employee end,', ') 
+            within group (order by employee) as managers
+        , listagg(case when job = 'ASSOCIATE' then employee end,', ') 
+            within group (order by employee) as associates
+    from pivot_base
+    group by department    
     )
 ]';
     dbms_utility.expand_sql_text(l_sql,l_expanded_sql);
@@ -51,18 +53,12 @@ from
     (
         select
             "A5"."DEPARTMENT" "DEPARTMENT"
-           ,sys_op_pivot(
-                listagg("A5"."EMPLOYEE",', ') 
-                within group(order by "A5"."EMPLOYEE")
-               ,1) "EXECUTIVES"
-           ,sys_op_pivot(
-                listagg("A5"."EMPLOYEE",', ') 
-                within group(order by "A5"."EMPLOYEE")
-               ,2) "MANAGERS"
-           ,sys_op_pivot(
-                listagg("A5"."EMPLOYEE",', ') 
-                within group(order by "A5"."EMPLOYEE")
-               ,3) "ASSOCIATES"
+           ,listagg(case when "A5"."JOB" = 'EXECUTIVE' then "A5"."EMPLOYEE" end,', ') 
+                within group(order by "A5"."EMPLOYEE") "EXECUTIVES"
+           ,listagg(case when "A5"."JOB" = 'MANAGER' then "A5"."EMPLOYEE" end,', ') 
+                within group(order by "A5"."EMPLOYEE") "MANAGERS"
+           ,listagg(case when "A5"."JOB" = 'ASSOCIATE' then "A5"."EMPLOYEE" end,', ') 
+                within group(order by "A5"."EMPLOYEE") "ASSOCIATES"
         from
             (
                 select
@@ -78,12 +74,5 @@ from
                         and "A4"."DEPARTMENT_ID" = "A2"."ID" 
                         and ( "A3"."CODE" = 'EXECUTIVE' or "A3"."CODE" = 'MANAGER' or "A3"."CODE" = 'ASSOCIATE' )
             ) "A5"
-        group by (
-            "A5"."DEPARTMENT"
-           ,case
-                    when ( "A5"."JOB" = 'EXECUTIVE' ) then 1
-                    when ( "A5"."JOB" = 'MANAGER' ) then 2
-                    when ( "A5"."JOB" = 'ASSOCIATE' ) then 3
-                end
-        )
+        group by "A5"."DEPARTMENT"
     ) "A1";
