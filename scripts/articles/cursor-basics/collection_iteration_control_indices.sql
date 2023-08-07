@@ -2,7 +2,7 @@ set serveroutput on;
 prompt this script relies on the presence of the simple-employees example
 
 
-Prompt Method: 21c Cursor Iteration Controls
+Prompt Method: Collection Iteration Controls
 declare
     cursor c_emps is
         select e.name, e.job
