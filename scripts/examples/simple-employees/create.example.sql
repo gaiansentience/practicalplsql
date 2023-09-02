@@ -10,4 +10,6 @@ prompt creating simple employees example
 
 @@procedure.print_timing.p;
 
+@@procedure.print_timing_and_fetches.p;
+
 prompt simple employees example created

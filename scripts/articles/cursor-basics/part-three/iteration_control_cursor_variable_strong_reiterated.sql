@@ -2,7 +2,7 @@
 set serveroutput on;
 set feedback off;
 
-Prompt Cursor Iteration Control: Cursor Variable strongly typed
+Prompt Cursor Iteration Control: Cursor Variable Reiteration
 declare
     type t_emp_rec is record(
         name varchar2(50), job varchar2(20));
@@ -20,15 +20,23 @@ begin
     end loop;
     
     print_boolean_attribute(cv_strong%isopen, 'cv_strong%isopen');  
+    dbms_output.put_line('Cursor is still open, try to iterate again');
+    
+    for r_iterand in cv_strong loop
+        print_employee(r_iterand.name, r_iterand.job);
+    end loop;
+    
+    
     close cv_strong;
 
 end;
 /
 
 /* Script Output:
-Cursor Iteration Control: Cursor Variable strongly typed
+Cursor Iteration Control: Cursor Variable Reiteration
 Gina SALES_EXEC
 Ann SALES_MGR
 Tobias SALES_MGR
 (cv_strong%isopen is true)
+Cursor is still open, try to iterate again
 */

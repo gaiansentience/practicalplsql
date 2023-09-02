@@ -23,6 +23,7 @@ begin
         where e.job = :bind_variable ';
     
     for r_iterand c_rep%rowtype in 
+        --c_rep, 
         (
             execute immediate l_sql using 'SALES_EXEC'
         )
