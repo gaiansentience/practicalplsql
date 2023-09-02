@@ -1,0 +1,228 @@
+create or replace package body hr_api
+is
+
+    procedure print_error(p_message in varchar2)
+    is
+    begin
+        dbms_output.put_line('Error ' || p_message || ' ' || sqlerrm);
+    end print_error;
+    
+    function get_location_id(
+        p_code in locations.code%type
+    ) return locations.id%type
+    is
+        l_id locations.id%type;
+    begin
+    
+        select id into l_id 
+        from locations 
+        where code = p_code;
+        
+        return l_id;
+        
+    exception
+        when no_data_found then
+            raise_application_error(-20100, p_code || ' not found');
+    end get_location_id;
+    
+    procedure insert_location(
+        p_code in locations.code%type
+        , p_name in locations.name%type
+        , p_address in locations.address%type
+        , p_city in locations.city%type
+    )
+    is
+    begin
+    
+        insert into locations (
+            code
+            , name
+            , address
+            , city
+        ) values (
+            p_code
+            , p_name
+            , p_address
+            , p_city
+        );
+        
+        commit;
+        
+    exception
+        when others then
+            rollback;
+            print_error('Inserting Location ' || p_code || ' ' || p_name);
+            raise;
+    end insert_location;
+    
+    function get_department_id(
+        p_code in departments.code%type
+    ) return departments.id%type
+    is
+        l_id departments.id%type;
+    begin
+    
+        select id into l_id
+        from departments
+        where code = p_code;
+        
+        return l_id;
+
+    exception
+        when no_data_found then
+            raise_application_error(-20100, p_code || ' not found');        
+    end get_department_id;
+    
+    procedure insert_department(
+        p_code in departments.code%type
+        , p_name in departments.name%type
+        , p_description in departments.description%type
+    )
+    is
+    begin
+    
+        insert into departments(
+            code
+            , name
+            , description
+        ) values (
+            p_code
+            , p_name, 
+            p_description
+        );
+        
+        commit;
+        
+    exception
+        when others then
+            rollback;
+            print_error('Inserting Department ' || p_code || ' ' || p_name);
+            raise;
+    end insert_department;
+    
+    function get_job_id(
+        p_code in jobs.code%type
+    ) return jobs.id%type
+    is
+        l_id jobs.id%type;
+    begin
+    
+        select id into l_id
+        from jobs
+        where code = p_code;
+        
+        return l_id;
+
+    exception
+        when no_data_found then
+            raise_application_error(-20100, p_code || ' not found');        
+    end get_job_id;
+    
+    procedure insert_job(
+        p_code in jobs.code%type
+        , p_name in jobs.name%type
+        , p_description in jobs.description%type default null
+    )
+    is
+    begin
+    
+        insert into jobs (
+            code
+            , name
+            , description
+        ) values (
+            p_code
+            , p_name
+            , p_description
+        );
+    
+        commit;
+        
+    exception
+        when others then
+            commit;
+            print_error('Inserting Job ' || p_code || ' ' || p_name);
+            rollback;
+            raise;
+    end insert_job;
+    
+    function get_employee_id(
+        p_email in employees.email%type
+    ) return employees.id%type
+    is
+        l_id employees.id%type;
+    begin
+    
+        select id into l_id
+        from employees
+        where email = initcap(p_email);
+        
+        return l_id;
+        
+    exception
+        when no_data_found then
+            raise_application_error(-20100, p_email || ' not found');        
+    end get_employee_id;
+    
+    procedure insert_employee(
+        p_first_name in employees.first_name%type
+        , p_last_name in employees.last_name%type
+        , p_salary in employees.salary%type
+        , p_hire_date in employees.hire_date%type    
+        , p_job_code in jobs.code%type
+        , p_department_code in departments.code%type
+        , p_location_code in locations.code%type
+        , p_manager_email in employees.email%type default null
+    )
+    is
+        l_email employees.email%type;
+        l_job_id jobs.id%type;
+        l_department_id departments.id%type;
+        l_location_id locations.id%type;
+        l_manager_id employees.id%type;
+    begin
+        l_email := p_first_name || '.' || p_last_name || '@futureco.com';
+        l_job_id := get_job_id(p_job_code);
+        l_department_id := get_department_id(p_department_code);
+        
+        if p_location_code is not null then
+            l_location_id := get_location_id(p_location_code);
+        end if;
+        
+        if p_manager_email is not null then
+            l_manager_id := get_employee_id(p_manager_email);
+        end if;
+        
+        insert into employees(
+            first_name
+            , last_name
+            , email
+            , job_id
+            , department_id
+            , location_id
+            , manager_id
+            , salary
+            , hire_date
+        ) values (
+            p_first_name
+            , p_last_name
+            , initcap(l_email)
+            , l_job_id
+            , l_department_id
+            , l_location_id
+            , l_manager_id
+            , p_salary
+            , p_hire_date
+        );
+        
+        commit;
+        
+    exception
+        when others then 
+            rollback;
+            print_error('Inserting Employee ' || p_first_name || ' ' || p_last_name);
+            raise;
+    end insert_employee;
+    
+end hr_api;
+/
