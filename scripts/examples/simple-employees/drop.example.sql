@@ -10,4 +10,6 @@ drop procedure practicalplsql.print_timing;
 
 drop procedure practicalplsql.print_timing_and_fetches;
 
+drop function get_sql_engine_fetches;
+
 prompt dropped simple employees example
