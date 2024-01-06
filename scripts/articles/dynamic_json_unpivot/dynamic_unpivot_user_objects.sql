@@ -10,6 +10,7 @@ from base b
 )
 select r.*
 from
-json_base b, dynamic_json_table.unpivot_json(b.jdoc,'OBJECT_ID') r
+    json_base b, 
+    dynamic_json_table.unpivot_json(b.jdoc,'OBJECT_ID') r
 /
 

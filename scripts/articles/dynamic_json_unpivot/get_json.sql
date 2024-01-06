@@ -14,6 +14,6 @@ with json_base as (
         ~' as jdoc
     from dual
 )
-select json_serialize(b.jdoc format json) as jdoc
+select json_serialize(b.jdoc format json returning clob pretty) as jdoc
 from json_base b
 /

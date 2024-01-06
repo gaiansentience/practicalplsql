@@ -1,4 +1,5 @@
-create or replace package dynamic_json_table as
+create or replace package dynamic_json_table authid current_user 
+as
 
     type r_column is record(
         column_name varchar2(100)
