@@ -1,3 +1,4 @@
+set serveroutput on;
 declare
     procedure drop_if_exists(p_table in varchar2)
     is
@@ -9,6 +10,7 @@ declare
         
         if i = 1 then
             execute immediate 'drop table ' || p_table || ' purge';
+            dbms_output.put_line('dropped ' || p_table);
         end if;
     end drop_if_exists;
 begin

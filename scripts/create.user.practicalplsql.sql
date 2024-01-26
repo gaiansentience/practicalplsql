@@ -1,3 +1,4 @@
+--run as sys
 create user practicalplsql identified by oracle;
 
 grant create session to practicalplsql;
