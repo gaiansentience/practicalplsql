@@ -1,4 +1,4 @@
-create or replace function get_row_compare(
+create or replace function row_compare_json(
     p_source in dbms_tf.table_t, 
     p_target in dbms_tf.table_t, 
     p_id_column in dbms_tf.columns_t
@@ -12,29 +12,28 @@ begin
 q'[
 select 
     coalesce(s.id, t.id) as id,
-    coalesce(s.src_tbl, t.src_tbl) as src_tbl, 
+    coalesce(s.row_source, t.row_source) as row_source, 
     coalesce(s.jdoc, t.jdoc) as jdoc
 from   
     (
         select 
-            'src' as src_tbl
+            'source' as row_source
             , ]' || p_id_column(1) || q'[ as id
             , json_object(*) as jdoc 
         from p_source    
     ) s
     full outer join (
         select 
-            'tgt' as src_tbl
+            'target' as row_source
             , ]' || p_id_column(1) || q'[ as id
             , json_object(*) as jdoc 
         from p_target    
     ) t
         on s.id = t.id
         and json_equal(s.jdoc, t.jdoc)
-where  
-    s.id is null or t.id is null    
+where s.id is null or t.id is null    
 ]';
     dbms_output.put_line(l_sql);
     return l_sql;
-end get_row_compare;
+end row_compare_json;
 /

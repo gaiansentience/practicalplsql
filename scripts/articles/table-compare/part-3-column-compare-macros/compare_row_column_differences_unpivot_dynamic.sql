@@ -1,6 +1,34 @@
-update products_source set name = replace(name,'Fuji','Fujiyama') where name like '%Fuji%';
-update products_source set description = replace(description,'Mount', 'Mt.') where description like '%Everest%';
-update products_target set unit_msrp = 25 where code = 'POSTER-FD';
+with source_columns as (
+select u.*
+from
+    (
+        select json_object(*) as jdoc 
+        from products_source 
+    ) s,
+    table(dynamic_json_table.unpivot_json(s.jdoc,'PRODUCT_ID')) u
+), target_columns as (
+select u.*
+from
+    (
+        select json_object(*) as jdoc 
+        from products_target
+    ) s,
+    table(dynamic_json_table.unpivot_json(s.jdoc,'PRODUCT_ID')) u
+)
+select 
+    c."id"
+    , c."key"
+    , c.src_tbl
+    , json_value(c.jdoc,'$.value.string()') as value
+from 
+    get_row_compare(source_columns, target_columns, columns("id","key")) c
+/
+
+select * from get_column_compare(products_source, products_target, columns(PRODUCT_ID,CODE))
+/
+
+
+
 
 with source_json as (
     select 

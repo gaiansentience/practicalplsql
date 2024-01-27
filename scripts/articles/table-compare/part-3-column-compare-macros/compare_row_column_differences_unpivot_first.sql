@@ -1,6 +1,79 @@
-update products_source set name = replace(name,'Fuji','Fujiyama') where name like '%Fuji%';
-update products_source set description = replace(description,'Mount', 'Mt.') where description like '%Everest%';
-update products_target set unit_msrp = 25 where code = 'POSTER-FD';
+with source_columns as (
+    select
+        'source' as row_source
+        , product_id as "id"
+        , "key"
+        , "value"
+    from (
+        select 
+            product_id
+            , code
+            , name
+            , description
+            , style
+            , to_char(unit_msrp) as unit_msrp
+            , to_char(unit_cost) as unit_cost
+            , to_char(unit_qty) as unit_qty 
+        from products_source
+        )
+    unpivot ("value" for "key" in (
+        code,
+        name,
+        description,
+        style,
+        unit_msrp,
+        unit_cost,
+        unit_qty
+        )
+    )
+), target_columns as (
+    select
+        'target' as row_source
+        , product_id as "id"
+        , "key"
+        , "value"
+    from (
+        select 
+            product_id
+            , code
+            , name
+            , description
+            , style
+            , to_char(unit_msrp) as unit_msrp
+            , to_char(unit_cost) as unit_cost
+            , to_char(unit_qty) as unit_qty 
+        from products_target
+        )
+    unpivot ("value" for "key" in (
+        code,
+        name,
+        description,
+        style,
+        unit_msrp,
+        unit_cost,
+        unit_qty
+        )
+    )
+)
+select
+    coalesce(s.row_source, t.row_source) as row_source
+    , coalesce(s."id", t."id") as "id"
+    , coalesce(s."key", t."key") as "key"
+    , coalesce(s."value", t."value") as "value"
+from 
+    source_columns s
+    full outer join target_columns t 
+        on s."id" = t."id" 
+        and s."key" = t."key" 
+        and s."value" = t."value"
+where s."id" is null or t."id" is null
+order by 
+    "id", "key", row_source
+/
+
+
+
+
 
 with source_columns as (
 select u.*
@@ -25,7 +98,7 @@ select
     , c.src_tbl
     , json_value(c.jdoc,'$.value.string()') as value
 from 
-    get_row_compare(source_columns, target_columns, columns("id","key")) c
+    get_row_compare_alt(source_columns, target_columns, columns("id","key")) c
 /
 
 select * from get_column_compare(products_source, products_target, columns(PRODUCT_ID,CODE))

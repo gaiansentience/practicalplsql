@@ -14,7 +14,12 @@ begin
 
 for r in c loop
     dbms_output.put_line('dropping ' || r.object);
-    execute immediate r.ddl;
+    begin
+        execute immediate r.ddl;
+    exception
+        when others then
+            dbms_output.put_line(sqlerrm);
+    end;
 end loop;
 
 exception
