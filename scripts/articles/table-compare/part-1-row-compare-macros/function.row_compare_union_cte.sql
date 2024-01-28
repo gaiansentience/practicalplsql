@@ -11,10 +11,12 @@ begin
     l_sql := 
 q'[
 with source_table as (
-    select /*+ materialize */ s.* 
+    select --+ materialize
+        s.* 
     from p_source s
 ), target_table as (
-    select /*+ materialize */ t.* 
+    select --+ materialize
+        t.* 
     from p_target t
 )
 select u.* 

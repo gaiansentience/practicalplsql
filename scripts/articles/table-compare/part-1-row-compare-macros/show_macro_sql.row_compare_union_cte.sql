@@ -12,7 +12,10 @@ begin
 end;
 /
 
+
 /*
+--dbms_output from function shows sql that is generated
+--since function only runs on parse this will only show when the inputs to the function create a new sql statement
 with source_table as (
     select --+ materialize  
     s.* 
@@ -44,3 +47,4 @@ from
 order by u."PRODUCT_ID", u.row_source
 
 */
+

@@ -1,9 +1,11 @@
 --compare row differences with union and minus using CTE
 with source_table as (
-    select /*+materialize */ s.* 
+    select --+ materialize
+        s.* 
     from products_source s
 ), target_table as (
-    select /*+ materialize */ t.* 
+    select --+ materialize
+        t.* 
     from products_target t
 )
 select u.* 
@@ -23,3 +25,4 @@ from
     ) u
 order by u.product_id, u.row_source
 /
+

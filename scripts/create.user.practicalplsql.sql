@@ -22,15 +22,23 @@ grant create role to practicalplsql with admin option;
 grant create any context to practicalplsql with admin option;
 
 grant alter system to practicalplsql;
-grant select on v_$sqlarea to practicalplsql;
-grant select on v_$open_cursor to practicalplsql;
+
+--grants for autotrace
+grant select_catalog_role to practicalplsql;
+grant select any dictionary to practicalplsql;
+grant select on v_$sql to practicalplsql;
+grant select on v_$sql_plan_statistics_all to practicalplsql;
 grant select on v_$session to practicalplsql;
 grant select on v_$sesstat to practicalplsql;
 grant select on v_$statname to practicalplsql;
+
+grant select on v_$sqlarea to practicalplsql;
+grant select on v_$open_cursor to practicalplsql;
 grant select on v_$temporary_lobs to practicalplsql;
 
 --grants for tracing
 grant execute on dbms_monitor to practicalplsql;
+grant advisor to practicalplsql;
 grant select on v_$diag_trace_file to practicalplsql;
 grant select on v_$diag_trace_file_contents to practicalplsql;
 
