@@ -4,8 +4,8 @@ declare
     i number;
 begin
     execute immediate '
-    select count(*) as difference_count 
-    from get_row_compare(products_source, products_target, columns(product_id))
+        select count(*) as difference_count 
+        from row_compare_json(products_source, products_target, columns(product_id))
     '
     into i;
     dbms_output.put_line(i || ' differences found');
@@ -14,28 +14,29 @@ end;
 
 /*
 select 
-    coalesce(s.id, t.id) as id,
     coalesce(s.row_source, t.row_source) as row_source, 
+    coalesce(s."PRODUCT_ID", t."PRODUCT_ID") as "PRODUCT_ID",
     coalesce(s.jdoc, t.jdoc) as jdoc
 from   
     (
         select 
             'source' as row_source
-            , "PRODUCT_ID" as id
+            , "PRODUCT_ID"
             , json_object(*) as jdoc 
         from p_source    
     ) s
     full outer join (
         select 
             'target' as row_source
-            , "PRODUCT_ID" as id
+            , "PRODUCT_ID"
             , json_object(*) as jdoc 
         from p_target    
     ) t
-        on s.id = t.id
+        on s."PRODUCT_ID" = t."PRODUCT_ID"
         and json_equal(s.jdoc, t.jdoc)
-where s.id is null or t.id is null    
-
-10 differences found
+where 
+    s."PRODUCT_ID" is null 
+    or t."PRODUCT_ID" is null
+order by "PRODUCT_ID", row_source
 
 */

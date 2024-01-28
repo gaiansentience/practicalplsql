@@ -14,17 +14,25 @@ is
 begin
 
     for i in 1..p_id_column.count loop
-        l_coalesce_columns := l_coalesce_columns || '    , coalesce(s.' || p_id_column(i) || ', t.' || p_id_column(i) || ') as ' || p_id_column(i) || c_lf;
+        l_coalesce_columns := l_coalesce_columns 
+            || case when i > 1 then '    ' end || ', coalesce(s.' || p_id_column(i) 
+            || ', t.' || p_id_column(i) 
+            || ') as ' || p_id_column(i) || c_lf;
     end loop;
     l_coalesce_columns := trim(trailing c_lf from l_coalesce_columns);
     
     for i in 1..p_id_column.count loop
-        l_id_columns := l_id_columns || '            , ' || p_id_column(i) || c_lf;
+        l_id_columns := l_id_columns 
+            || case when i > 1 then '            , ' else ', ' end 
+            || p_id_column(i) || c_lf;
     end loop;
     l_id_columns := trim(trailing c_lf from l_id_columns);
     
     for i in 1..p_id_column.count loop
-        l_join_columns := l_join_columns || '        ' || case when i > 1 then 'and ' end || 's.' || p_id_column(i) || ' = t.' || p_id_column(i) || c_lf;
+        l_join_columns := l_join_columns 
+            || case when i > 1 then '        and ' end 
+            || 's.' || p_id_column(i) 
+            || ' = t.' || p_id_column(i) || c_lf;
     end loop;
     l_join_columns := trim(trailing c_lf from l_join_columns);
 
@@ -54,7 +62,8 @@ from
         and json_equal(s.jdoc, t.jdoc)
 where 
     s.##ID_COLUMN_ONE## is null 
-    or t.##ID_COLUMN_ONE is null
+    or t.##ID_COLUMN_ONE## is null
+order by ##ID_COLUMN_ONE##, row_source
 ]';
 
     l_sql := replace(l_sql, '##COALESCE_COLUMNS##', l_coalesce_columns);
