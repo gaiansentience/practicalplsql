@@ -6,7 +6,8 @@ begin
     set name = replace(name,'Fuji','Fujiyama') 
     where 
         name like '%Fuji%' 
-        and name not like '%Fujiyama%';
+        and name not like '%Fujiyama%'
+        and code <> 'POSTCARD-FJ';
     
     update products_source 
     set description = replace(description,'Mount', 'Mt.') 
@@ -17,6 +18,12 @@ begin
     update products_target 
     set unit_msrp = 25 
     where code = 'POSTER-FD';
+
+    update products_target 
+    set style = null 
+    where 
+        code = 'POSTCARD-K2'
+        and style is not null;
     
     update products_target
     set style = replace(style, 'BW', 'Black and White ')

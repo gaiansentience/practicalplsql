@@ -17,6 +17,8 @@ grant create view to practicalplsql;
 grant create materialized view to practicalplsql;
 grant create procedure to practicalplsql;
 grant create type to practicalplsql;
+--23c only
+--grant create domain to practicalplsql
 
 grant create role to practicalplsql with admin option;
 grant create any context to practicalplsql with admin option;
@@ -35,6 +37,7 @@ grant select on v_$statname to practicalplsql;
 grant select on v_$sqlarea to practicalplsql;
 grant select on v_$open_cursor to practicalplsql;
 grant select on v_$temporary_lobs to practicalplsql;
+grant select on v_$sql_plan to practicalplsql;
 
 --grants for tracing
 grant execute on dbms_monitor to practicalplsql;

@@ -35,6 +35,8 @@ begin
     insert_product('POSTER-FS','Mount Fuji Sunset Poster','Poster of Mount Fuji at sunset.','11 in x 17 in',20);
     insert_product('POSTER-K2','K2 Summit Poster','Poster of K2 summit.','11 in x 17 in',20);
     insert_product('POSTCARD-ES','Mount Everest Postcard Set','Set of postcards featuring Mount Everest.','BW 5 in x 7 in',9);
+    insert_product('POSTCARD-FJ','Mount Fuji Postcard Set','Set of postcards featuring Mount Fuji.',null,9);
+    insert_product('POSTCARD-K2','K2 Postcard Set','Set of postcards featuring K2.','5 in x 7 in',9);
  
     commit;
     

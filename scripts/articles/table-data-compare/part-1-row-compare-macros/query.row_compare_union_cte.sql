@@ -1,4 +1,6 @@
 --compare row differences with union and minus using CTE
+--comparison with set differences is null aware
+--identical rows with null column are not included
 with source_table as (
     select --+ materialize
         s.* 

@@ -1,4 +1,5 @@
 --compare row differences with json and full outer join
+--query is null aware
 select 
     coalesce(s.row_source, t.row_source) as row_source, 
     coalesce(s.product_id, t.product_id) as product_id,

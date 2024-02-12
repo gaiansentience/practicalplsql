@@ -1,9 +1,14 @@
 create or replace function row_compare_union_cte(
     p_source in dbms_tf.table_t, 
-    p_target in dbms_tf.table_t,
-    p_id_column in dbms_tf.columns_t        
+    p_target in dbms_tf.table_t
+$if dbms_db_version.version >= 21 $then
+    , p_id_column in dbms_tf.columns_t 
+$end
 ) return varchar2
-sql_macro(table)
+sql_macro
+$if dbms_db_version.version >= 21 $then 
+    (table)
+$end
 is
     l_sql varchar2(32000);
 begin
@@ -38,11 +43,12 @@ from
             from source_table s
         )
     ) u
-order by u.##ID_COLUMN##, u.row_source
 ]';
 
+$if dbms_db_version.version >= 21 $then
+    l_sql := l_sql || 'order by u.##ID_COLUMN##, u.row_source';
     l_sql := replace(l_sql, '##ID_COLUMN##', p_id_column(1));
-
+$end
     dbms_output.put_line(l_sql);
 
     return l_sql;

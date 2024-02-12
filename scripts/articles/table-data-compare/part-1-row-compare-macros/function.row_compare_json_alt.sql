@@ -3,7 +3,7 @@ create or replace function row_compare_json_alt(
     p_target in dbms_tf.table_t, 
     p_id_column in dbms_tf.columns_t
 ) return varchar2
-sql_macro(table)
+sql_macro (table)
 is
     c_lf constant varchar2(1) := chr(10);
     subtype t_sql is varchar2(4000);
