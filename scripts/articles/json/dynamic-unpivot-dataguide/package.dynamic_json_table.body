@@ -1,0 +1,155 @@
+create or replace package body dynamic_json_table as
+
+function get_columns(
+    p_jdoc in clob
+    , p_object_id in varchar2 default 'id'
+    , p_rows_path in varchar2 default null
+) return t_columns
+is
+    l_columns t_columns;
+    l_replace_name varchar2(100);
+    l_replace_path varchar2(100);
+begin
+
+    if p_rows_path is not null then
+        l_replace_path := '.' || p_rows_path;
+        l_replace_name := '$.' || p_rows_path || '.';
+    else
+        l_replace_path := null;
+        l_replace_name := '$.';
+    end if;
+    
+    with json_base as (
+        select p_jdoc as jsource
+        from dual
+    ), dataguide_base as (
+        select json_dataguide(b.jsource) as jdg
+        from json_base b
+    ), columns_base as (
+        select
+            replace(c.column_path, l_replace_name) as column_name
+            , c.column_type
+            , replace(c.column_path, l_replace_path) as column_path
+        from 
+            dataguide_base b,
+            json_table(b.jdg,'$[*]' 
+                columns(
+                    column_path varchar2(1000) path '$."o:path"'
+                    , column_type varchar2(100) path '$.type'
+                    )
+            ) c
+    )
+    select column_name, column_type, column_path
+    bulk collect into l_columns
+    from columns_base
+    where 
+        upper(column_name) <> upper(nvl(p_object_id,'~#~#~'))
+        and column_name not like '%[*]%'
+        and column_type not in ('array','object')
+    order by column_name;
+
+    return l_columns;
+
+end get_columns;
+
+function get_sql(
+    p_jdoc in clob
+    , p_object_id in varchar2 default 'id'
+    , p_rows_path in varchar2 default null
+) return varchar2
+is
+    l_cols t_columns;
+    l_sql varchar2(32000);
+begin
+
+l_cols := get_columns(p_jdoc, p_object_id, p_rows_path);
+dbms_output.put_line(l_cols.count || ' attributes found');
+l_sql := '
+with json_base as (
+select :j as jdoc
+from dual
+), relational_base as (
+select 
+    r."' || nvl(p_object_id,'idOrdinality') || '"
+';
+    for i in 1..l_cols.count loop
+        l_sql := l_sql || ', r."' || l_cols(i).column_name || '"' || chr(10);
+    end loop;
+l_sql := l_sql || q'~
+from 
+    json_base b,
+    json_table(b.jdoc format json,'$~' || case when p_rows_path is not null then '.' || p_rows_path end || q'~[*]' columns (~' || chr(10);
+        if p_object_id is not null then
+            l_sql := l_sql || '"' || p_object_id || q'~" number path '$.~' || p_object_id || '''' || chr(10);
+        else
+            l_sql := l_sql || '"idOrdinality" for ordinality' || chr(10);
+        end if;
+        for i in 1..l_cols.count loop
+            l_sql := l_sql || ', "' || l_cols(i).column_name || '" path ''' || l_cols(i).column_path || '''' || chr(10);
+        end loop;
+l_sql := l_sql || '
+        )
+    ) r
+)
+select
+    "' || nvl(p_object_id,'idOrdinality') || '", "key", "value"
+from 
+    relational_base
+    unpivot (
+        "value" for "key" in (' || chr(10);
+        for i in 1..l_cols.count loop
+            l_sql := l_sql || case when i > 1 then ',' end || '"' || l_cols(i).column_name || '"' || chr(10);
+        end loop;
+l_sql := l_sql || '
+        )
+    )
+';
+
+--dbms_output.put_line(l_sql);
+
+    return l_sql;
+end get_sql;
+
+function unpivot_json(
+    p_jdoc in clob
+    , p_object_id in varchar2 default 'id'
+    , p_rows_path in varchar2 default null
+) return t_attributes pipelined
+is
+    l_cols t_columns;
+    l_sql varchar2(32000);
+    rc sys_refcursor;
+    l_attribs t_attributes;
+begin
+
+l_sql := get_sql(p_jdoc, p_object_id, p_rows_path);
+
+--bulk collect all json rows at once
+
+--execute immediate l_sql bulk collect into l_attribs using p_jdoc;
+--
+--for i in 1..l_attribs.count loop
+--    pipe row (l_attribs(i));
+--end loop;
+
+--use ref cursor to limit number of rows collected
+open rc for l_sql using p_jdoc;
+
+loop
+
+    fetch rc bulk collect into l_attribs limit 1000;
+    exit when l_attribs.count = 0;
+
+    for i in 1..l_attribs.count loop
+        pipe row (l_attribs(i));
+    end loop;
+    
+end loop;
+
+close rc;
+
+return;
+
+end unpivot_json;
+
+end dynamic_json_table;
