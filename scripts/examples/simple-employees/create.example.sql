@@ -12,4 +12,6 @@ prompt creating simple employees example
 
 @@procedure.print_timing_and_fetches.p;
 
+@@function.get_sql_engine_fetches.f;
+
 prompt simple employees example created
