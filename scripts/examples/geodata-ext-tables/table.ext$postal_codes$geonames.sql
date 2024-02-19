@@ -53,20 +53,13 @@ ORGANIZATION EXTERNAL
            )
        )
      LOCATION (
-        'geonames-postal-codes.csv', 
-        'geonames-postal-codes-02.csv'
+        'geonames-postal-codes-1.csv', 
+        'geonames-postal-codes-2.csv'
+        'geonames-postal-codes-3.csv'
+        'geonames-postal-codes-4.csv'
         )
   )
   REJECT LIMIT UNLIMITED;
 
 --select * from ext$postal_codes$geonames WHERE ROWNUM <= 5;
 
---verify that both datafiles are being used
-select * from ext$postal_codes$geonames
-where 
-(country_code_iso2, postal_code, place_name, admin_name1) in 
-(
-('PT','2500-311','Imaginário','Leiria'),  --  geonames-postal-codes.csv
-('ES','21290','Jabugo','Andalucia')  --geonames-postal-codes-02.csv
-)
-/
