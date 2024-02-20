@@ -5,32 +5,23 @@ prompt opensoft url https://kering-group.opendatasoft.com/explore/dataset/geonam
 prompt there are minor changes to csv header to allow use as external table
 prompt geojson shape for polygon and multipolygon elided due to size
 
+--"COUNTRY_CODE"|"COUNTRY_NAME"|"CAPITAL_CITY"|"POPULATION"|"CONTINENT_CODE"|"CURRENCY_CODE"|"CURRENCY_NAME"|"POSTAL_CODE_FORMAT"|"POSTAL_CODE_REGEX"
+
 --CREATE OR REPLACE DIRECTORY ETL_STAGE_DIR AS 'X:\ora-db-directories\shared\etl-stage';
 --GRANT READ ON DIRECTORY ETL_STAGE_DIR TO USER;
 --GRANT WRITE ON DIRECTORY ETL_STAGE_DIR TO USER;
 --drop table ext$countries$geonames;
 CREATE TABLE ext$countries$geonames 
-( Country_Code_ISO2 VARCHAR2(10),
-  Country_Code_ISO3 VARCHAR2(10),
-  ISO_Numeric VARCHAR2(26),
-  fips VARCHAR2(26),
-  Impact_Country VARCHAR2(128),
-  Capital VARCHAR2(100),
-  Area NUMBER(38),
-  Population NUMBER(38),
-  Continent VARCHAR2(50),
-  tld VARCHAR2(26),
-  Currency_Code VARCHAR2(20),
-  Currency_Name VARCHAR2(50),
-  Phone VARCHAR2(50),
-  Postal_Code_Format VARCHAR2(128),
-  Postal_Code_Regex VARCHAR2(256),
-  Languages VARCHAR2(128),
-  Geonameid NUMBER(38),
-  Neighbours VARCHAR2(128),
-  Equivalent_Fips_Code VARCHAR2(26),
-  Geo_Shape clob,
-  Geo_Point VARCHAR2(128))
+( COUNTRY_CODE VARCHAR2(20),
+  COUNTRY_NAME VARCHAR2(100),
+  CAPITAL_CITY VARCHAR2(100),
+  POPULATION NUMBER(38),
+  CONTINENT_CODE VARCHAR2(10),
+  CURRENCY_CODE VARCHAR2(20),
+  CURRENCY_NAME VARCHAR2(50),
+  POSTAL_CODE_FORMAT VARCHAR2(128),
+  POSTAL_CODE_REGEX VARCHAR2(256)
+)
 ORGANIZATION EXTERNAL
   (  TYPE ORACLE_LOADER
      DEFAULT DIRECTORY ETL_STAGE_DIR
@@ -39,40 +30,29 @@ ORGANIZATION EXTERNAL
 --           NOBADFILE
 --           NODISCARDFILE
 --           NOLOGFILE
-           BADFILE ETL_STAGE_DIR:'geonames-countries.bad'
-           DISCARDFILE ETL_STAGE_DIR:'geonames-countries.discard'
-           LOGFILE ETL_STAGE_DIR:'geonames-countries.log'           
-           skip 7
-           fields terminated BY ';'
+           BADFILE ETL_STAGE_DIR:'countries-geonames.bad'
+           DISCARDFILE ETL_STAGE_DIR:'countries-geonames.discard'
+           LOGFILE ETL_STAGE_DIR:'countries-geonames.log'           
+           skip 6
+           fields terminated BY '|'
+           OPTIONALLY ENCLOSED BY '"' AND '"'
            lrtrim
            missing field VALUES are NULL
-           ( Country_Code_ISO2 CHAR(4000),
-             Country_Code_ISO3 CHAR(4000),
-             ISO_Numeric CHAR(4000),
-             fips CHAR(4000),
-             Impact_Country CHAR(4000),
-             Capital CHAR(4000),
-             Area CHAR(4000),
-             Population CHAR(4000),
-             Continent CHAR(4000),
-             tld CHAR(4000),
-             Currency_Code CHAR(4000),
-             Currency_Name CHAR(4000),
-             Phone CHAR(4000),
-             Postal_Code_Format CHAR(4000),
-             Postal_Code_Regex CHAR(4000),
-             Languages CHAR(4000),
-             Geonameid CHAR(4000),
-             Neighbours CHAR(4000),
-             Equivalent_Fips_Code CHAR(4000),
-             Geo_Shape CHAR(4000),
-             Geo_Point CHAR(4000)
+           ( COUNTRY_CODE CHAR(4000),
+             COUNTRY_NAME CHAR(4000),
+             CAPITAL_CITY CHAR(4000),
+             POPULATION CHAR(4000),
+             CONTINENT_CODE CHAR(4000),
+             CURRENCY_CODE CHAR(4000),
+             CURRENCY_NAME CHAR(4000),
+             POSTAL_CODE_FORMAT CHAR(4000),
+             POSTAL_CODE_REGEX CHAR(4000)
            )
        )
-     LOCATION ('geonames-countries.csv')
+     LOCATION ('countries-geonames.csv')
   )
   REJECT LIMIT UNLIMITED;
 
---select * from ext$countries$geonames  WHERE ROWNUM <= 5;
+select * from ext$countries$geonames  WHERE ROWNUM <= 5;
 
 
