@@ -3,33 +3,30 @@ prompt create data differences in products_source and products_target
 begin
 
     update products_source 
-    set name = replace(name,'Fuji','Fujiyama') 
+    set name = replace(name, 'Fuji', 'Fujiyama') 
     where 
         name like '%Fuji%' 
         and name not like '%Fujiyama%'
-        and code <> 'POSTCARD-FJ';
+        and code <> 'PC-FJ';
     
     update products_source 
-    set description = replace(description,'Mount', 'Mt.') 
-    where 
-        description like '%Everest%' 
-        and description not like '%Mt.%';
+    set description = replace(description, 'Mount', 'Mt.') 
+    where description like '%Mount Everest%'; 
     
     update products_target 
-    set unit_msrp = 25 
-    where code = 'POSTER-FD';
+    set msrp = 19 
+    where code = 'P-FD';
 
     update products_target 
     set style = null 
-    where 
-        code = 'POSTCARD-K2'
-        and style is not null;
+    where code = 'PC-K2';
     
     update products_target
-    set style = replace(style, 'BW', 'Black and White ')
-    where 
-        code = 'POSTCARD-ES' 
-        and style not like 'Black and White%';
+    set style = 'Monochrome'
+    where code = 'PC-ES';
+    
+    delete from products_target
+    where code = 'PC-S';
     
     commit;
 

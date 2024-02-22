@@ -25,7 +25,6 @@ from
         and s.code = t.code
         and json_equal(s.jdoc, t.jdoc)
 where 
-    s.product_id is null 
-    or t.product_id is null
+    s.product_id is null or t.product_id is null
 order by product_id, row_source
 /

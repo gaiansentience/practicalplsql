@@ -22,8 +22,7 @@ begin
     l_coalesce_columns := trim(trailing c_lf from l_coalesce_columns);
         
     for i in 1..p_source.column.count loop
-        --p_source.column(i).type is the oracle typecode for the column
-        --can be used for join if clob using dbms_lob.compare
+        --doesnt work for null or clob
         l_col := p_source.column(i).description.name;
         l_join_columns := l_join_columns 
             || case when i > 1 then '        and ' end 
