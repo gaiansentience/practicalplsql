@@ -13,6 +13,7 @@ end;
 /
 
 /*
+
 select u.* 
 from
     (
@@ -33,5 +34,10 @@ from
         )
     ) u
 order by u."PRODUCT_ID", u.row_source
+
+13 differences found
+
+
+PL/SQL procedure successfully completed.
 
 */
