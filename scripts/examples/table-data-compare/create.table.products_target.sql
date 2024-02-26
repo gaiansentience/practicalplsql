@@ -1,6 +1,7 @@
 
 create table products_target as 
-select * from products;
+select * from products
+where 1 = 0;
 
 alter table products_target add (
     constraint products_target_pk primary key (product_id),

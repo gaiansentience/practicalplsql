@@ -12,6 +12,8 @@ set feedback off;
 
 @@create.table.products_target.sql;
 
+@@reset_table_data.sql;
+
 @@create_table_data_differences.sql;
 
 prompt example tables created for table compare
