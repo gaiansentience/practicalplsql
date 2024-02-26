@@ -9,7 +9,7 @@ create table products (
     name varchar2(100) not null,
     description varchar2(4000),
     style varchar2(100),
-    unit_msrp number
+    msrp number
 );
     
 prompt created table products

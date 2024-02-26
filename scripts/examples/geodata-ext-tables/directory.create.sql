@@ -1,0 +1,5 @@
+--prompt use server file path visible to the database
+--CREATE OR REPLACE DIRECTORY ETL_STAGE_DIR AS 'X:\ora-db-directories\shared\etl-stage';
+--grant directory access to user
+--GRANT READ ON DIRECTORY ETL_STAGE_DIR TO USER;
+--GRANT WRITE ON DIRECTORY ETL_STAGE_DIR TO USER;
