@@ -1,4 +1,3 @@
-set feedback off
 column row_source format a10
 column code format a5
 column name format a19
@@ -34,8 +33,6 @@ select u.* from (
 order by u.product_id, u.row_source
 /
 
-set feedback on
-
 /*
 
 ROW_SOURCE PRODUCT_ID CODE  NAME                DESCRIPTION               STYLE        MSRP
@@ -53,5 +50,7 @@ target              6 PC-ES Everest Postcards   Mount Everest postcards   Monoch
 source              8 PC-K2 K2 Postcards        K2 postcards              Color           9
 target              8 PC-K2 K2 Postcards        K2 postcards              <<null>>        9
 source              9 PC-S  Shasta Postcards    Mount Shasta postcards    5x7             9
+
+13 rows selected. 
 
 */

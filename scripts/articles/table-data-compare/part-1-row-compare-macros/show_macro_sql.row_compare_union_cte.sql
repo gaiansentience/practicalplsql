@@ -14,15 +14,15 @@ end;
 
 
 /*
---dbms_output from function shows sql that is generated
---since function only runs on parse this will only show when the inputs to the function create a new sql statement
+
+
 with source_table as (
-    select --+ materialize  
-    s.* 
+    select --+ materialize
+        s.* 
     from p_source s
 ), target_table as (
-    select --+ materialize  
-    t.* 
+    select --+ materialize
+        t.* 
     from p_target t
 )
 select u.* 
@@ -44,7 +44,10 @@ from
             from source_table s
         )
     ) u
-order by u."PRODUCT_ID", u.row_source
+ order by u."PRODUCT_ID", u.row_source
 
+13 differences found
+
+PL/SQL procedure successfully completed.
 */
 
