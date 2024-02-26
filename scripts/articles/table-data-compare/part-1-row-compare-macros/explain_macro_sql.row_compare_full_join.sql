@@ -5,14 +5,35 @@ explain plan for
 select * from row_compare_full_join(products_source, products_target, columns(product_id))
 /
 
-select * from dbms_xplan.display(format => 'ALL -ALIAS -PROJECTION')
+select * from dbms_xplan.display(format => 'BASIC')
 /
 
-
---notes:  
---the predicates section shows that the decodes were converted to sys_op_map_nonnull calls
-    
 /*
+select 
+    coalesce(s.row_source, t.row_source) as row_source
+    , coalesce(s."PRODUCT_ID", t."PRODUCT_ID") as "PRODUCT_ID"
+    , coalesce(s."CODE", t."CODE") as "CODE"
+    , coalesce(s."NAME", t."NAME") as "NAME"
+    , coalesce(s."DESCRIPTION", t."DESCRIPTION") as "DESCRIPTION"
+    , coalesce(s."STYLE", t."STYLE") as "STYLE"
+    , coalesce(s."MSRP", t."MSRP") as "MSRP"
+from   
+    (
+        select 'source' as row_source, src.* from p_source src   
+    ) s
+    full outer join (
+        select 'target' as row_source, tgt.* from p_target tgt
+    ) t
+        on s."PRODUCT_ID" = t."PRODUCT_ID"
+        and s."CODE" = t."CODE"
+        and s."NAME" = t."NAME"
+        and s."DESCRIPTION" = t."DESCRIPTION"
+        and s."STYLE" = t."STYLE"
+        and s."MSRP" = t."MSRP"
+where 
+    s."PRODUCT_ID" is null or t."PRODUCT_ID" is null
+order by "PRODUCT_ID", row_source
+
 
 
 Explained.
@@ -20,56 +41,19 @@ Explained.
 
 PLAN_TABLE_OUTPUT                                                                                                                                     
 ------------------------------------------------------------------------------------------------------------------------------------------------------
-Plan hash value: 1669472241
+Plan hash value: 13840447
  
-------------------------------------------------------------------------------------------
-| Id  | Operation              | Name            | Rows  | Bytes | Cost (%CPU)| Time     |
-------------------------------------------------------------------------------------------
-|   0 | SELECT STATEMENT       |                 |     2 |  8768 |    13   (8)| 00:00:01 |
-|   1 |  SORT ORDER BY         |                 |     2 |  8768 |    13   (8)| 00:00:01 |
-|   2 |   VIEW                 |                 |     2 |  8768 |    12   (0)| 00:00:01 |
-|   3 |    UNION-ALL           |                 |       |       |            |          |
-|*  4 |     FILTER             |                 |       |       |            |          |
-|*  5 |      HASH JOIN OUTER   |                 |     1 |   183 |     6   (0)| 00:00:01 |
-|   6 |       TABLE ACCESS FULL| PRODUCTS_SOURCE |     6 |   540 |     3   (0)| 00:00:01 |
-|   7 |       TABLE ACCESS FULL| PRODUCTS_TARGET |     6 |   558 |     3   (0)| 00:00:01 |
-|*  8 |     HASH JOIN ANTI     |                 |     1 |   183 |     6   (0)| 00:00:01 |
-|   9 |      TABLE ACCESS FULL | PRODUCTS_TARGET |     6 |   558 |     3   (0)| 00:00:01 |
-|  10 |      TABLE ACCESS FULL | PRODUCTS_SOURCE |     6 |   540 |     3   (0)| 00:00:01 |
-------------------------------------------------------------------------------------------
- 
-Predicate Information (identified by operation id):
----------------------------------------------------
- 
-   4 - filter("PRODUCTS_TARGET"."PRODUCT_ID" IS NULL)
-   5 - access("PRODUCTS_SOURCE"."PRODUCT_ID"="PRODUCTS_TARGET"."PRODUCT_ID"(+) 
-              AND "PRODUCTS_SOURCE"."CODE"="PRODUCTS_TARGET"."CODE"(+) AND 
-              "PRODUCTS_SOURCE"."NAME"="PRODUCTS_TARGET"."NAME"(+) AND 
-              SYS_OP_MAP_NONNULL("PRODUCTS_SOURCE"."DESCRIPTION")=SYS_OP_MAP_NONNULL("PRODUCTS_T
-              ARGET"."DESCRIPTION"(+)) AND SYS_OP_MAP_NONNULL("PRODUCTS_SOURCE"."STYLE")=SYS_OP_
-              MAP_NONNULL("PRODUCTS_TARGET"."STYLE"(+)) AND 
-              SYS_OP_MAP_NONNULL("PRODUCTS_SOURCE"."UNIT_MSRP")=SYS_OP_MAP_NONNULL("PRODUCTS_TAR
-              GET"."UNIT_MSRP"(+)))
-   8 - access("PRODUCTS_SOURCE"."PRODUCT_ID"="PRODUCTS_TARGET"."PRODUCT_ID" AND 
-              "PRODUCTS_SOURCE"."CODE"="PRODUCTS_TARGET"."CODE" AND 
-              "PRODUCTS_SOURCE"."NAME"="PRODUCTS_TARGET"."NAME" AND 
-              SYS_OP_MAP_NONNULL("PRODUCTS_SOURCE"."DESCRIPTION")=SYS_OP_MAP_NONNULL("PRODUCTS_T
-              ARGET"."DESCRIPTION") AND SYS_OP_MAP_NONNULL("PRODUCTS_SOURCE"."STYLE")=SYS_OP_MAP
-              _NONNULL("PRODUCTS_TARGET"."STYLE") AND SYS_OP_MAP_NONNULL("PRODUCTS_SOURCE"."UNIT
-              _MSRP")=SYS_OP_MAP_NONNULL("PRODUCTS_TARGET"."UNIT_MSRP"))
- 
-Hint Report (identified by operation id / Query Block Name / Object Alias):
-Total hints for statement: 2
----------------------------------------------------------------------------
- 
-   8 -  SEL$63477FE0
-           -  INLINE
-           -  INLINE
- 
-Note
------
-   - this is an adaptive plan
-
-49 rows selected. 
+--------------------------------------------------
+| Id  | Operation              | Name            |
+--------------------------------------------------
+|   0 | SELECT STATEMENT       |                 |
+|   1 |  SORT ORDER BY         |                 |
+|   2 |   VIEW                 | VW_FOJ_0        |
+|   3 |    HASH JOIN FULL OUTER|                 |
+|   4 |     VIEW               |                 |
+|   5 |      TABLE ACCESS FULL | PRODUCTS_TARGET |
+|   6 |     VIEW               |                 |
+|   7 |      TABLE ACCESS FULL | PRODUCTS_SOURCE |
+--------------------------------------------------
 
 */
