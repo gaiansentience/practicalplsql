@@ -10,9 +10,9 @@ as
     type t_columns is table of r_column index by pls_integer;
     
     type r_attributes is record (
-        "id" number
-        , "key" varchar2(1000)
-        , "value" varchar2(4000)
+        "object#id" number
+        , "object#key" varchar2(1000)
+        , "object#value" varchar2(4000)
     );
     
     type t_attributes is table of r_attributes;
