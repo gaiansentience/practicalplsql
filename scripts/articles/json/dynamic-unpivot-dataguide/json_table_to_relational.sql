@@ -6,7 +6,7 @@ column d format a6
 column e format a6
 column fB format a6
 column fA format a6
-set null '(null)'
+set null '(null)';
 
 with json_base as (
     select
