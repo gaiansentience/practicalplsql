@@ -18,7 +18,8 @@ grant create materialized view to practicalplsql;
 grant create procedure to practicalplsql;
 grant create type to practicalplsql;
 --23c only
---grant create domain to practicalplsql
+grant create domain to practicalplsql;
+grant db_developer_role to practicalplsql;
 
 grant create role to practicalplsql with admin option;
 grant create any context to practicalplsql with admin option;
