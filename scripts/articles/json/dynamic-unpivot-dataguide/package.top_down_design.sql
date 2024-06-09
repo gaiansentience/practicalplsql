@@ -1,6 +1,20 @@
+--design the package specification first for top down development
+--expose inner procedure for generating dynamic json_table query
 create or replace package dynamic_json_table authid current_user 
 as
 
+    --record type to represent the metadata of the json row
+    
+    --collection type of metadata records
+    
+    --a function to convert the json dataguide to the metadata collection
+    
+    --a function to convert the json to json_table sql
+    
+    --record type for pipelined rows
+    
+    --collection type for return type of the pipelined function
+    
     type r_column is record(
         column_name varchar2(100)
         , column_type varchar2(100)
