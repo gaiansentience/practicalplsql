@@ -29,7 +29,11 @@ declare
             from dual
         ), dataguide_relational as (
             select 
+$if dbms_db_version.version >= 23 $then
                 dbms_assert.enquote_name(ltrim(replace(j.dg_path, array_path), '$.'), capitalize => false) as column_name,
+$else
+                '"' || ltrim(replace(j.dg_path, array_path), '$.') || '"' as column_name,
+$end
                 j.column_type,
                 replace(j.dg_path, array_path) as column_path
             from 

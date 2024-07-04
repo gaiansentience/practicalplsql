@@ -1,3 +1,6 @@
+prompt query.json_doc.relational.unpivoted.sql
+
+
 set feedback on
 set pagesize 20
 set null NULL

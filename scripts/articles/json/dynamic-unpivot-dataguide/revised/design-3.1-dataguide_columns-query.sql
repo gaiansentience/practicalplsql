@@ -12,6 +12,8 @@ with dataguide as (
 ), dataguide_relational as (
     select 
         dbms_assert.enquote_name(ltrim(j.dg_path, '$.'), capitalize => false) as column_name,
+        --before 23ai we cannot use a boolean in sql
+        --'"' || ltrim(j.dg_path, '$.') || '"' as column_name,
         j.column_type,
         j.dg_path as column_path
     from 
@@ -36,6 +38,8 @@ with dataguide as (
 ), dataguide_relational as (
     select 
         dbms_assert.enquote_name(ltrim(replace(j.dg_path, '.my_shapes'), '$.'), capitalize => false) as column_name,
+        --before 23ai we cannot use a boolean in sql
+        --'"' || ltrim(replace(j.dg_path, '.my_shapes'), '$.') || '"' as column_name,
         j.column_type,
         replace(j.dg_path, '.my_shapes') as column_path
     from 

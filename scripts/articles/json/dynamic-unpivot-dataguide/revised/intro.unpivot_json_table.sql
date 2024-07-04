@@ -32,7 +32,7 @@ with base as (
 ), unpivot_base as (
     select id, "cName", "cValue"
     from
-        base_to_common_datatype
+        json_to_relational
         unpivot (
             "cValue" for "cName" in (
                 "c1_Number", "c2_String", "c3_Date"

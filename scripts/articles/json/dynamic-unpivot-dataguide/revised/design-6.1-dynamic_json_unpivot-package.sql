@@ -1,4 +1,6 @@
 prompt design-6.1-dynamic_json_unpivot-package.sql
+--Note:  This result in an internal error on XE 21c
+--ORA-00600: internal error code, arguments: [kglidinsi1]
     
 create or replace package dynamic_json#alpha
 authid current_user
@@ -87,7 +89,11 @@ as
             from dual
         ), dataguide_relational as (
             select 
+$if dbms_db_version.version >= 23 $then
                 dbms_assert.enquote_name(ltrim(replace(j.dg_path, array_path), '$.'), capitalize => false) as column_name,
+$else
+                '"' || ltrim(replace(j.dg_path, array_path), '$.') || '"' as column_name,
+$end
                 j.column_type,
                 replace(j.dg_path, array_path) as column_path
             from 

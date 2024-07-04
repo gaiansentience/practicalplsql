@@ -1,5 +1,6 @@
-prompt design--9.4-dynamic_json-test.sql
-prompt query uses json constructor, only valid for 21c and higher
+prompt design--9.4-dynamic_json-test-19c.sql
+prompt query is 19c compatibale: uses clob for json_data
+prompt dynamic_json conditionally compiled to use clob for json data
 
 column row#id format 9
 column column#key format a20
@@ -20,11 +21,9 @@ with base as (
     from user_objects
 ), to_json as (
     select 
-        json(
-            json_arrayagg(
-                json_object(b.*)
-            )
-        ) as jdoc
+        json_arrayagg(
+            json_object(b.* returning clob)
+        returning clob) as jdoc
     from base b
 )
 select u.*
