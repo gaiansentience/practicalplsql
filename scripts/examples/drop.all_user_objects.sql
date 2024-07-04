@@ -12,15 +12,15 @@ where object_type in ('FUNCTION','PROCEDURE','TYPE','TABLE','VIEW','SEQUENCE');
 
 begin
 
-for r in c loop
-    dbms_output.put_line('dropping ' || r.object);
-    begin
-        execute immediate r.ddl;
-    exception
-        when others then
-            dbms_output.put_line(sqlerrm);
-    end;
-end loop;
+    for r in c loop
+        dbms_output.put_line('dropping ' || r.object);
+        begin
+            execute immediate r.ddl;
+        exception
+            when others then
+                dbms_output.put_line(sqlerrm);
+        end;
+    end loop;
 
 exception
     when others then

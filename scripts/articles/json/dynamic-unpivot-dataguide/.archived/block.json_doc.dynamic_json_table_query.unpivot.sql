@@ -1,3 +1,8 @@
+prompt block.json_doc.dynamic_json_table_query.unpivot.sql
+
+prompt convert dataguide to column definitions
+
+
 set serveroutput on
 declare
 
@@ -54,6 +59,7 @@ declare
     is
         l_sql varchar2(32000);
         l_jc varchar2(4000);
+        l_uc varchar2(4000);
     begin
         l_cols := get_columns(p_jdoc, p_json_array_path);
     
@@ -64,6 +70,14 @@ declare
                 || ', ' || l_cols(i).col_name 
                 || ' varchar2(4000) path ''' 
                 || l_cols(i).json_table_path || '''' || chr(10);
+        end loop;
+        
+        --build the unpivot expression using the columns collection
+        --this can also be done in the above loop
+        for i in 1..l_cols.count loop
+            l_uc := l_uc || '                ' 
+                || case when i > 1 then ', ' end 
+                || l_cols(i).col_name || chr(10);
         end loop;
 
         l_sql := q'+
@@ -83,24 +97,33 @@ with json_document as (
 ##JSON_TABLE_COLUMNS##
             )
         ) j
-)
-select b.*
-from json_relational b
+    )
+    select "id#ordinality", "column#key", "column#value"
+    from 
+        json_relational 
+        unpivot (
+            "column#value" for "column#key" in (
+##UNPIVOT_COLUMNS##
+                )
+        ) 
+    order by "id#ordinality", "column#key"
 /
 
 +';    
     
         l_sql := replace(l_sql, '##JSON_TABLE_COLUMNS##', l_jc);
         l_sql := replace(l_sql, '##ARRAY_PATH##', rtrim(p_json_array_path,'.'));
+        l_sql := replace(l_sql, '##UNPIVOT_COLUMNS##', l_uc);
         --for testing output query here, substitute the jsoc document
         l_sql := replace(l_sql, '##JSON_DOC##', p_jdoc);
+        
         return l_sql;
     
     end build_json_table_sql;
 begin
 
-    dbms_output.put_line('Test these resulting queries to be sure the json_table syntax is correct');
-    
+    dbms_output.put_line('Test these resulting queries to be sure the unpivot syntax is correct');
+
     l_json := to_clob(
         q'~
         {"my_shapes":
@@ -133,7 +156,7 @@ end;
 /
 
 /*
-Test these resulting queries to be sure the json_table syntax is correct
+Test these resulting queries to be sure the unpivot syntax is correct
 
 with json_document as (
     select
@@ -168,9 +191,23 @@ with json_document as (
 
             )
         ) j
-)
-select b.*
-from json_relational b
+    )
+    select "id#ordinality", "column#key", "column#value"
+    from 
+        json_relational 
+        unpivot (
+            "column#value" for "column#key" in (
+                "name"
+                , "side"
+                , "color"
+                , "width"
+                , "height"
+                , "length"
+                , "radius"
+
+                )
+        ) 
+    order by "id#ordinality", "column#key"
 /
 
 
@@ -206,15 +243,28 @@ with json_document as (
 
             )
         ) j
-)
-select b.*
-from json_relational b
+    )
+    select "id#ordinality", "column#key", "column#value"
+    from 
+        json_relational 
+        unpivot (
+            "column#value" for "column#key" in (
+                "name"
+                , "side"
+                , "color"
+                , "width"
+                , "height"
+                , "length"
+                , "radius"
+
+                )
+        ) 
+    order by "id#ordinality", "column#key"
 /
 
 
 
 
 PL/SQL procedure successfully completed.
-
 
 */

@@ -1,3 +1,7 @@
+prompt block.json_doc.dynamic_json_table_query.sql
+
+prompt convert dataguide to column definitions
+
 set serveroutput on
 declare
 
@@ -5,22 +9,17 @@ declare
         col_name varchar2(100), 
         datatype varchar2(20), 
         json_table_path varchar2(100)
-        );
-        
+        ); 
     type t_columns is table of t_column index by pls_integer;
-    
     l_cols t_columns;
-    
-    l_json clob;
-    
+    l_json $if dbms_db_version.version >= 21 $then json $else clob $end;
     function get_columns(
-        p_jdoc in clob, 
+        p_jdoc in $if dbms_db_version.version >= 21 $then json $else clob $end, 
         p_array_path in varchar2 default null
     ) return t_columns
     is
         l_column_definitions t_columns;
-    begin
-    
+    begin    
         with dataguide as (
             select json_dataguide(p_jdoc) as jdoc_dataguide
             from dual
@@ -42,10 +41,28 @@ declare
         bulk collect into l_column_definitions
         from dataguide_relational
         where datatype not in ('object', 'array');
-
         return l_column_definitions;
-    
     end get_columns;
+
+    procedure print_columns(
+        p_jdoc in $if dbms_db_version.version >= 21 $then json $else clob $end, 
+        p_json_structure in varchar2,
+        p_json_array_path in varchar2 default null)
+    is
+        c_stars constant varchar2(50) := lpad('*', 40, '*');
+        c_space constant varchar2(1) := ' ';
+    begin
+        l_cols := get_columns(p_jdoc, p_json_array_path);
+        dbms_output.put_line(c_stars);
+        dbms_output.put_line(p_json_structure);
+        dbms_output.put_line(c_stars);
+        for i in $if dbms_db_version.version >= 21 $then indices of l_cols $else 1..l_cols.count $end loop
+            dbms_output.put_line(
+                l_cols(i).col_name || c_space 
+                || l_cols(i).datatype || c_space 
+                || l_cols(i).json_table_path);
+        end loop;    
+    end print_columns;
     
     function build_json_table_sql(
         p_jdoc in clob, 
@@ -54,7 +71,6 @@ declare
     is
         l_sql varchar2(32000);
         l_jc varchar2(4000);
-        l_uc varchar2(4000);
     begin
         l_cols := get_columns(p_jdoc, p_json_array_path);
     
@@ -65,14 +81,6 @@ declare
                 || ', ' || l_cols(i).col_name 
                 || ' varchar2(4000) path ''' 
                 || l_cols(i).json_table_path || '''' || chr(10);
-        end loop;
-        
-        --build the unpivot expression using the columns collection
-        --this can also be done in the above loop
-        for i in 1..l_cols.count loop
-            l_uc := l_uc || '                ' 
-                || case when i > 1 then ', ' end 
-                || l_cols(i).col_name || chr(10);
         end loop;
 
         l_sql := q'+
@@ -92,58 +100,29 @@ with json_document as (
 ##JSON_TABLE_COLUMNS##
             )
         ) j
-    )
-    select "id#ordinality", "column#key", "column#value"
-    from 
-        json_relational 
-        unpivot (
-            "column#value" for "column#key" in (
-##UNPIVOT_COLUMNS##
-                )
-        ) 
-    order by "id#ordinality", "column#key"
+)
+select b.*
+from json_relational b
 /
 
 +';    
     
         l_sql := replace(l_sql, '##JSON_TABLE_COLUMNS##', l_jc);
         l_sql := replace(l_sql, '##ARRAY_PATH##', rtrim(p_json_array_path,'.'));
-        l_sql := replace(l_sql, '##UNPIVOT_COLUMNS##', l_uc);
         --for testing output query here, substitute the jsoc document
         l_sql := replace(l_sql, '##JSON_DOC##', p_jdoc);
-        
         return l_sql;
     
     end build_json_table_sql;
 begin
 
-    dbms_output.put_line('Test these resulting queries to be sure the unpivot syntax is correct');
-
-    l_json := to_clob(
-        q'~
-        {"my_shapes":
-            [
-            {"name":"square","side":5,"color":"blue"},
-            {"name":"rectangle","length":5,"width":3},  
-            {"name":"box","length":5,"width":3,"height":2},  
-            {"name":"hexagon","side":3,"color":"red"},
-            {"name":"circle","radius":3},
-            ]
-        }
-    ~');
+    dbms_output.put_line('Test these resulting queries to be sure the json_table syntax is correct');
+    
+    l_json := design#get_test_json('simple');
 
     dbms_output.put_line(build_json_table_sql(l_json, '.my_shapes'));
             
-    l_json := to_clob(
-        q'~
-        [
-        {"name":"square","side":5,"color":"blue"},
-        {"name":"rectangle","length":5,"width":3},  
-        {"name":"box","length":5,"width":3,"height":2},  
-        {"name":"hexagon","side":3,"color":"red"},
-        {"name":"circle","radius":3},
-        ]
-    ~');
+    l_json := design#get_test_json('simple');
 
     dbms_output.put_line(build_json_table_sql(l_json, null));
 
@@ -151,7 +130,7 @@ end;
 /
 
 /*
-Test these resulting queries to be sure the unpivot syntax is correct
+Test these resulting queries to be sure the json_table syntax is correct
 
 with json_document as (
     select
@@ -186,23 +165,9 @@ with json_document as (
 
             )
         ) j
-    )
-    select "id#ordinality", "column#key", "column#value"
-    from 
-        json_relational 
-        unpivot (
-            "column#value" for "column#key" in (
-                "name"
-                , "side"
-                , "color"
-                , "width"
-                , "height"
-                , "length"
-                , "radius"
-
-                )
-        ) 
-    order by "id#ordinality", "column#key"
+)
+select b.*
+from json_relational b
 /
 
 
@@ -238,28 +203,15 @@ with json_document as (
 
             )
         ) j
-    )
-    select "id#ordinality", "column#key", "column#value"
-    from 
-        json_relational 
-        unpivot (
-            "column#value" for "column#key" in (
-                "name"
-                , "side"
-                , "color"
-                , "width"
-                , "height"
-                , "length"
-                , "radius"
-
-                )
-        ) 
-    order by "id#ordinality", "column#key"
+)
+select b.*
+from json_relational b
 /
 
 
 
 
 PL/SQL procedure successfully completed.
+
 
 */
