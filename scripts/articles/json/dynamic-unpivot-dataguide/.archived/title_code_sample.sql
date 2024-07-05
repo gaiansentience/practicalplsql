@@ -7,7 +7,7 @@ declare
     l_solution varchar2(100);
 begin
     if l_goal = 'dynamic unpivot' and l_approach = 'json_table' then
-        l_problems := 'hardcoding required for json_table and unpivot';
+        l_problems := 'hardcoding required for json_table';
         l_solution := 'json_dataguide and pipelined functions';
     end if;
     dbms_output.put_line('For ' || l_goal || ' using ' || l_approach);
