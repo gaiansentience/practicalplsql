@@ -1,4 +1,4 @@
-prompt design-3.1-any_dataguide.sql
+prompt design-2.2-any_dataguide.sql
 
 set long 1000
 set pagesize 100

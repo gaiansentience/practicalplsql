@@ -7,7 +7,18 @@ column datatype format a10
 column length format 9999
 
 with json_document as (
-    select dynamic_json.get_test_json('nested') as jdoc
+    select 
+        q'~
+        {"my_shapes":
+            [
+            {"name":"square","side":5,"color":"blue"},
+            {"name":"rectangle","length":5,"width":3},  
+            {"name":"box","length":5,"width":3,"height":2},  
+            {"name":"hexagon","side":3,"color":"red"},
+            {"name":"circle","radius":3},
+            ]
+        }
+        ~' as jdoc
     from dual
 ), dataguide as (
     select json_dataguide(b.jdoc) as jdoc_dataguide

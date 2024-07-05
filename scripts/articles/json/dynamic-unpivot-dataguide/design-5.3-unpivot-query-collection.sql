@@ -17,19 +17,19 @@ declare
     
     type column_values is table of column_value index by pls_integer;
 
-    type column_defnition is record (
+    type column_definition is record (
         column_name varchar2(64), 
         column_type varchar2(20), 
         column_path varchar2(100));
         
-    type column_defnitions is table of column_defnition index by pls_integer;
+    type column_definitions is table of column_definition index by pls_integer;
 
     function dataguide_columns(
         jdoc in $if dbms_db_version.version >= 21 $then json $else clob $end , 
         array_path in varchar2 default null
-    ) return column_defnitions
+    ) return column_definitions
     is
-        l_key_columns column_defnitions;
+        l_key_columns column_definitions;
     begin    
         with dataguide as (
             select json_dataguide(jdoc) as jdoc_dataguide
@@ -69,7 +69,7 @@ declare
         jdoc in $if dbms_db_version.version >= 21 $then json $else clob $end, 
         array_path in varchar2 default null)
     is
-        l_key_columns column_defnitions;        
+        l_key_columns column_definitions;        
     begin
         l_key_columns := dataguide_columns(jdoc, array_path);
         
@@ -85,7 +85,7 @@ declare
     end debug_dataguide_columns;
     
     function json_table_expression(
-        key_columns in column_defnitions,
+        key_columns in column_definitions,
         array_path in varchar2 default null
     ) return varchar2
     is
@@ -94,8 +94,7 @@ declare
     begin
     
         --build the columns expression
-        --since we want to use this with unpivot, set all columns to varchar
-        for i in 1..key_columns.count loop
+        for i in $if dbms_db_version.version >= 21 $then indices of key_columns $else 1..key_columns.count $end loop
             l_columns_clause := l_columns_clause || c_indent
                 || ', ' || rpad(key_columns(i).column_name, c_max_column_name_length + 1, ' ')
                 || c_unpivot_to_datatype 
@@ -125,7 +124,7 @@ from
         array_path in varchar2 default null
     )
     is
-        l_key_columns column_defnitions;
+        l_key_columns column_definitions;
         l_sql varchar2(4000);
     begin
         l_key_columns := dataguide_columns(jdoc, array_path);
@@ -138,7 +137,7 @@ from
     end debug_json_table_expression;
     
     function unpivot_expression(
-        key_columns in column_defnitions,
+        key_columns in column_definitions,
         json_table_query in varchar2
     ) return varchar2
     is
@@ -147,7 +146,7 @@ from
     begin
     
         --build the unpivot expression using the columns collection
-        for i in 1..key_columns.count loop
+        for i in $if dbms_db_version.version >= 21 $then indices of key_columns $else 1..key_columns.count $end loop
             l_unpivot_columns := l_unpivot_columns || c_indent
                 || case when i > 1 then ', ' end 
                 || key_columns(i).column_name 
@@ -180,7 +179,7 @@ order by "row#id", "column#key"
         array_path in varchar2 default null
     )
     is
-        l_key_columns column_defnitions;
+        l_key_columns column_definitions;
         l_json_table_query varchar2(4000);
         l_sql varchar2(4000);
     begin
@@ -199,7 +198,7 @@ order by "row#id", "column#key"
         array_path in varchar2 default null    
     ) return column_values
     is
-        l_key_columns column_defnitions;
+        l_key_columns column_definitions;
         l_json_table_query varchar2(4000);
         l_sql varchar2(4000);
         l_values column_values;

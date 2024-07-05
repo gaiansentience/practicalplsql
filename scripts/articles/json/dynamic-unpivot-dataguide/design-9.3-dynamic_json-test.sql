@@ -8,22 +8,22 @@ set pagesize 100
 
 prompt simple json with no row identifier
 select *
-from dynamic_json.unpivot_json_array(dynamic_json#test.test_jdoc('simple'))
+from dynamic_json.unpivot_json_array(dynamic_json.test_jdoc('simple'))
 /
 
 prompt simple json with shape_id as row identifier
 select *
-from dynamic_json.unpivot_json_array(dynamic_json#test.test_jdoc('simple_id'), row_identifier => 'shape_id')
+from dynamic_json.unpivot_json_array(dynamic_json.test_jdoc('simple_id'), row_identifier => 'shape_id')
 /
 
 prompt nested json with no row identifier
 select *
-from dynamic_json.unpivot_json_array(dynamic_json#test.test_jdoc('nested'), array_path => '.my_shapes')
+from dynamic_json.unpivot_json_array(dynamic_json.test_jdoc('nested'), array_path => '.my_shapes')
 /
 
 prompt nested json with shape_id as row identifier
 select *
-from dynamic_json.unpivot_json_array(dynamic_json#test.test_jdoc('nested_id'), row_identifier => 'shape_id', array_path => '.my_shapes')
+from dynamic_json.unpivot_json_array(dynamic_json.test_jdoc('nested_id'), row_identifier => 'shape_id', array_path => '.my_shapes')
 /
 
 /*

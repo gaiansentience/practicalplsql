@@ -1,3 +1,4 @@
+prompt query.json_doc.json_rows.sql
 
 
 with json_document as (

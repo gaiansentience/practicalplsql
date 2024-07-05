@@ -13,11 +13,8 @@ with base as (
         object_id, 
         object_name, 
         object_type, 
-        status, 
         created, 
-        timestamp, 
-        namespace, 
-        editionable
+        namespace
     from user_objects
 ), to_json as (
     select 
@@ -33,67 +30,46 @@ from
 /
 
 /*
-design--9.4-dynamic_json-test.sql
+design--9.4-dynamic_json-test-19c.sql
+query is 19c compatibale: uses clob for json_data
+dynamic_json conditionally compiled to use clob for json data
 
 ROW#ID COLUMN#KEY           COLUMN#VALUE        
 ------ -------------------- --------------------
-100457 CREATED              2024-07-04T13:05:32 
-100457 EDITIONABLE          Y                   
-100457 NAMESPACE            1                   
-100457 OBJECT_NAME          DYNAMIC_JSON#TEST   
-100457 OBJECT_TYPE          PACKAGE             
-100457 STATUS               VALID               
-100457 TIMESTAMP            2024-07-04:16:34:17 
-100458 CREATED              2024-07-04T13:05:33 
-100458 EDITIONABLE          Y                   
-100458 NAMESPACE            2                   
-100458 OBJECT_NAME          DYNAMIC_JSON#TEST   
-100458 OBJECT_TYPE          PACKAGE BODY        
-100458 STATUS               VALID               
-100458 TIMESTAMP            2024-07-04:16:35:59 
-100459 CREATED              2024-07-04T16:53:42 
-100459 EDITIONABLE          Y                   
-100459 NAMESPACE            1                   
-100459 OBJECT_NAME          DYNAMIC_JSON#ALPHA  
-100459 OBJECT_TYPE          PACKAGE             
-100459 STATUS               VALID               
-100459 TIMESTAMP            2024-07-04:16:54:53 
-100460 CREATED              2024-07-04T16:53:42 
-100460 EDITIONABLE          Y                   
-100460 NAMESPACE            2                   
-100460 OBJECT_NAME          DYNAMIC_JSON#ALPHA  
-100460 OBJECT_TYPE          PACKAGE BODY        
-100460 STATUS               VALID               
-100460 TIMESTAMP            2024-07-04:16:56:08 
-100461 CREATED              2024-07-04T17:09:40 
-100461 EDITIONABLE          Y                   
-100461 NAMESPACE            1                   
-100461 OBJECT_NAME          DYNAMIC_JSON#BETA   
-100461 OBJECT_TYPE          PACKAGE             
-100461 STATUS               VALID               
-100461 TIMESTAMP            2024-07-04:17:37:15 
-100462 CREATED              2024-07-04T17:09:40 
-100462 EDITIONABLE          Y                   
-100462 NAMESPACE            2                   
-100462 OBJECT_NAME          DYNAMIC_JSON#BETA   
-100462 OBJECT_TYPE          PACKAGE BODY        
-100462 STATUS               VALID               
-100462 TIMESTAMP            2024-07-04:17:42:35 
-100463 CREATED              2024-07-04T17:58:54 
-100463 EDITIONABLE          Y                   
-100463 NAMESPACE            1                   
-100463 OBJECT_NAME          DYNAMIC_JSON        
-100463 OBJECT_TYPE          PACKAGE             
-100463 STATUS               VALID               
-100463 TIMESTAMP            2024-07-04:17:58:54 
-100464 CREATED              2024-07-04T17:59:00 
-100464 EDITIONABLE          Y                   
-100464 NAMESPACE            2                   
-100464 OBJECT_NAME          DYNAMIC_JSON        
-100464 OBJECT_TYPE          PACKAGE BODY        
-100464 STATUS               VALID               
-100464 TIMESTAMP            2024-07-04:18:11:44 
+108369 CREATED              2024-07-04T19:31:58 
+108369 NAMESPACE            1                   
+108369 OBJECT_NAME          DYNAMIC_JSON        
+108369 OBJECT_TYPE          PACKAGE             
+108370 CREATED              2024-07-04T19:32:52 
+108370 NAMESPACE            2                   
+108370 OBJECT_NAME          DYNAMIC_JSON        
+108370 OBJECT_TYPE          PACKAGE BODY        
+108399 CREATED              2024-07-04T19:00:55 
+108399 NAMESPACE            1                   
+108399 OBJECT_NAME          DYNAMIC_JSON#TEST   
+108399 OBJECT_TYPE          PACKAGE             
+108400 CREATED              2024-07-04T19:00:55 
+108400 NAMESPACE            2                   
+108400 OBJECT_NAME          DYNAMIC_JSON#TEST   
+108400 OBJECT_TYPE          PACKAGE BODY        
+108401 CREATED              2024-07-04T19:21:42 
+108401 NAMESPACE            1                   
+108401 OBJECT_NAME          DYNAMIC_JSON#ALPHA  
+108401 OBJECT_TYPE          PACKAGE             
+108402 CREATED              2024-07-04T19:21:42 
+108402 NAMESPACE            2                   
+108402 OBJECT_NAME          DYNAMIC_JSON#ALPHA  
+108402 OBJECT_TYPE          PACKAGE BODY        
+108403 CREATED              2024-07-04T19:26:16 
+108403 NAMESPACE            1                   
+108403 OBJECT_NAME          DYNAMIC_JSON#BETA   
+108403 OBJECT_TYPE          PACKAGE             
+108404 CREATED              2024-07-04T19:26:16 
+108404 NAMESPACE            2                   
+108404 OBJECT_NAME          DYNAMIC_JSON#BETA   
+108404 OBJECT_TYPE          PACKAGE BODY        
 
-56 rows selected. 
+32 rows selected. 
+
 
 */

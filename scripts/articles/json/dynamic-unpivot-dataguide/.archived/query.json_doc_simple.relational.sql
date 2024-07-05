@@ -1,3 +1,6 @@
+prompt query.json_doc_simple.relational.sql
+
+
 set null NULL
 set feedback on
 

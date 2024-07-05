@@ -10,19 +10,19 @@ declare
     c_max_column_name_length constant number := 10;
     c_unpivot_to_datatype constant varchar2(20) := 'varchar2(4000)';
     
-    type column_defnition is record (
+    type column_definition is record (
         column_name varchar2(64), 
         column_type varchar2(20), 
         column_path varchar2(100));
         
-    type column_defnitions is table of column_defnition index by pls_integer;
+    type column_definitions is table of column_definition index by pls_integer;
 
     function dataguide_columns(
         jdoc in $if dbms_db_version.version >= 21 $then json $else clob $end , 
         array_path in varchar2 default null
-    ) return column_defnitions
+    ) return column_definitions
     is
-        l_key_columns column_defnitions;
+        l_key_columns column_definitions;
     begin    
         with dataguide as (
             select json_dataguide(jdoc) as jdoc_dataguide
@@ -66,7 +66,7 @@ $end
         jdoc in $if dbms_db_version.version >= 21 $then json $else clob $end, 
         array_path in varchar2 default null)
     is
-        l_key_columns column_defnitions;        
+        l_key_columns column_definitions;        
     begin
         l_key_columns := dataguide_columns(jdoc, array_path);
         
@@ -82,7 +82,7 @@ $end
     end debug_dataguide_columns;
     
     function json_table_expression(
-        key_columns in column_defnitions,
+        key_columns in column_definitions,
         array_path in varchar2 default null
     ) return varchar2
     is
@@ -122,7 +122,7 @@ from
         array_path in varchar2 default null
     )
     is
-        l_key_columns column_defnitions;
+        l_key_columns column_definitions;
         l_sql varchar2(4000);
     begin
         l_key_columns := dataguide_columns(jdoc, array_path);
