@@ -9,6 +9,8 @@ as
     c_indent constant varchar2(100) := lpad(' ', 12, ' ');
     c_max_column_name_length constant number := 64;
     
+    subtype sql_text is varchar2(32000);
+    
     g_unpivot_to_datatype unpivot_datatype := c_varchar2_4000;
     g_bulk_limit_rows positiven := 100;
     
@@ -86,8 +88,8 @@ $end
         array_path in varchar2 default null
     ) return varchar2
     is
-        l_sql varchar2(32000);
-        l_columns_clause varchar2(4000);
+        l_sql sql_text;
+        l_columns_clause sql_text;
         l_row_identifier varchar2(1000) := '"row#id" for ordinality';
     begin
     
@@ -129,8 +131,8 @@ from
         row_identifier in varchar2 default null        
     ) return varchar2
     is
-        l_sql varchar2(32000);
-        l_unpivot_columns varchar2(4000);
+        l_sql sql_text;
+        l_unpivot_columns sql_text;
     begin
     
         --build the unpivot expression
@@ -169,8 +171,8 @@ order by "row#id", "column#key"
     ) return column_values pipelined
     is
         l_key_columns column_definitions;
-        l_json_table_query varchar2(4000);
-        l_sql varchar2(4000);
+        l_json_table_query sql_text;
+        l_sql sql_text;
         l_values column_values;
         c sys_refcursor;
     begin
@@ -232,7 +234,7 @@ order by "row#id", "column#key"
     )
     is
         l_key_columns column_definitions;
-        l_sql varchar2(4000);
+        l_sql sql_text;
     begin
         l_key_columns := dataguide_columns(jdoc, row_identifier, array_path);
         l_sql := json_table_expression(l_key_columns, row_identifier, array_path);
@@ -250,8 +252,8 @@ order by "row#id", "column#key"
     )
     is
         l_key_columns column_definitions;
-        l_json_table_query varchar2(4000);
-        l_sql varchar2(4000);
+        l_json_table_query sql_text;
+        l_sql sql_text;
     begin
         l_key_columns := dataguide_columns(jdoc, row_identifier, array_path);
         l_json_table_query := json_table_expression(l_key_columns, row_identifier, array_path);
