@@ -1,0 +1,314 @@
+.\sales_data-regional-monthly.txt
+Annual Sales
+
+ Year  Volume
+----- -------
+ 2022  626526
+ 2023  649650
+ 2021  696321
+
+3 rows selected. 
+
+Regional Monthly Sales
+East region monthly sales
+
+ Year EastJanuary EastFebruary EastMarch EastApril EastMay EastJune
+----- ----------- ------------ --------- --------- ------- --------
+ 2021         529        13488     19528     15659   16739    13319
+ 2022       13220         2556     18191      5850   14574     6741
+ 2023       12905        14277      7257      5711   18163    14741
+
+3 rows selected. 
+
+
+ Year EastJuly EastAugust EastSeptember EastOctober EastNovember EastDecember
+----- -------- ---------- ------------- ----------- ------------ ------------
+ 2021     2023      18758          6441        8474        11954        12709
+ 2022     6908      19462           254       14270        16613         7161
+ 2023     4609      18894         12533       15866         7831        19421
+
+3 rows selected. 
+
+West region monthly sales
+
+ Year WestJanuary WestFebruary WestMarch WestApril WestMay WestJune
+----- ----------- ------------ --------- --------- ------- --------
+ 2021       17778        19964     14622     18913    9366    17692
+ 2022        1986        13380      5354     17740    9645    17074
+ 2023         288         4815     17894      3916   13688    19426
+
+3 rows selected. 
+
+
+ Year WestJuly WestAugust WestSeptember WestOctober WestNovember WestDecember
+----- -------- ---------- ------------- ----------- ------------ ------------
+ 2021     4465      19145         12582        6603        10145        11096
+ 2022    12365      15038          4794       15895         5670         8627
+ 2023     7943      18971          3152       11281         6790        14930
+
+3 rows selected. 
+
+North region monthly sales
+
+ Year NorthJanuary NorthFebruary NorthMarch NorthApril NorthMay NorthJune
+----- ------------ ------------- ---------- ---------- -------- ---------
+ 2021        13866         17733      11782      11143     6117     18601
+ 2022         2199         10928       3724      12620     8746      6433
+ 2023         3293         18662      17314       4641    12003      9967
+
+3 rows selected. 
+
+
+ Year NorthJuly NorthAugust NorthSeptember NorthOctober NorthNovember NorthDecember
+----- --------- ----------- -------------- ------------ ------------- -------------
+ 2021     15337       19454          10800        14126         17654         11558
+ 2022      1440        4180          19380        15394          1203         19173
+ 2023      4368        4195          13287         5019         12861          2719
+
+3 rows selected. 
+
+South region monthly sales
+
+ Year SouthJanuary SouthFebruary SouthMarch SouthApril SouthMay SouthJune
+----- ------------ ------------- ---------- ---------- -------- ---------
+ 2021         8919         18218      12943      19082    12679      2229
+ 2022        13555         12397       9882       6805    19782     12026
+ 2023        13737         13962       6184      15176    13129      6234
+
+3 rows selected. 
+
+
+ Year SouthJuly SouthAugust SouthSeptember SouthOctober SouthNovember SouthDecember
+----- --------- ----------- -------------- ------------ ------------- -------------
+ 2021       568        4962           5118        11724         14209          7521
+ 2022      7061       15946          15349         6830         16167         19888
+ 2023     19139       14011           4144          808         11891          3704
+
+3 rows selected. 
+
+Central region monthly sales
+
+ Year CentralJanuary CentralFebruary CentralMarch CentralApril CentralMay CentralJune
+----- -------------- --------------- ------------ ------------ ---------- -----------
+ 2021          12139            6022        12653         6918      17299       12280
+ 2022           8151           13121        11780         2417       4004       13941
+ 2023           5147           18740        18262        19253        770        6616
+
+3 rows selected. 
+
+
+ Year CentralJuly CentralAugust CentralSeptember CentralOctober CentralNovember CentralDecember
+----- ----------- ------------- ---------------- -------------- --------------- ---------------
+ 2021       19732          3028             2631           9111            1355            4818
+ 2022       10449         16087             1507          11138           11522            7933
+ 2023       15975         15144             5100          17607            3110           18176
+
+3 rows selected. 
+
+Add each regional monthly column to validate yearly totals
+
+ Year  Volume
+----- -------
+ 2021  696321
+ 2022  626526
+ 2023  649650
+
+3 rows selected. 
+
+Unpivot Regional monthly Sales
+
+ Year  Volume RegionMonth     
+----- ------- ----------------
+ 2021     529 EastJanuary     
+ 2021   17778 WestJanuary     
+ 2021   13866 NorthJanuary    
+ 2021    8919 SouthJanuary    
+ 2021   12139 CentralJanuary  
+ 2021   13488 EastFebruary    
+ 2021   19964 WestFebruary    
+ 2021   17733 NorthFebruary   
+ 2021   18218 SouthFebruary   
+ 2021    6022 CentralFebruary 
+ 2021   19528 EastMarch       
+ 2021   14622 WestMarch       
+ 2021   11782 NorthMarch      
+ 2021   12943 SouthMarch      
+ 2021   12653 CentralMarch    
+ 2021   15659 EastApril       
+ 2021   18913 WestApril       
+ 2021   11143 NorthApril      
+ 2021   19082 SouthApril      
+ 2021    6918 CentralApril    
+ 2021   16739 EastMay         
+ 2021    9366 WestMay         
+ 2021    6117 NorthMay        
+ 2021   12679 SouthMay        
+ 2021   17299 CentralMay      
+ 2021   13319 EastJune        
+ 2021   17692 WestJune        
+ 2021   18601 NorthJune       
+ 2021    2229 SouthJune       
+ 2021   12280 CentralJune     
+ 2021    2023 EastJuly        
+ 2021    4465 WestJuly        
+ 2021   15337 NorthJuly       
+ 2021     568 SouthJuly       
+ 2021   19732 CentralJuly     
+ 2021   18758 EastAugust      
+ 2021   19145 WestAugust      
+ 2021   19454 NorthAugust     
+ 2021    4962 SouthAugust     
+ 2021    3028 CentralAugust   
+ 2021    6441 EastSeptember   
+ 2021   12582 WestSeptember   
+ 2021   10800 NorthSeptember  
+ 2021    5118 SouthSeptember  
+ 2021    2631 CentralSeptember
+ 2021    8474 EastOctober     
+ 2021    6603 WestOctober     
+ 2021   14126 NorthOctober    
+ 2021   11724 SouthOctober    
+ 2021    9111 CentralOctober  
+ 2021   11954 EastNovember    
+ 2021   10145 WestNovember    
+ 2021   17654 NorthNovember   
+ 2021   14209 SouthNovember   
+ 2021    1355 CentralNovember 
+ 2021   12709 EastDecember    
+ 2021   11096 WestDecember    
+ 2021   11558 NorthDecember   
+ 2021    7521 SouthDecember   
+ 2021    4818 CentralDecember 
+ 2022   13220 EastJanuary     
+ 2022    1986 WestJanuary     
+ 2022    2199 NorthJanuary    
+ 2022   13555 SouthJanuary    
+ 2022    8151 CentralJanuary  
+ 2022    2556 EastFebruary    
+ 2022   13380 WestFebruary    
+ 2022   10928 NorthFebruary   
+ 2022   12397 SouthFebruary   
+ 2022   13121 CentralFebruary 
+ 2022   18191 EastMarch       
+ 2022    5354 WestMarch       
+ 2022    3724 NorthMarch      
+ 2022    9882 SouthMarch      
+ 2022   11780 CentralMarch    
+ 2022    5850 EastApril       
+ 2022   17740 WestApril       
+ 2022   12620 NorthApril      
+ 2022    6805 SouthApril      
+ 2022    2417 CentralApril    
+ 2022   14574 EastMay         
+ 2022    9645 WestMay         
+ 2022    8746 NorthMay        
+ 2022   19782 SouthMay        
+ 2022    4004 CentralMay      
+ 2022    6741 EastJune        
+ 2022   17074 WestJune        
+ 2022    6433 NorthJune       
+ 2022   12026 SouthJune       
+ 2022   13941 CentralJune     
+ 2022    6908 EastJuly        
+ 2022   12365 WestJuly        
+ 2022    1440 NorthJuly       
+ 2022    7061 SouthJuly       
+ 2022   10449 CentralJuly     
+ 2022   19462 EastAugust      
+ 2022   15038 WestAugust      
+ 2022    4180 NorthAugust     
+ 2022   15946 SouthAugust     
+ 2022   16087 CentralAugust   
+ 2022     254 EastSeptember   
+ 2022    4794 WestSeptember   
+ 2022   19380 NorthSeptember  
+ 2022   15349 SouthSeptember  
+ 2022    1507 CentralSeptember
+ 2022   14270 EastOctober     
+ 2022   15895 WestOctober     
+ 2022   15394 NorthOctober    
+ 2022    6830 SouthOctober    
+ 2022   11138 CentralOctober  
+ 2022   16613 EastNovember    
+ 2022    5670 WestNovember    
+ 2022    1203 NorthNovember   
+ 2022   16167 SouthNovember   
+ 2022   11522 CentralNovember 
+ 2022    7161 EastDecember    
+ 2022    8627 WestDecember    
+ 2022   19173 NorthDecember   
+ 2022   19888 SouthDecember   
+ 2022    7933 CentralDecember 
+ 2023   12905 EastJanuary     
+ 2023     288 WestJanuary     
+ 2023    3293 NorthJanuary    
+ 2023   13737 SouthJanuary    
+ 2023    5147 CentralJanuary  
+ 2023   14277 EastFebruary    
+ 2023    4815 WestFebruary    
+ 2023   18662 NorthFebruary   
+ 2023   13962 SouthFebruary   
+ 2023   18740 CentralFebruary 
+ 2023    7257 EastMarch       
+ 2023   17894 WestMarch       
+ 2023   17314 NorthMarch      
+ 2023    6184 SouthMarch      
+ 2023   18262 CentralMarch    
+ 2023    5711 EastApril       
+ 2023    3916 WestApril       
+ 2023    4641 NorthApril      
+ 2023   15176 SouthApril      
+ 2023   19253 CentralApril    
+ 2023   18163 EastMay         
+ 2023   13688 WestMay         
+ 2023   12003 NorthMay        
+ 2023   13129 SouthMay        
+ 2023     770 CentralMay      
+ 2023   14741 EastJune        
+ 2023   19426 WestJune        
+ 2023    9967 NorthJune       
+ 2023    6234 SouthJune       
+ 2023    6616 CentralJune     
+ 2023    4609 EastJuly        
+ 2023    7943 WestJuly        
+ 2023    4368 NorthJuly       
+ 2023   19139 SouthJuly       
+ 2023   15975 CentralJuly     
+ 2023   18894 EastAugust      
+ 2023   18971 WestAugust      
+ 2023    4195 NorthAugust     
+ 2023   14011 SouthAugust     
+ 2023   15144 CentralAugust   
+ 2023   12533 EastSeptember   
+ 2023    3152 WestSeptember   
+ 2023   13287 NorthSeptember  
+ 2023    4144 SouthSeptember  
+ 2023    5100 CentralSeptember
+ 2023   15866 EastOctober     
+ 2023   11281 WestOctober     
+ 2023    5019 NorthOctober    
+ 2023     808 SouthOctober    
+ 2023   17607 CentralOctober  
+ 2023    7831 EastNovember    
+ 2023    6790 WestNovember    
+ 2023   12861 NorthNovember   
+ 2023   11891 SouthNovember   
+ 2023    3110 CentralNovember 
+ 2023   19421 EastDecember    
+ 2023   14930 WestDecember    
+ 2023    2719 NorthDecember   
+ 2023    3704 SouthDecember   
+ 2023   18176 CentralDecember 
+
+180 rows selected. 
+
+Unpivot each regional monthly column to validate yearly totals
+
+ Year  Volume
+----- -------
+ 2021  696321
+ 2022  626526
+ 2023  649650
+
+3 rows selected. 
+

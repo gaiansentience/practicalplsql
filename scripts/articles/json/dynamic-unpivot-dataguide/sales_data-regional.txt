@@ -1,0 +1,63 @@
+sales_data-regional.txt
+Annual Sales
+
+  Year  Volume
+------ -------
+  2022  626526
+  2023  649650
+  2021  696321
+
+3 rows selected. 
+
+Regional Sales
+
+  Year    East    West   North   South Central
+------ ------- ------- ------- ------- -------
+  2021  139621  162371  168171  118172  107986
+  2022  125800  127568  105420  155688  112050
+  2023  152208  123094  108329  122119  143900
+
+3 rows selected. 
+
+Add each regional column to validate yearly totals
+
+  Year  Volume
+------ -------
+  2021  696321
+  2022  626526
+  2023  649650
+
+3 rows selected. 
+
+Unpivot Regional Sales
+
+  Year Region     Volume
+------ --------- -------
+  2021 East       139621
+  2021 West       162371
+  2021 North      168171
+  2021 South      118172
+  2021 Central    107986
+  2022 East       125800
+  2022 West       127568
+  2022 North      105420
+  2022 South      155688
+  2022 Central    112050
+  2023 East       152208
+  2023 West       123094
+  2023 North      108329
+  2023 South      122119
+  2023 Central    143900
+
+15 rows selected. 
+
+Unpivot each regional column to validate yearly totals
+
+  Year  Volume
+------ -------
+  2021  696321
+  2022  626526
+  2023  649650
+
+3 rows selected. 
+
