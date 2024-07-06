@@ -1,0 +1,60 @@
+sales_data-quarterly.txt
+Annual Sales
+
+  Year  Volume
+------ -------
+  2022  626526
+  2023  649650
+  2021  696321
+
+3 rows selected. 
+
+Quarterly Sales
+
+  Year    Qtr1    Qtr2    Qtr3    Qtr4
+------ ------- ------- ------- -------
+  2021  200184  198036  145044  153057
+  2022  140424  158398  150220  177484
+  2023  172737  163434  161465  152014
+
+3 rows selected. 
+
+Add each quarterly column to validate yearly totals
+
+  Year  Volume
+------ -------
+  2021  696321
+  2022  626526
+  2023  649650
+
+3 rows selected. 
+
+Unpivot Quarterly Sales
+
+  Year Quarter    Volume
+------ --------- -------
+  2021 Qtr1       200184
+  2021 Qtr2       198036
+  2021 Qtr3       145044
+  2021 Qtr4       153057
+  2022 Qtr1       140424
+  2022 Qtr2       158398
+  2022 Qtr3       150220
+  2022 Qtr4       177484
+  2023 Qtr1       172737
+  2023 Qtr2       163434
+  2023 Qtr3       161465
+  2023 Qtr4       152014
+
+12 rows selected. 
+
+Unpivot each quarterly column to validate yearly totals
+
+  Year  Volume
+------ -------
+  2021  696321
+  2022  626526
+  2023  649650
+
+3 rows selected. 
+
