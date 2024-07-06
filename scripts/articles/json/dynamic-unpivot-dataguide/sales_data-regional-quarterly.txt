@@ -1,0 +1,149 @@
+sales_data-regional-quarterly.txt
+Annual Sales
+
+  Year  Volume
+------ -------
+  2022  626526
+  2023  649650
+  2021  696321
+
+3 rows selected. 
+
+Regional Quarterly Sales
+East region quarterly sales
+
+  Year EastQtr1 EastQtr2 EastQtr3 EastQtr4
+------ -------- -------- -------- --------
+  2021    33545    45717    27222    33137
+  2022    33967    27165    26624    38044
+  2023    34439    38615    36036    43118
+
+3 rows selected. 
+
+West region quarterly sales
+
+  Year WestQtr1 WestQtr2 WestQtr3 WestQtr4
+------ -------- -------- -------- --------
+  2021    52364    45971    36192    27844
+  2022    20720    44459    32197    30192
+  2023    22997    37030    30066    33001
+
+3 rows selected. 
+
+North region quarterly sales
+
+  Year NorthQtr1 NorthQtr2 NorthQtr3 NorthQtr4
+------ --------- --------- --------- ---------
+  2021     43381     35861     45591     43338
+  2022     16851     27799     25000     35770
+  2023     39269     26611     21850     20599
+
+3 rows selected. 
+
+South region quarterly sales
+
+  Year SouthQtr1 SouthQtr2 SouthQtr3 SouthQtr4
+------ --------- --------- --------- ---------
+  2021     40080     33990     10648     33454
+  2022     35834     38613     38356     42885
+  2023     33883     34539     37294     16403
+
+3 rows selected. 
+
+Central region quarterly sales
+
+  Year CentralQtr1 CentralQtr2 CentralQtr3 CentralQtr4
+------ ----------- ----------- ----------- -----------
+  2021       30814       36497       25391       15284
+  2022       33052       20362       28043       30593
+  2023       42149       26639       36219       38893
+
+3 rows selected. 
+
+Add each regional quarterly column to validate yearly totals
+
+  Year  Volume
+------ -------
+  2021  696321
+  2022  626526
+  2023  649650
+
+3 rows selected. 
+
+Unpivot Regional Quarterly Sales
+
+  Year  Volume RegionQuarte
+------ ------- ------------
+  2021   33545 EastQtr1    
+  2021   52364 WestQtr1    
+  2021   43381 NorthQtr1   
+  2021   40080 SouthQtr1   
+  2021   30814 CentralQtr1 
+  2021   45717 EastQtr2    
+  2021   45971 WestQtr2    
+  2021   35861 NorthQtr2   
+  2021   33990 SouthQtr2   
+  2021   36497 CentralQtr2 
+  2021   27222 EastQtr3    
+  2021   36192 WestQtr3    
+  2021   45591 NorthQtr3   
+  2021   10648 SouthQtr3   
+  2021   25391 CentralQtr3 
+  2021   33137 EastQtr4    
+  2021   27844 WestQtr4    
+  2021   43338 NorthQtr4   
+  2021   33454 SouthQtr4   
+  2021   15284 CentralQtr4 
+  2022   33967 EastQtr1    
+  2022   20720 WestQtr1    
+  2022   16851 NorthQtr1   
+  2022   35834 SouthQtr1   
+  2022   33052 CentralQtr1 
+  2022   27165 EastQtr2    
+  2022   44459 WestQtr2    
+  2022   27799 NorthQtr2   
+  2022   38613 SouthQtr2   
+  2022   20362 CentralQtr2 
+  2022   26624 EastQtr3    
+  2022   32197 WestQtr3    
+  2022   25000 NorthQtr3   
+  2022   38356 SouthQtr3   
+  2022   28043 CentralQtr3 
+  2022   38044 EastQtr4    
+  2022   30192 WestQtr4    
+  2022   35770 NorthQtr4   
+  2022   42885 SouthQtr4   
+  2022   30593 CentralQtr4 
+  2023   34439 EastQtr1    
+  2023   22997 WestQtr1    
+  2023   39269 NorthQtr1   
+  2023   33883 SouthQtr1   
+  2023   42149 CentralQtr1 
+  2023   38615 EastQtr2    
+  2023   37030 WestQtr2    
+  2023   26611 NorthQtr2   
+  2023   34539 SouthQtr2   
+  2023   26639 CentralQtr2 
+  2023   36036 EastQtr3    
+  2023   30066 WestQtr3    
+  2023   21850 NorthQtr3   
+  2023   37294 SouthQtr3   
+  2023   36219 CentralQtr3 
+  2023   43118 EastQtr4    
+  2023   33001 WestQtr4    
+  2023   20599 NorthQtr4   
+  2023   16403 SouthQtr4   
+  2023   38893 CentralQtr4 
+
+60 rows selected. 
+
+Unpivot each regional quarterly column to validate yearly totals
+
+  Year  Volume
+------ -------
+  2021  696321
+  2022  626526
+  2023  649650
+
+3 rows selected. 
+
