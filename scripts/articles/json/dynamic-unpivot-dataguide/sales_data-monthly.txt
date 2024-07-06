@@ -1,0 +1,84 @@
+sales_data-monthly.txt
+Annual Sales
+
+  Year  Volume
+------ -------
+  2022  626526
+  2023  649650
+  2021  696321
+
+3 rows selected. 
+
+Monthly Sales
+
+  Year January February  March  April    May   June   July August September October November December
+------ ------- -------- ------ ------ ------ ------ ------ ------ --------- ------- -------- --------
+  2021   53231    75425  71528  71715  62200  64121  42125  65347     37572   50038    55317    47702
+  2022   39111    52382  48931  45432  56751  56215  38223  70713     41284   63527    51175    62782
+  2023   35370    70456  66911  48697  57753  56984  52034  71215     38216   50581    42483    58950
+
+3 rows selected. 
+
+Add each monthly column to validate yearly totals
+
+  Year  Volume
+------ -------
+  2021  696321
+  2022  626526
+  2023  649650
+
+3 rows selected. 
+
+Unpivot Monthly Sales
+
+  Year Month       Volume
+------ ---------- -------
+  2021 January      53231
+  2021 February     75425
+  2021 March        71528
+  2021 April        71715
+  2021 May          62200
+  2021 June         64121
+  2021 July         42125
+  2021 August       65347
+  2021 September    37572
+  2021 October      50038
+  2021 November     55317
+  2021 December     47702
+  2022 January      39111
+  2022 February     52382
+  2022 March        48931
+  2022 April        45432
+  2022 May          56751
+  2022 June         56215
+  2022 July         38223
+  2022 August       70713
+  2022 September    41284
+  2022 October      63527
+  2022 November     51175
+  2022 December     62782
+  2023 January      35370
+  2023 February     70456
+  2023 March        66911
+  2023 April        48697
+  2023 May          57753
+  2023 June         56984
+  2023 July         52034
+  2023 August       71215
+  2023 September    38216
+  2023 October      50581
+  2023 November     42483
+  2023 December     58950
+
+36 rows selected. 
+
+Unpivot each monthly column to validate yearly totals
+
+  Year  Volume
+------ -------
+  2021  696321
+  2022  626526
+  2023  649650
+
+3 rows selected. 
+
