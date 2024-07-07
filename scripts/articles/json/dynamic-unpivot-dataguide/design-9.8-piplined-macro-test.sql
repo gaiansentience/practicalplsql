@@ -1,4 +1,4 @@
-prompt design-9.8-pipelined-macro.sql
+prompt design-9.8-pipelined-macro-test.sql
 
 
 column Year format 9999
