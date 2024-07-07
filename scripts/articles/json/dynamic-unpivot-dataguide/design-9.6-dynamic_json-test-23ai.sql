@@ -1,8 +1,8 @@
-prompt design--9.6-dynamic_json-test-19c.sql
-prompt for Oracle 19c use clob datatype for json document
+prompt design--9.6-dynamic_json-test-23ai.sql
+prompt for Oracle 23ai use json datatype for json document
 
-spool ./design-9.6-dynamic_json_test-19c.txt
-prompt design-9.6-dynamic_json_test-19c.txt
+spool ./design-9.6-dynamic_json_test-23ai.txt
+prompt design-9.6-dynamic_json_test-23ai.txt
 
 set feedback on 
 
@@ -19,13 +19,7 @@ set pagesize 1000
 
 prompt dynamically unpivot quarterly totals
 with sales_to_json as (
-    select 
-        json_object(
-            'jSales' : 
-                json_arrayagg(
-                    json_object( s.* )
-                returning clob)
-        returning clob) as jdoc
+    select json{ 'jSales' : json_arrayagg( json{ s.* } ) } as jdoc
     from quarterly_sales_v s
 )
 select u.row#id as "Year", u.column#key as "Quarter", to_number(u.column#value) as "Volume"
@@ -37,13 +31,7 @@ from
 
 prompt dynamically unpivot regional totals
 with sales_to_json as (
-    select 
-        json_object(
-            'jSales' : 
-                json_arrayagg(
-                    json_object( s.* )
-                returning clob)
-        returning clob) as jdoc
+    select json{ 'jSales' : json_arrayagg( json{ s.* } ) } as jdoc
     from regional_sales_v s
 )
 select u.row#id as "Year", u.column#key as "Region", to_number(u.column#value) as "Volume"
@@ -54,13 +42,7 @@ from
 
 prompt dynamically unpivot regional quarterly totals
 with sales_to_json as (
-    select 
-        json_object(
-            'jSales' : 
-                json_arrayagg(
-                    json_object( s.* )
-                returning clob)
-        returning clob) as jdoc
+    select json{ 'jSales' : json_arrayagg( json{ s.* } ) } as jdoc
     from regional_quarterly_sales_v s
 )
 select u.row#id as "Year", u.column#key as "RegionQuarter", to_number(u.column#value) as "Volume"
@@ -71,13 +53,7 @@ from
 
 prompt dynamically unpivot monthly totals
 with sales_to_json as (
-    select 
-        json_object(
-            'jSales' : 
-                json_arrayagg(
-                    json_object( s.* )
-                returning clob)
-        returning clob) as jdoc
+    select json{ 'jSales' : json_arrayagg( json{ s.* } ) } as jdoc
     from monthly_sales_v s
 )
 select u.row#id as "Year", u.column#key as "Month", to_number(u.column#value) as "Volume"
@@ -88,13 +64,7 @@ from
 
 prompt dynamically unpivot monthly totals
 with sales_to_json as (
-    select 
-        json_object(
-            'jSales' : 
-                json_arrayagg(
-                    json_object( s.* )
-                returning clob)
-        returning clob) as jdoc
+    select json{ 'jSales' : json_arrayagg( json{ s.* } ) } as jdoc
     from regional_monthly_sales_v s
 )
 select u.row#id as "Year", u.column#key as "RegionMonth", to_number(u.column#value) as "Volume"
