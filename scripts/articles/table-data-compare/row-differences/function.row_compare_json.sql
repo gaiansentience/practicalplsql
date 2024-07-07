@@ -45,7 +45,7 @@ order by coalesce(s.##ID_COLUMN##, t.##ID_COLUMN##), row_source
     l_sql := replace(l_sql, '##ID_COLUMN##', p_id_column(1));
     l_sql := replace(l_sql, '##JSON_OBJECT##', l_json_object);
     
-    dbms_output.put_line(l_sql);
+    --dbms_output.put_line(l_sql);
     
     return l_sql;
 
