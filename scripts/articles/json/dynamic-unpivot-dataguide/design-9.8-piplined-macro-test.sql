@@ -13,19 +13,19 @@ select "Report", "Year", sum("Volume") as "Volume"
 from
     (
     select 'Quarterly Sales' as "Report", "Year", "Volume"
-    from unpivot_results(quarterly_sales_v, columns("Year", "x", "Volume"))
+    from unpivot_results(quarterly_sales_v, columns("Year", "Quarter", "Volume"))
     union all
     select 'Regional Sales' as "Report", "Year", "Volume"
-    from unpivot_results(regional_sales_v, columns("Year", "x", "Volume"))
+    from unpivot_results(regional_sales_v, columns("Year", "Region", "Volume"))
     union all
     select 'Regional Quarterly Sales' as "Report", "Year", "Volume"
-    from unpivot_results(regional_quarterly_sales_v, columns("Year", "x", "Volume"))
+    from unpivot_results(regional_quarterly_sales_v, columns("Year", "RegionQuarter", "Volume"))
     union all
     select 'Monthly Sales' as "Report", "Year", "Volume"
-    from unpivot_results(monthly_sales_v, columns("Year", "x", "Volume"))
+    from unpivot_results(monthly_sales_v, columns("Year", "Month", "Volume"))
     union all
     select 'Regional Monthly Sales' as "Report", "Year", "Volume"
-    from unpivot_results(regional_monthly_sales_v, columns("Year", "x", "Volume"))
+    from unpivot_results(regional_monthly_sales_v, columns("Year", "RegionMonth", "Volume"))
     union all
     select 'Annual Sales' as "Report", "Year", "Volume"
     from annual_sales_v
