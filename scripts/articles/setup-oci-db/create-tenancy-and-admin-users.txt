@@ -1,0 +1,29 @@
+Sign up for OCI Free Trial
+
+First Steps:
+
+Set up MFA for your primary login
+	Install the Oracle Authenticator Application
+	Enable MFA for your account when you log in (scan the QR code to set up the account in the app)
+
+Create a second admin user as backup
+
+Identity > Domains > Onboard Users
+
+	Manually Create Users
+	
+		Create an individual user [create user]
+		
+		
+		Create the user, add to Administrators group
+		
+		Check the backup user email account.  
+		
+		There will be an email to activate your profile in the tenancy.
+		Select the link, create a password and log in.
+		Set up MFA for this account also.
+		
+
+
+		
+		

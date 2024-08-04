@@ -1,0 +1,61 @@
+
+
+Go to Oracle Database > Autonomous Database > Create Autonomous Database
+
+
+Lets create two Autonomous Data Warehouses (One for 19c and one for 23ai)
+
+devcloud19c
+
+
+devcloud23ai
+
+Create the database as an always free resource with the default settings.
+
+Set database name and display name to the same value:
+
+Set the Admin Password
+
+Allow access from anywhere.  The default of mtls connections cannot be changed, but you can change it after the database is created.
+
+Keeping all the defaults will create a full set of features for the database.
+
+Create the database now (later you can experiment with saving this database definition as a stack and then creating the stack)
+
+While the first database is provisioning, go ahead and create the other database with the same settings but use 23ai for the version
+
+The database name and display name can be the same:
+
+
+
+After the databases are provisioned, set up tls:
+	Edit the Network ACL and add your IP Address.  This will enable the option to require mtls.
+	After the ACL is enabled, update mtls required to be optional.
+	
+
+Go to Connections
+	download a wallet if you want to set up mtls.
+	
+	copy the connection strings for the database to a local file, you can use these in sql developer as the hostnames prefixed by jdbc:oracle:thin:@
+	
+
+The Tools Configuration Menu will show the URLs for Apex, ORDS, OML, Data Transforms, Mongo API, Soda Drivers.  Copy to a file or bookmark for easy access.
+Go to Database Actions > User Management and save this url for managing users from the Admin account.
+
+Create Users:
+
+Create a dba user that you can use to make grants to users.  Even if you select a lot of admin grants in the UI, they will not be there if you reopen the edit user screen.
+Reopen and grant pdb_dba as default role...this grant should stick and give you an account to manage grants to users.
+
+Create a developer user that starts with db_developer_role (23ai) and some of the other developer roles
+
+Dont forget to grant a quota on the Data tablespace.
+
+
+
+
+
+
+
+	
+
