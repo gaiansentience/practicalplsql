@@ -1,15 +1,13 @@
-create user dev_vector identified by oracle;
+create user DEV_VECTOR identified by oracle;
 
-grant connect, db_developer_role to dev_vector;
-grant create domain to dev_vector;
-grant create mining model to dev_vector;
+grant connect, DB_DEVELOPER_ROLE to DEV_VECTOR;
+grant create domain to DEV_VECTOR;
+grant create mining model to DEV_VECTOR;
 
-alter user dev_vector quota unlimited on users;
+alter user DEV_VECTOR quota unlimited on users;
 
 --Oracle 23ai VirtualBox Linux Appliance with external data path
-CREATE OR REPLACE DIRECTORY ML_MODELS_DIR AS '/home/oracle/ext-data/ora-db-directories/shared/ml-models';
+create or replace directory ML_MODELS_DIR as '/home/oracle/ext-data/ora-db-directories/shared/ml-models';
 
-GRANT READ ON DIRECTORY ML_MODELS_DIR TO dev_vector;
-GRANT WRITE ON DIRECTORY ML_MODELS_DIR TO dev_vector;
-
-   
+grant read on directory ML_MODELS_DIR to DEV_VECTOR;
+grant write on directory ML_MODELS_DIR to DEV_VECTOR;
