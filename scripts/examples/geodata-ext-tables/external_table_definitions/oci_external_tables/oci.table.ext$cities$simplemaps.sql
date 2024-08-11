@@ -26,7 +26,7 @@ DECLARE
   l_TABLE_NAME        DBMS_QUOTED_ID := 'EXT$CITIES$SIMPLEMAPS';
   l_CREDENTIAL_NAME   DBMS_QUOTED_ID := '"OCI$RESOURCE_PRINCIPAL"';
   l_FILE_URI_LIST     CLOB :=
-    q'['https://objectstorage.us-phoenix-1.oraclecloud.com/n/axggbt93rsku/b/adw_ext_data/o/geodata/cities-simplemaps.csv']';
+    q'['https://objectstorage.us-ashburn-1.oraclecloud.com/n/idjv1ptikjf5/b/adw_ext_data/o/geodata/cities-simplemaps.csv']';
   l_COLUMN_LIST       CLOB :=
     q'[
     CITY_NAME VARCHAR2(100 CHAR),
