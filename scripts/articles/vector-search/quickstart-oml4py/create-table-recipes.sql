@@ -1,8 +1,8 @@
-CREATE TABLE if not exists recipes (
-    id NUMBER, 
-    name VARCHAR2(100), 
-    doc VARCHAR2(4000), 
-    embedding VECTOR, 
+create table if not exists recipes (
+    id number, 
+    name varchar2(100), 
+    doc varchar2(4000), 
+    embedding vector, 
     embedding_model varchar2(100)
 );
 /
@@ -36,7 +36,7 @@ begin
     
     update recipes g
     set 
-        embedding = vector_embedding(ALL_MINILM_L6_V2 using g.doc as data), 
+        embedding = vector_embedding(all_minilm_l6_v2 using g.doc as data), 
         embedding_model = 'ALL_MINILM_L6_V2';
 
 

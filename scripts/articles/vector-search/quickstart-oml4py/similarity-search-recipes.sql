@@ -2,7 +2,7 @@
 column name format a30
 column doc format a200
 
-SELECT name, doc
+select name, doc
 from recipes g
 order by 
     vector_distance(
@@ -11,7 +11,7 @@ order by
         , cosine)
 fetch first 3 rows only;
 
-SELECT name, doc
+select name, doc
 from recipes g
 order by 
     vector_distance(
@@ -20,7 +20,7 @@ order by
         , euclidean)
 fetch first 3 rows only;
 
-SELECT name, doc
+select name, doc
 from recipes g
 order by 
     vector_distance(
