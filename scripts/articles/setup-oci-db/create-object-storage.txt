@@ -1,0 +1,17 @@
+create an object storage bucket for external data that databases will access:
+
+Go to Storage > Object Storage & Archive Storage > Buckets
+
+Create a bucket
+
+Bucket Name: adw_ext_data
+
+You can enable versioning, we are just going to create a simple bucket
+
+Encrypt using Oracle managed keys
+Leaves all encryption-related matters to Oracle.
+		
+
+After the bucket is created, take a break and create a database.
+Then come back to this step and set up the correct access privileges to access the bucket.
+

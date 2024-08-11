@@ -57,7 +57,12 @@ ORGANIZATION EXTERNAL
             LONGITUDE CHAR(4000)
            )
        )
-     LOCATION ('cities-geonames.csv')
+     LOCATION (
+        'cities-geonames-1.csv', 
+        'cities-geonames-2.csv', 
+        'cities-geonames-3.csv',
+        'cities-geonames-4.csv'
+        )
   )
   REJECT LIMIT UNLIMITED;
 
