@@ -1,10 +1,11 @@
+--create-table-recipes.sql
 create table if not exists recipes (
     id number, 
     name varchar2(100), 
     doc varchar2(4000), 
     embedding vector, 
     embedding_model varchar2(100)
-);
+)
 /
 
 declare
@@ -39,8 +40,7 @@ begin
         embedding = vector_embedding(all_minilm_l6_v2 using g.doc as data), 
         embedding_model = 'ALL_MINILM_L6_V2';
 
-
-commit;
+    commit;
 
 end;
 /
