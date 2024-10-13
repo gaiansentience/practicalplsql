@@ -2,29 +2,29 @@ with source_columns as (
 select u.*
 from
     (
-        select json_object(*) as jdoc 
+        select json{*} as jdoc 
         from products_source 
     ) s,
-    table(dynamic_json_table.unpivot_json(s.jdoc,'PRODUCT_ID')) u
+    dynamic_json.unpivot_json_array(s.jdoc,'PRODUCT_ID') u
 ), target_columns as (
 select u.*
 from
     (
-        select json_object(*) as jdoc 
+        select json{*} as jdoc 
         from products_target
     ) s,
-    table(dynamic_json_table.unpivot_json(s.jdoc,'PRODUCT_ID')) u
+    dynamic_json.unpivot_json_array(s.jdoc,'PRODUCT_ID') u
 )
 select 
-    c."id"
-    , c."key"
-    , c.src_tbl
-    , json_value(c.jdoc,'$.value.string()') as value
+    c."ROW#ID"
+    , c."COLUMN#KEY"
+    , c.row_source
+    , json_value(c.jdoc,'$.COLUMN#VALUE.string()') as value
 from 
-    get_row_compare(source_columns, target_columns, columns("id","key")) c
+    row_compare(source_columns, target_columns, columns("ROW#ID","COLUMN#KEY")) c
 /
 
-select * from get_column_compare(products_source, products_target, columns(PRODUCT_ID,CODE))
+select * from column_compare(products_source, products_target, columns(PRODUCT_ID,CODE))
 /
 
 
@@ -34,13 +34,13 @@ with source_json as (
     select 
         'src' as src_tbl
         , product_id as id
-        , json_object(*) as jdoc 
+        , json_object(* returning json) as jdoc 
     from products_source
 ), target_json as (
     select 
         'tgt' as src_tbl
         , product_id as id
-        , json_object(*) as jdoc 
+        , json_object(* returning json) as jdoc 
     from products_target
 ), compare_rows as (
     select 
@@ -57,12 +57,12 @@ with source_json as (
 ), columns_base as (
     select 
         c.src_tbl
-        , u."id"
-        , u."key"
+        , u."ROW#ID" as "id"
+        , u."COLUMN#KEY" as "key"
         , json_object(u.*) as jdoc
     from 
         compare_rows c,
-        table(dynamic_json_table.unpivot_json(c.jdoc,'PRODUCT_ID')) u
+        table(dynamic_json.unpivot_json_array(c.jdoc,'PRODUCT_ID')) u
 ), source_columns as (
     select b.* from columns_base b where b.src_tbl = 'src'
 ), target_columns as (
@@ -72,7 +72,7 @@ select
     coalesce(s."id", t."id") as id,
     coalesce(s."key", t."key") as key,
     coalesce(s.src_tbl, t.src_tbl) as src_tbl,
-    json_value(coalesce(s.jdoc, t.jdoc), '$.value.string()') as value
+    json_value(coalesce(s.jdoc, t.jdoc), '$.COLUMN#VALUE.string()') as value
 from 
     source_columns s
     full outer join target_columns t

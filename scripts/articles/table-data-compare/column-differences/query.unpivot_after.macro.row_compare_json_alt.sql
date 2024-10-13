@@ -66,7 +66,7 @@ select
 from 
     (
     select row_source, code, jdoc
-    from row_compare_json_alt(compare_cols_source, compare_cols_target, columns(code))
+    from row_compare(compare_cols_source, compare_cols_target, columns(code))
     ) b,
     json_table(b.jdoc, '$'
         columns(

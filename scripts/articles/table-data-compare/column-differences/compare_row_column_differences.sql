@@ -56,7 +56,7 @@ select
     , value
 from
     parse_jdoc 
-    unpivot(value for key in (
+    unpivot include nulls(value for key in (
         name, description, style, unit_msrp, unit_cost, unit_qty
         )
     )
@@ -74,22 +74,32 @@ from
     on
         s.id = t.id
         and s.key = t.key
-        and s.value = t.value
+        --and s.value = t.value
+        and decode(s.value, t.value, 1, 0) = 1
 where s.id is null or t.id is null
 order by id, key, row_source
 /
+
+--select t.*
+--from
+--(
+--select json{*} as jdoc
+--from products_source
+--) j,
+--table(dynamic_json.unpivot_json_array(j.jdoc,'PRODUCT_ID')) t
+--/
 
 with source_json as (
     select 
         'source' as row_source
         , product_id as id
-        , json_object(*) as jdoc 
+        , json_object(* returning json) as jdoc 
     from products_source
 ), target_json as (
     select 
         'target' as row_source
         , product_id as id
-        , json_object(*) as jdoc 
+        , json_object(* returning json) as jdoc 
     from products_target
 ), compare_rows as (
     select 
@@ -105,29 +115,29 @@ with source_json as (
 ), columns_base as (
     select 
         c.row_source
-        , u."id"
-        , u."key"
+        , u.row#id
+        , u.column#key
         , json_object(u.*) as jdoc
     from 
         compare_rows c,
-        table(dynamic_json_table.unpivot_json(c.jdoc,'PRODUCT_ID')) u
+        table(dynamic_json.unpivot_json_array(c.jdoc,'PRODUCT_ID')) u
 ), source_columns as (
     select b.* from columns_base b where b.row_source = 'source'
 ), target_columns as (
     select b.* from columns_base b where b.row_source = 'target'
 )
 select 
-    coalesce(s."id", t."id") as id,
-    coalesce(s."key", t."key") as key,
+    coalesce(s.row#id, t.row#id) as id,
+    coalesce(s.column#key, t.column#key) as key,
     coalesce(s.row_source, t.row_source) as row_source,
-    json_value(coalesce(s.jdoc, t.jdoc), '$.value.string()') as value
+    json_value(coalesce(s.jdoc, t.jdoc), '$.COLUMN#VALUE.string()') as value
 from 
     source_columns s
     full outer join target_columns t
-        on s."id" = t."id"
-        and s."key" = t."key"
+        on s.row#id = t.row#id
+        and s.column#key = t.column#key
         and json_equal(s.jdoc, t.jdoc)
 where
-    s."id" is null or t."id" is null
+    s.row#id is null or t.row#id is null
 order by id, key, row_source
 /

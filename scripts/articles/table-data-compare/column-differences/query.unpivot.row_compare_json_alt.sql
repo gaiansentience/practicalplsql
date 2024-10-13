@@ -22,18 +22,18 @@ with coerce_datatypes_source as (
         to_char(msrp) as msrp 
     from products_target
 ), unpivot_source as (
-    select product_id, code, key_column, key_value
+    select product_id, code, column#name, column#value
     from 
         coerce_datatypes_source
         unpivot include nulls (
-            key_value for key_column in (name, description, style, msrp)
+            column#value for column#name in (name, description, style, msrp)
         )    
 ), unpivot_target as (
-    select product_id, code, key_column, key_value
+    select product_id, code, column#name, column#value
     from 
         coerce_datatypes_target
         unpivot include nulls (
-            key_value for key_column in (name, description, style, msrp)
+            column#value for column#name in (name, description, style, msrp)
         )    
 ), compare_rows as (
     select 
@@ -65,11 +65,15 @@ with coerce_datatypes_source as (
     where s.product_id is null or t.product_id is null    
 )
 select 
-    row_source, code, 
-    json_value(jdoc, '$.KEY_COLUMN') as key_column, 
-    json_value(jdoc, '$.KEY_VALUE') as key_value
-from compare_rows
-order by product_id, key_column, row_source
+    row_source, product_id, code, 
+    j.column#name,
+    j.column#value
+from 
+compare_rows c,
+json_table(c.jdoc, '$' 
+columns(column#name path '$.COLUMN#NAME.string()', column#value path '$.COLUMN#VALUE.string()')
+) j
+order by product_id, column#name, row_source
 /
 
 
