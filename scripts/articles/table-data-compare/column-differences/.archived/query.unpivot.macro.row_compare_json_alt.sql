@@ -1,7 +1,7 @@
 column row_source format a10
 column code format a10
-column key_column format a20
-column key_value format a50
+column column#name format a20
+column column#value format a50
 set null (null)
 set long 200
 set pagesize 50
@@ -12,49 +12,49 @@ set pagesize 50
 --use macro to compare row differences of unpivoted columns and show column differences
 with coerce_datatypes_source as (
     select 
-        code, name, description, style,     
+        product_id, code, name, description, style,     
         to_char(msrp) as msrp 
     from products_source
 ), coerce_datatypes_target as (
     select 
-        code, name, description, style,     
+        product_id, code, name, description, style,     
         to_char(msrp) as msrp 
     from products_target
 ), unpivot_source as (
-    select code, key_column, key_value
+    select product_id, code, column#name, column#value
     from 
         coerce_datatypes_source
         unpivot include nulls (
-            key_value for key_column in (name, description, style, msrp)
+            column#value for column#name in (name, description, style, msrp)
         )    
 ), unpivot_target as (
-    select code, key_column, key_value
+    select product_id, code, column#name, column#value
     from 
         coerce_datatypes_target
         unpivot include nulls(
-            key_value for key_column in (name, description, style, msrp)
+            column#value for column#name in (name, description, style, msrp)
         )    
 )
 select 
-    b.row_source, b.code, j.key_column, j.key_value
+    b.row_source, b.product_id, b.code, j.column#name, j.column#value
 from 
     (
-    select row_source, code, jdoc
-    from row_compare_json_alt(unpivot_source, unpivot_target, columns(code))
+    select row_source, product_id, code, jdoc
+    from row_compare(unpivot_source, unpivot_target, columns(product_id, code))
     ) b,
     json_table(b.jdoc, '$'
         columns(
-            key_column varchar2(4000) path '$.KEY_COLUMN',
-            key_value varchar2(4000) path '$.KEY_VALUE'
+            column#name varchar2(4000) path '$.COLUMN#NAME',
+            column#value varchar2(4000) path '$.COLUMN#VALUE'
         )
     ) j
-order by b.code, j.key_column, b.row_source
+order by b.code, j.column#name, b.row_source
 /
 
 
 /*
 
-ROW_SOURCE CODE       KEY_COLUMN           KEY_VALUE                                         
+ROW_SOURCE CODE       column#name           column#value                                         
 ---------- ---------- -------------------- --------------------------------------------------
 source     P-EB       DESCRIPTION          Mt. Everest Basecamp                              
 target     P-EB       DESCRIPTION          Mount Everest Basecamp                            
