@@ -17,9 +17,17 @@ grant create view to practicalplsql;
 grant create materialized view to practicalplsql;
 grant create procedure to practicalplsql;
 grant create type to practicalplsql;
---23c only
-grant create domain to practicalplsql;
-grant db_developer_role to practicalplsql;
+
+--grants for 23c only
+begin
+
+$if dbms_db_version.version >= 23 $then
+    execute immediate 'grant create domain to practicalplsql';
+    execute immediate 'grant db_developer_role to practicalplsql';
+$end
+
+end;
+/
 
 grant create role to practicalplsql with admin option;
 grant create any context to practicalplsql with admin option;

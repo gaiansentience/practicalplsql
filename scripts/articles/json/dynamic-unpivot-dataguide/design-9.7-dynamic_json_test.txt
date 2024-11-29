@@ -1,0 +1,353 @@
+design-9.7-dynamic_json_test.txt
+debug the the sales data queries
+******************************************************************************************
+******************************************************************************************
+Quarterly Sales
+----------------------------------------------------------------------------------------------------
+--UNPIVOT Query generated from document dataguide. array_path => .jSales
+----------------------------------------------------------------------------------------------------
+
+with json_to_relational as (
+
+select j.*
+from 
+    json_table(:jdoc, '$.jSales[*]' 
+        columns (
+            "row#id" number path '$.Year'
+            , "Qtr1" varchar2(4000) path '$.Qtr1'
+            , "Qtr2" varchar2(4000) path '$.Qtr2'
+            , "Qtr3" varchar2(4000) path '$.Qtr3'
+            , "Qtr4" varchar2(4000) path '$.Qtr4'
+        )
+    ) j
+
+)
+select "row#id", "column#key", "column#value"
+from 
+    json_to_relational 
+    unpivot (
+        "column#value" for "column#key" in (
+            "Qtr1"
+            , "Qtr2"
+            , "Qtr3"
+            , "Qtr4"
+            )
+    ) 
+order by "row#id", "column#key"
+
+******************************************************************************************
+******************************************************************************************
+******************************************************************************************
+******************************************************************************************
+Regional Sales
+----------------------------------------------------------------------------------------------------
+--UNPIVOT Query generated from document dataguide. array_path => .jSales
+----------------------------------------------------------------------------------------------------
+
+with json_to_relational as (
+
+select j.*
+from 
+    json_table(:jdoc, '$.jSales[*]' 
+        columns (
+            "row#id" number path '$.Year'
+            , "East" varchar2(4000) path '$.East'
+            , "West" varchar2(4000) path '$.West'
+            , "North" varchar2(4000) path '$.North'
+            , "South" varchar2(4000) path '$.South'
+            , "Central" varchar2(4000) path '$.Central'
+        )
+    ) j
+
+)
+select "row#id", "column#key", "column#value"
+from 
+    json_to_relational 
+    unpivot (
+        "column#value" for "column#key" in (
+            "East"
+            , "West"
+            , "North"
+            , "South"
+            , "Central"
+            )
+    ) 
+order by "row#id", "column#key"
+
+******************************************************************************************
+******************************************************************************************
+******************************************************************************************
+******************************************************************************************
+Regional Quarterly Sales
+----------------------------------------------------------------------------------------------------
+--UNPIVOT Query generated from document dataguide. array_path => .jSales
+----------------------------------------------------------------------------------------------------
+
+with json_to_relational as (
+
+select j.*
+from 
+    json_table(:jdoc, '$.jSales[*]' 
+        columns (
+            "row#id" number path '$.Year'
+            , "EastQtr1" varchar2(4000) path '$.EastQtr1'
+            , "EastQtr2" varchar2(4000) path '$.EastQtr2'
+            , "EastQtr3" varchar2(4000) path '$.EastQtr3'
+            , "EastQtr4" varchar2(4000) path '$.EastQtr4'
+            , "WestQtr1" varchar2(4000) path '$.WestQtr1'
+            , "WestQtr2" varchar2(4000) path '$.WestQtr2'
+            , "WestQtr3" varchar2(4000) path '$.WestQtr3'
+            , "WestQtr4" varchar2(4000) path '$.WestQtr4'
+            , "NorthQtr1" varchar2(4000) path '$.NorthQtr1'
+            , "NorthQtr2" varchar2(4000) path '$.NorthQtr2'
+            , "NorthQtr3" varchar2(4000) path '$.NorthQtr3'
+            , "NorthQtr4" varchar2(4000) path '$.NorthQtr4'
+            , "SouthQtr1" varchar2(4000) path '$.SouthQtr1'
+            , "SouthQtr2" varchar2(4000) path '$.SouthQtr2'
+            , "SouthQtr3" varchar2(4000) path '$.SouthQtr3'
+            , "SouthQtr4" varchar2(4000) path '$.SouthQtr4'
+            , "CentralQtr1" varchar2(4000) path '$.CentralQtr1'
+            , "CentralQtr2" varchar2(4000) path '$.CentralQtr2'
+            , "CentralQtr3" varchar2(4000) path '$.CentralQtr3'
+            , "CentralQtr4" varchar2(4000) path '$.CentralQtr4'
+        )
+    ) j
+
+)
+select "row#id", "column#key", "column#value"
+from 
+    json_to_relational 
+    unpivot (
+        "column#value" for "column#key" in (
+            "EastQtr1"
+            , "EastQtr2"
+            , "EastQtr3"
+            , "EastQtr4"
+            , "WestQtr1"
+            , "WestQtr2"
+            , "WestQtr3"
+            , "WestQtr4"
+            , "NorthQtr1"
+            , "NorthQtr2"
+            , "NorthQtr3"
+            , "NorthQtr4"
+            , "SouthQtr1"
+            , "SouthQtr2"
+            , "SouthQtr3"
+            , "SouthQtr4"
+            , "CentralQtr1"
+            , "CentralQtr2"
+            , "CentralQtr3"
+            , "CentralQtr4"
+            )
+    ) 
+order by "row#id", "column#key"
+
+******************************************************************************************
+******************************************************************************************
+******************************************************************************************
+******************************************************************************************
+Monthly Sales
+----------------------------------------------------------------------------------------------------
+--UNPIVOT Query generated from document dataguide. array_path => .jSales
+----------------------------------------------------------------------------------------------------
+
+with json_to_relational as (
+
+select j.*
+from 
+    json_table(:jdoc, '$.jSales[*]' 
+        columns (
+            "row#id" number path '$.Year'
+            , "May" varchar2(4000) path '$.May'
+            , "July" varchar2(4000) path '$.July'
+            , "June" varchar2(4000) path '$.June'
+            , "April" varchar2(4000) path '$.April'
+            , "March" varchar2(4000) path '$.March'
+            , "August" varchar2(4000) path '$.August'
+            , "January" varchar2(4000) path '$.January'
+            , "October" varchar2(4000) path '$.October'
+            , "December" varchar2(4000) path '$.December'
+            , "February" varchar2(4000) path '$.February'
+            , "November" varchar2(4000) path '$.November'
+            , "September" varchar2(4000) path '$.September'
+        )
+    ) j
+
+)
+select "row#id", "column#key", "column#value"
+from 
+    json_to_relational 
+    unpivot (
+        "column#value" for "column#key" in (
+            "May"
+            , "July"
+            , "June"
+            , "April"
+            , "March"
+            , "August"
+            , "January"
+            , "October"
+            , "December"
+            , "February"
+            , "November"
+            , "September"
+            )
+    ) 
+order by "row#id", "column#key"
+
+******************************************************************************************
+******************************************************************************************
+******************************************************************************************
+******************************************************************************************
+Regional Monthly Sales
+----------------------------------------------------------------------------------------------------
+--UNPIVOT Query generated from document dataguide. array_path => .jSales
+----------------------------------------------------------------------------------------------------
+
+with json_to_relational as (
+
+select j.*
+from 
+    json_table(:jdoc, '$.jSales[*]' 
+        columns (
+            "row#id" number path '$.Year'
+            , "EastMay" varchar2(4000) path '$.EastMay'
+            , "WestMay" varchar2(4000) path '$.WestMay'
+            , "EastJuly" varchar2(4000) path '$.EastJuly'
+            , "EastJune" varchar2(4000) path '$.EastJune'
+            , "NorthMay" varchar2(4000) path '$.NorthMay'
+            , "SouthMay" varchar2(4000) path '$.SouthMay'
+            , "WestJuly" varchar2(4000) path '$.WestJuly'
+            , "WestJune" varchar2(4000) path '$.WestJune'
+            , "EastApril" varchar2(4000) path '$.EastApril'
+            , "EastMarch" varchar2(4000) path '$.EastMarch'
+            , "NorthJuly" varchar2(4000) path '$.NorthJuly'
+            , "NorthJune" varchar2(4000) path '$.NorthJune'
+            , "SouthJuly" varchar2(4000) path '$.SouthJuly'
+            , "SouthJune" varchar2(4000) path '$.SouthJune'
+            , "WestApril" varchar2(4000) path '$.WestApril'
+            , "WestMarch" varchar2(4000) path '$.WestMarch'
+            , "CentralMay" varchar2(4000) path '$.CentralMay'
+            , "EastAugust" varchar2(4000) path '$.EastAugust'
+            , "NorthApril" varchar2(4000) path '$.NorthApril'
+            , "NorthMarch" varchar2(4000) path '$.NorthMarch'
+            , "SouthApril" varchar2(4000) path '$.SouthApril'
+            , "SouthMarch" varchar2(4000) path '$.SouthMarch'
+            , "WestAugust" varchar2(4000) path '$.WestAugust'
+            , "CentralJuly" varchar2(4000) path '$.CentralJuly'
+            , "CentralJune" varchar2(4000) path '$.CentralJune'
+            , "EastJanuary" varchar2(4000) path '$.EastJanuary'
+            , "EastOctober" varchar2(4000) path '$.EastOctober'
+            , "NorthAugust" varchar2(4000) path '$.NorthAugust'
+            , "SouthAugust" varchar2(4000) path '$.SouthAugust'
+            , "WestJanuary" varchar2(4000) path '$.WestJanuary'
+            , "WestOctober" varchar2(4000) path '$.WestOctober'
+            , "CentralApril" varchar2(4000) path '$.CentralApril'
+            , "CentralMarch" varchar2(4000) path '$.CentralMarch'
+            , "EastDecember" varchar2(4000) path '$.EastDecember'
+            , "EastFebruary" varchar2(4000) path '$.EastFebruary'
+            , "EastNovember" varchar2(4000) path '$.EastNovember'
+            , "NorthJanuary" varchar2(4000) path '$.NorthJanuary'
+            , "NorthOctober" varchar2(4000) path '$.NorthOctober'
+            , "SouthJanuary" varchar2(4000) path '$.SouthJanuary'
+            , "SouthOctober" varchar2(4000) path '$.SouthOctober'
+            , "WestDecember" varchar2(4000) path '$.WestDecember'
+            , "WestFebruary" varchar2(4000) path '$.WestFebruary'
+            , "WestNovember" varchar2(4000) path '$.WestNovember'
+            , "CentralAugust" varchar2(4000) path '$.CentralAugust'
+            , "EastSeptember" varchar2(4000) path '$.EastSeptember'
+            , "NorthDecember" varchar2(4000) path '$.NorthDecember'
+            , "NorthFebruary" varchar2(4000) path '$.NorthFebruary'
+            , "NorthNovember" varchar2(4000) path '$.NorthNovember'
+            , "SouthDecember" varchar2(4000) path '$.SouthDecember'
+            , "SouthFebruary" varchar2(4000) path '$.SouthFebruary'
+            , "SouthNovember" varchar2(4000) path '$.SouthNovember'
+            , "WestSeptember" varchar2(4000) path '$.WestSeptember'
+            , "CentralJanuary" varchar2(4000) path '$.CentralJanuary'
+            , "CentralOctober" varchar2(4000) path '$.CentralOctober'
+            , "NorthSeptember" varchar2(4000) path '$.NorthSeptember'
+            , "SouthSeptember" varchar2(4000) path '$.SouthSeptember'
+            , "CentralDecember" varchar2(4000) path '$.CentralDecember'
+            , "CentralFebruary" varchar2(4000) path '$.CentralFebruary'
+            , "CentralNovember" varchar2(4000) path '$.CentralNovember'
+            , "CentralSeptember" varchar2(4000) path '$.CentralSeptember'
+        )
+    ) j
+
+)
+select "row#id", "column#key", "column#value"
+from 
+    json_to_relational 
+    unpivot (
+        "column#value" for "column#key" in (
+            "EastMay"
+            , "WestMay"
+            , "EastJuly"
+            , "EastJune"
+            , "NorthMay"
+            , "SouthMay"
+            , "WestJuly"
+            , "WestJune"
+            , "EastApril"
+            , "EastMarch"
+            , "NorthJuly"
+            , "NorthJune"
+            , "SouthJuly"
+            , "SouthJune"
+            , "WestApril"
+            , "WestMarch"
+            , "CentralMay"
+            , "EastAugust"
+            , "NorthApril"
+            , "NorthMarch"
+            , "SouthApril"
+            , "SouthMarch"
+            , "WestAugust"
+            , "CentralJuly"
+            , "CentralJune"
+            , "EastJanuary"
+            , "EastOctober"
+            , "NorthAugust"
+            , "SouthAugust"
+            , "WestJanuary"
+            , "WestOctober"
+            , "CentralApril"
+            , "CentralMarch"
+            , "EastDecember"
+            , "EastFebruary"
+            , "EastNovember"
+            , "NorthJanuary"
+            , "NorthOctober"
+            , "SouthJanuary"
+            , "SouthOctober"
+            , "WestDecember"
+            , "WestFebruary"
+            , "WestNovember"
+            , "CentralAugust"
+            , "EastSeptember"
+            , "NorthDecember"
+            , "NorthFebruary"
+            , "NorthNovember"
+            , "SouthDecember"
+            , "SouthFebruary"
+            , "SouthNovember"
+            , "WestSeptember"
+            , "CentralJanuary"
+            , "CentralOctober"
+            , "NorthSeptember"
+            , "SouthSeptember"
+            , "CentralDecember"
+            , "CentralFebruary"
+            , "CentralNovember"
+            , "CentralSeptember"
+            )
+    ) 
+order by "row#id", "column#key"
+
+******************************************************************************************
+******************************************************************************************
+
+
+PL/SQL procedure successfully completed.
+

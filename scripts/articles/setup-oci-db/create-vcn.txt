@@ -1,0 +1,38 @@
+create virtual cloud networks public facing and private
+
+Use the vcn wizard to create a vcn with internet connectivity
+
+it will create the public and private subnets 
+
+VCN Name: oci-vcn-dev
+
+The default CIDR block should be sufficient for a simple vcn.
+
+VCN IPv4 CIDR block  
+	10.0.0.0/16
+
+To support IPv6:
+	Enable IPv6 in this VCN
+	
+	Check: Assign an Oracle-allocated IPv6 /56 GUA prefix to your VCN
+
+DNS:
+
+	Check: Use DNS hostnames in this VCN
+
+
+For the public and private subnets, use the default CIDR blocks:
+
+Public Subnet: 10.0.0.0/24
+
+Private Subnet: 10.0.1.0/24
+
+
+After selecting Next, you will see the settings for the VCN, including subnets and gateways:
+
+Gateways:
+Internet gateway-oci-vcn-dev	Internet gateway	public subnet-oci-vcn-dev
+NAT gateway-oci-vcn-dev			NAT gateway			private subnet-oci-vcn-dev
+Service gateway-oci-vcn-dev		Service gateway		private subnet-oci-vcn-dev
+
+Default routing tables will also be created.
