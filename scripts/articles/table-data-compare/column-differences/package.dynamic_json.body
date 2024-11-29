@@ -1,0 +1,147 @@
+--package.dynamic_json.body
+    
+create or replace package body dynamic_json 
+as
+    
+    subtype sql_text is varchar2(32000);
+    
+    type column_definition is record (
+        column_name varchar2(64), 
+        column_type varchar2(20), 
+        column_path varchar2(100));
+        
+    type column_definitions is table of column_definition index by pls_integer;
+    
+    function dataguide_columns(
+        jdoc in json_document_type
+    ) return column_definitions
+    is
+        l_key_columns column_definitions;
+    begin    
+        with dataguide as (
+            select json_dataguide(jdoc) as jdoc_dataguide
+            from dual
+        ), dataguide_relational as (
+            select 
+                replace(j.column_path, '$.') as column_name,
+                j.column_type,
+                j.column_path
+            from 
+                dataguide g,
+                json_table(g.jdoc_dataguide, '$[*]'
+                    columns(
+                        column_path path '$."o:path".string()',
+                        column_type path '$.type.string()'
+                    )
+                ) j
+        )
+        select column_name, column_type, column_path
+        bulk collect into l_key_columns
+        from dataguide_relational
+        where column_type not in ('object', 'array');
+        
+        return l_key_columns;
+    end dataguide_columns;
+        
+    function json_table_expression(
+        key_columns in column_definitions
+    ) return varchar2
+    is
+        l_sql sql_text;
+        l_columns_clause sql_text;
+    begin
+    
+        --build the columns expression
+        for i in 1..key_columns.count loop
+            l_columns_clause := l_columns_clause
+                || case when i > 1 then ', ' end 
+                || key_columns(i).column_name
+                || ' varchar2(4000)'
+                || ' path ''' || key_columns(i).column_path || '''' ;
+        end loop;
+
+        l_sql := q'+
+select j.*
+from 
+    json_table(:jdoc, '$' 
+        columns (
+##JSON_TABLE_COLUMNS##
+        )
+    ) j
++';
+
+        l_sql := replace(l_sql, '##JSON_TABLE_COLUMNS##', l_columns_clause);
+        return l_sql;
+    
+    end json_table_expression;
+    
+    function unpivot_expression(
+        key_columns in column_definitions,        
+        json_table_query in varchar2    
+    ) return varchar2
+    is
+        l_sql sql_text;
+        l_unpivot_columns sql_text;
+    begin
+    
+        --build the unpivot expression
+        for i in 1..key_columns.count loop
+            l_unpivot_columns := l_unpivot_columns
+                || case when i > 1 then ', ' end 
+                || key_columns(i).column_name;
+        end loop;
+
+        l_sql := q'+
+with json_to_relational as (
+##JSON_TABLE_EXPRESSION##
+)
+select "column#name", "column#value"
+from 
+    json_to_relational 
+    unpivot include nulls(
+        "column#value" for "column#name" in (
+##UNPIVOT_COLUMNS##
+            )
+    ) 
++';
+
+        l_sql := replace(l_sql, '##JSON_TABLE_EXPRESSION##', json_table_query);
+        l_sql := replace(l_sql, '##UNPIVOT_COLUMNS##', l_unpivot_columns);
+        return l_sql;
+    
+    end unpivot_expression;
+
+    function unpivot_json_row(
+        jdoc           in json_document_type
+    ) return column_values pipelined
+    is
+        l_key_columns column_definitions;
+        l_json_table_query sql_text;
+        l_sql sql_text;
+        l_values column_values;
+        c sys_refcursor;
+    begin
+        l_key_columns := dataguide_columns(jdoc); 
+        l_json_table_query := json_table_expression(l_key_columns);
+        l_sql := unpivot_expression(l_key_columns, l_json_table_query); 
+        
+        open c for l_sql using jdoc;
+        loop
+        
+            fetch c bulk collect into l_values limit 100;
+            exit when l_values.count = 0;
+            
+            for i in 1..l_values.count loop
+                pipe row (l_values(i));
+            end loop;
+        
+        end loop;
+        close c;
+        
+        return;
+
+    end unpivot_json_row;
+    
+end dynamic_json;
+/
+
