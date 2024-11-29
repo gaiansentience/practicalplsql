@@ -24,6 +24,8 @@ from
     row_compare(source_columns, target_columns, columns("ROW#ID","COLUMN#KEY")) c
 /
 
+
+
 select * from column_compare(products_source, products_target, columns(PRODUCT_ID,CODE))
 /
 
@@ -34,14 +36,14 @@ with source_json as (
     select 
         'src' as src_tbl
         , product_id as id
-        , json_object(* returning json) as jdoc 
-    from products_source
+        , json{s.*} as jdoc 
+    from products_source s
 ), target_json as (
     select 
         'tgt' as src_tbl
         , product_id as id
-        , json_object(* returning json) as jdoc 
-    from products_target
+        , json{t.*} as jdoc 
+    from products_target t
 ), compare_rows as (
     select 
         coalesce(s.id, t.id) as id,

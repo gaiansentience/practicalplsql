@@ -8,13 +8,16 @@ as
 
             
     type column_value is record(
-        column#name   varchar2(64),
+        row#id       number,
+        column#key   varchar2(64),
         column#value varchar2(4000));
     
     type column_values is table of column_value;
     
-    function unpivot_json_row(
-        jdoc           in json_document_type
+    function unpivot_json_array(
+        jdoc           in json_document_type,
+        row_identifier in varchar2 default null,        
+        array_path     in varchar2 default null    
     ) return column_values pipelined;
     
 end dynamic_json;

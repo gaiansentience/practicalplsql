@@ -2,6 +2,7 @@ with source_columns as (
     select
         'source' as row_source
         , product_id as "id"
+        , code
         , "key"
         , "value"
     from (
@@ -11,25 +12,22 @@ with source_columns as (
             , name
             , description
             , style
-            , to_char(unit_msrp) as unit_msrp
-            , to_char(unit_cost) as unit_cost
-            , to_char(unit_qty) as unit_qty 
+            , to_char(msrp) as msrp
         from products_source
         )
-    unpivot ("value" for "key" in (
-        code,
+    unpivot include nulls ("value" for "key" in (
+        --code,
         name,
         description,
         style,
-        unit_msrp,
-        unit_cost,
-        unit_qty
+        msrp
         )
     )
 ), target_columns as (
     select
         'target' as row_source
         , product_id as "id"
+        , code
         , "key"
         , "value"
     from (
@@ -39,33 +37,31 @@ with source_columns as (
             , name
             , description
             , style
-            , to_char(unit_msrp) as unit_msrp
-            , to_char(unit_cost) as unit_cost
-            , to_char(unit_qty) as unit_qty 
+            , to_char(msrp) as msrp
         from products_target
         )
-    unpivot ("value" for "key" in (
-        code,
+    unpivot include nulls ("value" for "key" in (
+--        code,
         name,
         description,
         style,
-        unit_msrp,
-        unit_cost,
-        unit_qty
+        msrp
         )
     )
 )
 select
     coalesce(s.row_source, t.row_source) as row_source
     , coalesce(s."id", t."id") as "id"
+    , coalesce(s.code, t.code) as code
     , coalesce(s."key", t."key") as "key"
     , coalesce(s."value", t."value") as "value"
 from 
     source_columns s
     full outer join target_columns t 
         on s."id" = t."id" 
+        and s.code = t.code
         and s."key" = t."key" 
-        and s."value" = t."value"
+        and decode(s."value", t."value", 1, 0) = 1
 where s."id" is null or t."id" is null
 order by 
     "id", "key", row_source
@@ -82,7 +78,7 @@ from
         select json_object(*) as jdoc 
         from products_source 
     ) s,
-    table(dynamic_json_table.unpivot_json(s.jdoc,'PRODUCT_ID')) u
+    table(dynamic_json.unpivot_json_array(s.jdoc,'PRODUCT_ID')) u
 ), target_columns as (
 select u.*
 from
@@ -90,7 +86,7 @@ from
         select json_object(*) as jdoc 
         from products_target
     ) s,
-    table(dynamic_json_table.unpivot_json(s.jdoc,'PRODUCT_ID')) u
+    table(dynamic_json.unpivot_json_array(s.jdoc,'PRODUCT_ID')) u
 )
 select 
     c."id"
@@ -139,7 +135,7 @@ with source_json as (
         , json_object(u.*) as jdoc
     from 
         compare_rows c,
-        table(dynamic_json_table.unpivot_json(c.jdoc,'PRODUCT_ID')) u
+        table(dynamic_json.unpivot_json_array(c.jdoc,'PRODUCT_ID')) u
 ), source_columns as (
     select b.* from columns_base b where b.src_tbl = 'src'
 ), target_columns as (
