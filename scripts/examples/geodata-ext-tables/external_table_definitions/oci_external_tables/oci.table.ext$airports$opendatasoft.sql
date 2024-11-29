@@ -28,7 +28,7 @@ DECLARE
   l_CREDENTIAL_NAME   DBMS_QUOTED_ID := '"OCI$RESOURCE_PRINCIPAL"';
   --point to the file on OCI object storyage
   l_FILE_URI_LIST     CLOB :=
-    q'['https://objectstorage.us-phoenix-1.oraclecloud.com/n/axggbt93rsku/b/adw_ext_data/o/geodata/airports-opendatasoft.csv']';
+    q'['https://objectstorage.us-ashburn-1.oraclecloud.com/n/idjv1ptikjf5/b/adw_ext_data/o/geodata/airports-opendatasoft.csv']';
   l_COLUMN_LIST       CLOB :=
     q'[
     AIRPORT_CODE VARCHAR2(20 CHAR),
