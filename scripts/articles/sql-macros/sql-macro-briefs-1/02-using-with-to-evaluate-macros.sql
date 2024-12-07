@@ -1,3 +1,21 @@
+
+with 
+    function row_generator_macro(
+        p_rows in number
+        , p_multiplier in number default 1
+    )return varchar2 sql_macro(table)
+    is
+    begin
+        return 
+            '
+            select level * p_multiplier as n 
+            from dual 
+            connect by level <= p_rows
+            ';
+    end row_generator_macro;
+select n from row_generator_macro(6,5)
+/
+
 with 
 function generate_rows(number_of_rows in number, value_alias in dbms_tf.columns_t
 ) return varchar2 sql_macro(table)
@@ -47,7 +65,9 @@ from
     select regexp_substr(delim_string,'[^,]+',1, x.pos) as s
     from 
         (
-        select level as pos from dual connect by level <= length(regexp_replace(delim_string,'[^,]')) + 1
+        select level as pos 
+        from dual 
+        connect by level <= length(regexp_replace(delim_string,'[^,]')) + 1
         ) x
     )
 where s is not null
@@ -58,11 +78,12 @@ end split_strings_macro;
 
  base (id,delim) as (
 select 1, 'aa,bb,cc' from dual union all
-select 2, 'xxx,yyyy,zzzz' from dual
+select 2, 'xxx,yyyy,zzzz' from dual union all
+select 3, null from dual
 )
 select b.id, b.delim, s.*
 from base b
-cross apply (select * from split_strings_macro(b.delim)) s
+outer apply (select * from split_strings_macro(b.delim)) s
 /
 
 
@@ -105,13 +126,6 @@ from
 
 
 with 
-function pad_byte(p_byte in varchar2) return varchar2 sql_macro(scalar)
-is
-begin
-    return q'[
-    lpad(p_byte, 8, '0')
-    ]';
-end pad_byte;
 
 function byte_to_number(p_byte in varchar2) return varchar2 sql_macro(scalar)
 is
@@ -150,5 +164,74 @@ select
 from base b
 /
 
-select greatest(null,3,2)
+
+
+with 
+function int8_to_binary(n in integer) return varchar2 sql_macro(scalar)
+is
+begin
+    return
+    '
+    select listagg(sign(bitand(n, power(2, level -1)))) within group (order by level desc) as byte
+    from dual connect by level <= 8
+    ';
+    
+end int8_to_binary;
+base as (select level as n from dual connect by level <= 255)
+select n, int8_to_binary(n) as int8
+from base
+/
+
+with 
+function int8_to_binary(n in integer) return varchar2 
+is
+    pragma udf;
+    b varchar2(8);
+begin
+    
+    select listagg(sign(bitand(n, power(2, level -1)))) within group (order by level desc) as byte
+    into b
+    from dual connect by level <= 8;
+    
+    return b;
+end int8_to_binary;
+base as (select level as n from dual connect by level <= 255)
+select n, int8_to_binary(n) as int8
+from base
+/
+
+
+with 
+function int8_to_binary(n in integer) return varchar2 sql_macro(table)
+is
+begin
+    return
+    '
+    select listagg(sign(bitand(n, power(2, level -1)))) within group (order by level desc) as byte
+    from dual connect by level <= 8
+    ';
+    
+end int8_to_binary;
+base as (select level as n from dual connect by level <= 255)
+select b.n, (select byte from int8_to_binary(b.n)) as int8
+from base b
+/
+
+select listagg(sign(bitand(42, power(2, level -1)))) within group (order by level desc) as byte
+from dual connect by level <= 8
+/
+
+select 42 as n, level - 1 as pwr, sign(bitand(42, power(2, level -1))) as bit
+from dual connect by level <= 8
+/
+
+
+with base as (select level as n from dual connect by level <= 255)
+select 
+    n
+    , (
+     select listagg(sign(bitand(n, power(2, level -1)))) within group (order by level desc)
+     from dual connect by level <= 8
+     ) as byte
+from base
 /
