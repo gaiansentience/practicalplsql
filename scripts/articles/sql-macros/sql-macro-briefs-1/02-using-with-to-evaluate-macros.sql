@@ -13,7 +13,7 @@ with
             connect by level <= p_rows
             ';
     end row_generator_macro;
-select n from row_generator_macro(6,5)
+select n from row_generator_macro(6,5) n
 /
 
 with 

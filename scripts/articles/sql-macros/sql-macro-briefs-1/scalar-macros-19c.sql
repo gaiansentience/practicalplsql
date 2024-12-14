@@ -6,41 +6,112 @@ select banner_full from v$version
 
 --synatx for table macros originally ported in 19.7
 
-
-with function exp_generator_macro(base_in in number, max_exp_in in number) return varchar2 sql_macro(table)
-is
-begin
-    return '
-        select base_in as base, level as exponent, power(base_in, level) as n
-        from dual connect by level <= max_exp_in
+with
+    function row_generator_macro(p_rows in number
+    ) return varchar2 sql_macro(table)
+    is
+    begin
+        return '
+            select level as n 
+            from dual 
+            connect by level <= p_rows
+            ';    
+            
+    end row_generator_macro;
+    function clone_rows_macro(p_table in dbms_tf.table_t, p_copies in number
+    ) return varchar2 sql_macro(table)
+    is
+    begin
+        return '
+            select x.clone_copy_id, t.*
+            from p_table t
+            cross join (
+                select n as clone_copy_id
+                from row_generator_macro(p_copies)
+            ) x
         ';
-end exp_generator_macro;
-select *
-from exp_generator_macro(5, 10)
+    end clone_rows_macro;
+
+select * from clone_rows_macro(products,3)
+/
+
+--21c syntax for table macros works now in 19.25
+--simple row generator
+with 
+    function row_generator_macro(p_rows in number
+    ) return varchar2 sql_macro(table)
+    is
+    begin
+        return '
+            select level as n 
+            from dual 
+            connect by level <= p_rows
+            ';    
+            
+    end row_generator_macro;
+    
+select n 
+from row_generator_macro(6)
 /
 
 
---21c syntax for table macros works now in 19.25
+
 with 
     function row_generator_macro(p_rows in number
     )return varchar2 sql_macro(table)
     is
     begin
-    
         return '
-            select n
-            from
-                (
-                select level as n 
-                from dual 
-                connect by level <= p_rows
-                )
-            where n <= p_rows
+            select level as n 
+            from dual 
+            connect by level <= p_rows
             ';    
             
     end row_generator_macro;
-select n from row_generator_macro(6)
+
+    function exponent_generator_macro(
+        p_base in number
+        , p_max_exponent in number
+    ) return varchar2 sql_macro(table)
+    is
+    begin
+        return q'~
+            select 
+                p_base as base
+                , n as exponent
+                , power(p_base, n) as result
+                , p_base || '^' || n || ' = ' || power(p_base, n) as equation
+            from row_generator_macro(p_max_exponent) 
+            ~';
+    end exponent_generator_macro;
+
+select *
+from exponent_generator_macro(2, 8)
 /
+
+with 
+    function exponent_generator_macro(
+        p_base in number
+        , p_max_exponent in number
+    ) return varchar2 sql_macro(table)
+    is
+    begin
+        return q'~
+            select 
+                p_base as base
+                , level as exponent
+                , power(p_base, level) as result
+                , p_base || '^' || level || ' = ' || power(p_base, level) as equation
+            from dual 
+            connect by level <= p_max_exponent
+            ~';
+    end exponent_generator_macro;
+
+select *
+from exponent_generator_macro(2, 8)
+/
+
+
 
 with 
     function row_generator_macro(
@@ -50,32 +121,106 @@ with
     is
     begin
         
-        return 
-            '
-            select n
-            from
-            (
+        return '
             select level as n 
             from dual 
             connect by level <= p_rows
-            )
-            where n <= p_rows
             ';
             
     end row_generator_macro;
 
-    select a.n, mod(a.n,4) as mod_4_n, b.m
+    select 
+        a.n
+        , round(exp(sum(ln(b.m)))) as factorial_result
+        , a.n || '! = ' || listagg(b.m, ' x ') within group (order by b.m desc) 
+            || ' = ' || round(exp(sum(ln(b.m)))) as factorial_equation
     from
         (
-        select n from row_generator_macro(10) 
+        select n from row_generator_macro(5) 
         ) a
-        left outer join lateral
+        cross apply
         (
-        select n as m from row_generator_macro(mod(a.n,4))
-        ) b on 1 = 1
+        select n as m from row_generator_macro(a.n)
+        ) b
+    group by a.n
 /
 
-select level from dual connect by level <= 0
+
+with     
+    function factorial_generator_macro(p_max_factorial in integer)
+    return varchar2 sql_macro(table)
+    is
+    begin
+        return q'~
+            select 
+                a.n
+                , round(exp(sum(ln(b.m)))) as factorial_result
+                , a.n || '! = ' || listagg(b.m, ' x ') within group (order by b.m desc) 
+                    || ' = ' || round(exp(sum(ln(b.m)))) as factorial_equation
+            from
+                (
+                select level as n 
+                from dual 
+                connect by level <= p_max_factorial
+                ) a
+                cross apply
+                (
+                select level as m 
+                from dual 
+                connect by level <= a.n
+                ) b
+            group by a.n
+        ~';
+    
+    end factorial_generator_macro;
+    
+select * 
+from factorial_generator_macro(5)
+/
+
+with     
+    function row_generator_macro(
+        p_rows in number
+    )return varchar2 
+    sql_macro(table)
+    is
+    begin
+        
+        return '
+            select level as n 
+            from dual 
+            connect by level <= p_rows
+            ';
+            
+    end row_generator_macro;
+
+    function factorial_generator_macro(p_max_factorial in integer)
+    return varchar2 sql_macro(table)
+    is
+    begin
+        return q'~
+            select 
+                a.n
+                , round(exp(sum(ln(b.m)))) as factorial_result
+                , a.n || '! = ' || listagg(b.m, ' x ') within group (order by b.m desc) 
+                    || ' = ' || round(exp(sum(ln(b.m)))) as factorial_equation
+            from
+                (
+                select n 
+                from row_generator_macro(p_max_factorial)
+                ) a
+                cross apply
+                (
+                select n as m 
+                from row_generator_macro(a.n)
+                ) b
+            group by a.n
+        ~';
+    
+    end factorial_generator_macro;
+    
+select * 
+from factorial_generator_macro(5)
 /
 
 
@@ -96,7 +241,7 @@ end display_interval;
 select i, display_interval(i) as fmt_i
 from 
 (
-select numtodsinterval(mod(level,3), 'day') + numtodsinterval(mod(level,3), 'hour') + numtodsinterval(level/5, 'minute') + numtodsinterval(level/5, 'second') as i
+select numtodsinterval(dbms_random.value(0, 1) * 100000, 'second') as i --mod(level,3), 'day') + numtodsinterval(mod(level,3), 'hour') + numtodsinterval(level/5, 'minute') + numtodsinterval(level/5, 'second') as i
 from dual
 connect by level <= 10
 )
@@ -141,6 +286,40 @@ from row_generator_random(a.n, 1, 20, 0)
 /
 
 
+with
+    function histogram_macro(p_table in dbms_tf.table_t, p_columns in dbms_tf.columns_t)
+    return varchar2 sql_macro(table)
+    is
+        type t_sql is table of varchar2(4000) index by pls_integer;
+        l_all_sql varchar2(4000);
+        l_sql t_sql;
+    begin
+        for i in 1..p_columns.count loop        
+            l_sql(i) := q'~
+                select 
+                    count(*) as table_rows
+                    , '##COLUMN##' as column_name
+                    , count(distinct ##COLUMN##) as distinct_value_count
+                    , count(case when ##COLUMN## is null then 'y' end) as null_value_count
+                    , min(length(##COLUMN##)) as min_value_length
+                    , max(length(##COLUMN##)) as max_value_length
+                    , min(##COLUMN##) as min_value
+                    , max(##COLUMN##) as max_value
+                from p_table
+            ~';
+            l_sql(i) := replace(l_sql(i), '##COLUMN##', p_columns(i));
+            l_all_sql := l_all_sql || case when i > 1 then ' union all ' end || l_sql(i);
+        end loop;
+        
+        return l_all_sql;
+    end histogram_macro;
+    
+select * from histogram_macro(products, columns(description, code, name, style))
+/
+
+select * from products
+/
+
 with 
 function invoice_date_format_macro(p_date in date) return varchar2 sql_macro(scalar)
 is
@@ -159,7 +338,7 @@ is
 begin
     return q'[
         select 
-            a.start_date + b.n as calendar_date
+            a.start_date + b.n as calendar_date, invoice_date_format_macro(a.start_date + b.n) as invoice_date
         from
             (
             select 
@@ -182,28 +361,57 @@ begin
     
 end annual_calendar_macro;
 
-select calendar_date, invoice_date_format_macro(calendar_date) as invoice_date
+select calendar_date, invoice_date, invoice_date_format_macro(calendar_date) as invoice_date_alt
 from annual_calendar_macro(2)
 /
 
 with 
-function days_until(holiday_mm_dd in varchar2) return varchar2 sql_macro(scalar)
-is
-begin
-    return q'[
-    case sign(trunc(sysdate) - to_date(holiday_mm_dd, 'mm-dd')) 
-        when 1 then add_months(to_date(holiday_mm_dd,'mm-dd'), 12) 
-        else to_date(holiday_mm_dd,'mm-dd') 
-    end - trunc(sysdate)
-    ]';
-end days_until;
+    function days_until(holiday_mm_dd in varchar2
+    ) return varchar2 sql_macro(scalar)
+    is
+    begin
+        return q'[
+        case sign(trunc(sysdate) - to_date(holiday_mm_dd, 'mm-dd')) 
+            when 1 then add_months(to_date(holiday_mm_dd,'mm-dd'), 12) 
+            else to_date(holiday_mm_dd,'mm-dd') 
+        end - trunc(sysdate)
+        ]';
+    end days_until;
 
-select days_until('10-31') as til_halloween, days_until('12-25') as til_christmas, days_until('12-25') + trunc(sysdate) as xmas --case sign(trunc(sysdate) - to_date('10-31', 'mm-dd')) when 1 then add_months(to_date('10-31','mm-dd'),12) else to_date('10-31','mm-dd') end - trunc(sysdate) as til_halloween, to_date('12-25','mm-dd') as til_xmas
-from dual
+special_days(mm_dd, reason) as (
+select '10-31', 'halloween' from dual union all
+select '12-25', 'christmas' from dual union all
+select '02-14', 'valentine''s' from dual union all
+select '12-21', 'winter solstice (approx)' from dual union all
+select '6-21', 'summer solstice (approx)' from dual
+)
+
+select 
+    days_until(mm_dd) as days_to_wait
+    , reason
+    , days_until(mm_dd) + trunc(sysdate) as wait_is_over
+from special_days
+order by days_to_wait
 /
 
 with
-function simple_math_macro(x in number, y in number, operation_constant in number default 1) return varchar2 sql_macro(scalar)
+    function row_generator_macro(p_rows in number
+    )return varchar2 sql_macro(table)
+    is
+    begin
+        return '
+            select level as n 
+            from dual 
+            connect by level <= p_rows
+            ';    
+            
+    end row_generator_macro;
+    
+function simple_math_macro(
+    x in number
+    , y in number
+    , operation_constant in number default 1
+) return varchar2 sql_macro(scalar)
 is
 begin
     return
@@ -216,89 +424,145 @@ begin
         else 'null'
         end;
 end simple_math_macro;
-select simple_math_macro(1,2,3) as z
+
+select b_x.x, b_y.y
+    , simple_math_macro(b_x.x, b_y.y, 1) as x_add_y
+    , simple_math_macro(b_x.x, b_y.y, 2) as x_subtract_y
+    , simple_math_macro(b_x.x, b_y.y, 3) as x_multiply_y
+    , simple_math_macro(b_x.x, b_y.y, 4) as x_divide_y
+    , simple_math_macro(b_x.x, b_y.y, 5) as x_to_y_power
+from 
+(select n as x from row_generator_macro(10) ) b_x
+cross join
+(select n as y from row_generator_macro(10) ) b_y
+where b_x.x in (2,3) and b_y.y in (2, 3, 4)
 /
 
 with
 function split_string_macro(p_delimited_string in varchar2) return varchar2 sql_macro(table)
 is
 begin 
-    return q'[
-        select regexp_substring(
-        ]';
+    return q'!
+        select regexp_substr(p_delimited_string, '[^,]+', 1, p.position) as str
+        from (select level as position from dual connect by level <= length(regexp_replace(p_delimited_string,'[^,]')) + 1) p
+        !';
 end split_string_macro;
-
-select * from split_string_macro('xxx,yy,zzz')
+base (id, listing) as (
+    select 1, 'xxx,yy,zzz' from dual union all 
+    select 2, 'aaa,bbb,c,d' from dual
+)
+select b.id, s.str
+from 
+base b
+cross apply (select * from split_string_macro(b.listing)) s
 /
 
-with base as (select 1 as id, 'xxx,yy,zzz' as delim from dual union all select 2, 'aaa,bbb,c,d' from dual)
-select b.id, regexp_substr(b.delim, '[^,]+', 1, p.position) as val
-from base b
-cross apply (select level as position from dual connect by level <= length(regexp_replace(b.delim,'[^,]'))+1) p
-/
 
 
 with 
-function round5(n in number, scale in number default 0) return number
-is
-begin
-    return round(n/5,scale)*5;
-end round5;
+    function row_generator_macro(p_rows in number
+    ) return varchar2 sql_macro(table)
+    is
+    begin
+        return '
+            select level as n 
+            from dual 
+            connect by level <= p_rows
+            ';    
+            
+    end row_generator_macro;
+    
+    function round_increments_macro(
+        n in number
+        , i in number
+        , scale in number default 0
+    ) return varchar2 sql_macro(scalar)
+    is
+    begin
+        return 'round(n/i, scale) * i';
+    end round_increments_macro;
 
-function round5_macro(n in number, scale in number default 0) return varchar2 sql_macro(scalar)
-is
-begin
-    return 'round(n/5,scale)*5';
-end round5_macro;
-
-function round_multiples(n in number, m in number, scale in number default 0) return number
-is
-begin
-    return round(n/m,scale)*m;
-end round_multiples;
-
-function round_multiples_macro(n in number, m in number, scale in number default 0) return varchar2 sql_macro(scalar)
-is
-begin
-    return 'round(n/m, scale) * m';
-end round_multiples_macro;
-
-base(n) as (
-select level/10 as n
-from dual
-connect by level <= 20
-)
-select n, round(n/5,1)*5 as n_round5, round5(n, 1) as f_round5, round5_macro(n, 1) as m_round5, round_multiples_macro(n, 5, 1) round_m
-from base
+select r.n, round_increments_macro(r.n, 5, 1) round_n_to_half, r.m, round_increments_macro(r.m, 5) as round_m_to_5
+from 
+    (
+    select n/10 as n, n as m
+    from row_generator_macro(20)
+    ) r
 /
 
-with base(n) as (
-select level as n
-from dual
-connect by level <= 200
+with
+    function balance_aging_macro(p_days in number) return varchar2 sql_macro(scalar)
+    is
+    begin
+        return q'~
+            case 
+            when p_days <= 10 then 'net 10 discount'
+            when p_days between 11 and 30 then 'current'
+            when p_days between 31 and 90 then '31 to 90'
+            when p_days between 91 and 179 then '91 to 180'
+            else 'over 180'
+            end || ' (' || p_days || ' days)'
+        ~';
+    end balance_aging_macro;
+    
+base(invoice_date) as (
+    select sysdate - level
+    from dual
+    connect by level <= 200
 )
-select n, floor(n/30)* 30 as aging_category
+select sysdate, invoice_date, balance_aging_macro(sysdate - invoice_date) as aging_category 
 from base
 /
 
 with 
-function round_seconds(p_date in date, p_multiple in number default 1) return varchar2 sql_macro(scalar)
-is
-begin
-    return q'[trunc(p_date, 'mi') + numtodsinterval(round((p_date - trunc(p_date, 'mi'))*24*60*60/p_multiple)*p_multiple,'second')]';
-end round_seconds;
+    function round_up_seconds(
+        p_date in date
+        , p_increment in number
+    ) return varchar2 sql_macro(scalar)
+    is
+    begin
+        return q'[
+            trunc(p_date, 'mi') 
+            + numtodsinterval(
+                ceil(
+                    (p_date - trunc(p_date, 'mi') ) * 24 * 60 * 60/p_increment
+                    ) * p_increment
+                , 'second')
+        ]';
+    end round_up_seconds;
 
-function round_minutes(p_date in date, p_multiple in number default 1) return varchar2 sql_macro(scalar)
-is
-begin
-    return q'[trunc(p_date, 'hh') + numtodsinterval(round((p_date - trunc(p_date, 'hh'))*24*60/p_multiple)*p_multiple,'minute')]';
-end round_minutes;
-select sysdate
-, round(sysdate,'mi') as r1
---, sysdate - trunc(sysdate, 'mi') as s
---, trunc(sysdate, 'mi') + numtodsinterval(round((sysdate - trunc(sysdate, 'mi'))*24*60*60/5)*5,'second') as ms
-, round_minutes(sysdate, 5) as r_5
-, round_seconds(sysdate, 15) as r6
---extract(second from cast(sysdate as timestamp)) as r2
+select 
+    sysdate
+    , round_up_seconds(sysdate, 5) as round_5_seconds
+    , round_up_seconds(sysdate, 10) as round_10_seconds
+    , round_up_seconds(sysdate, 15) as round_15_seconds
+    , round_up_seconds(sysdate, 30) as round_30_seconds
 from dual
 /
+
+with 
+
+    function round_minutes(
+        p_date in date
+        , p_increment in number
+    ) return varchar2 sql_macro(scalar)
+    is
+    begin
+        return q'[
+            trunc(p_date, 'hh') 
+            + numtodsinterval(
+                round(
+                    (p_date - trunc(p_date, 'hh') ) * 24 * 60/p_increment
+                    ) * p_increment
+                , 'minute')
+        ]';
+    end round_minutes;
+
+select 
+    sysdate
+    , round_minutes(sysdate, 5) as round_5_minutes
+    , round_minutes(sysdate, 15) as round_15_minutes
+    , round_minutes(sysdate, 30) as round_30_minutes
+from dual
+/
+
