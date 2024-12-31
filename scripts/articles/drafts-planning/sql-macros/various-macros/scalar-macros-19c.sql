@@ -18,7 +18,10 @@ with
             ';    
             
     end row_generator_macro;
-    function clone_rows_macro(p_table in dbms_tf.table_t, p_copies in number
+    
+    function clone_rows_macro(
+        p_table in dbms_tf.table_t
+        , p_copies in number
     ) return varchar2 sql_macro(table)
     is
     begin
@@ -78,10 +81,10 @@ with
         return q'~
             select 
                 p_base as base
-                , n as exponent
-                , power(p_base, n) as result
-                , p_base || '^' || n || ' = ' || power(p_base, n) as equation
-            from row_generator_macro(p_max_exponent) 
+                , n - 1 as exponent
+                , power(p_base, n - 1) as result
+                , p_base || '^' || (n - 1) || ' = ' || power(p_base, n - 1) as equation
+            from row_generator_macro(p_max_exponent + 1) 
             ~';
     end exponent_generator_macro;
 
@@ -225,7 +228,9 @@ from factorial_generator_macro(5)
 
 
 with 
-function display_interval(i in interval day to second) return varchar2 sql_macro(scalar)
+function display_interval(i in dsinterval_unconstrained)
+--i in interval day to second) 
+return varchar2 sql_macro(scalar)
 is
 begin
     return q'[
@@ -238,13 +243,13 @@ begin
         ]';
 end display_interval;
 
-select i, display_interval(i) as fmt_i
-from 
-(
-select numtodsinterval(dbms_random.value(0, 1) * 100000, 'second') as i --mod(level,3), 'day') + numtodsinterval(mod(level,3), 'hour') + numtodsinterval(level/5, 'minute') + numtodsinterval(level/5, 'second') as i
-from dual
-connect by level <= 10
+base (interval_value) as (
+    select numtodsinterval(dbms_random.value(0, 1) * 100000, 'second')
+    from dual
+    connect by level <= 10
 )
+select interval_value, display_interval(interval_value) as fmt_interval, display_interval(interval_value/2) as fmt_half_interval
+from base
 /
 
 select numtodsinterval(mod(level,3), 'day') + numtodsinterval(mod(level,3), 'hour') + numtodsinterval(level/5, 'minute') + numtodsinterval(level/5, 'second') as i
@@ -277,12 +282,14 @@ products (id, code) as (
     from dual connect by level <= 26
 )
 
-select a.id as order_id, a.n as dtl_count, b.dtl_id, b.qty, random_value(1,26,0) as product_id
+select a.id as order_id, a.n as dtl_count, b.dtl_id, b.qty, b.product_id, p.code--random_value(1,26,0) as product_id
 from row_generator_random(5, 1, 10, 0) a
 outer apply
-(select id as dtl_id, n as qty
+(select id as dtl_id, n as qty, random_value(1,26,0) as product_id
 from row_generator_random(a.n, 1, 20, 0) 
 ) b
+left join products p on b.product_id = p.id
+order by order_id, dtl_id
 /
 
 
@@ -317,18 +324,10 @@ with
 select * from histogram_macro(products, columns(description, code, name, style))
 /
 
-select * from products
+select to_date('2022','yyyy')
 /
 
 with 
-function invoice_date_format_macro(p_date in date) return varchar2 sql_macro(scalar)
-is
-begin
-    return q'[
-        to_char(p_date, 'yyyy.mm.dd')
-        ]';
-end invoice_date_format_macro;
-
 function annual_calendar_macro(
     p_years in number default 1
     , p_start_year in number default null
@@ -338,7 +337,8 @@ is
 begin
     return q'[
         select 
-            a.start_date + b.n as calendar_date, invoice_date_format_macro(a.start_date + b.n) as invoice_date
+            a.start_date + b.n as calendar_date, extract(year from (a.start_date + b.n)) as year, extract(month from (a.start_date + b.n)) as month, extract(day from (a.start_date + b.n)) as day
+            , to_char(a.start_date + b.n, 'fmDay') as day_of_week
         from
             (
             select 
@@ -355,14 +355,15 @@ begin
             (
             select level - 1 as n 
             from dual 
-            connect by level <= a.end_date - a.start_date + 1
+            connect by level <= (a.end_date - a.start_date + 1)
             ) b
+        order by calendar_date
     ]';
     
 end annual_calendar_macro;
 
-select calendar_date, invoice_date, invoice_date_format_macro(calendar_date) as invoice_date_alt
-from annual_calendar_macro(2)
+select c.*, c.calendar_date + interval '1' day - interval '1' second as day_ends
+from annual_calendar_macro(5) c
 /
 
 with 
@@ -379,6 +380,7 @@ with
     end days_until;
 
 special_days(mm_dd, reason) as (
+select '12-31', 'new year''s eve' from dual union all
 select '10-31', 'halloween' from dual union all
 select '12-25', 'christmas' from dual union all
 select '02-14', 'valentine''s' from dual union all
@@ -530,14 +532,18 @@ with
                 , 'second')
         ]';
     end round_up_seconds;
-
+base as (
+    select sysdate + numtodsinterval(level - 1, 'second') as dt
+    from dual
+    connect by level <= 61
+)
 select 
-    sysdate
-    , round_up_seconds(sysdate, 5) as round_5_seconds
-    , round_up_seconds(sysdate, 10) as round_10_seconds
-    , round_up_seconds(sysdate, 15) as round_15_seconds
-    , round_up_seconds(sysdate, 30) as round_30_seconds
-from dual
+    dt
+    , round_up_seconds(dt, 5) as round_5_seconds
+    , round_up_seconds(dt, 10) as round_10_seconds
+    , round_up_seconds(dt, 15) as round_15_seconds
+    , round_up_seconds(dt, 30) as round_30_seconds
+from base
 /
 
 with 
@@ -558,11 +564,24 @@ with
         ]';
     end round_minutes;
 
+base(dt) as (
+select sysdate + numtodsinterval(level - 1, 'minute')
+from dual connect by level <= 61
+)
 select 
-    sysdate
-    , round_minutes(sysdate, 5) as round_5_minutes
-    , round_minutes(sysdate, 15) as round_15_minutes
-    , round_minutes(sysdate, 30) as round_30_minutes
-from dual
+    dt
+    , round_minutes(dt, 5) as round_5_minutes
+    , round_minutes(dt, 15) as round_15_minutes
+    , round_minutes(dt, 30) as round_30_minutes
+from base
+/
+
+
+--normalize vector
+with base(vec) as (
+select to_vector('[2,3,4,5]',4,int8)
+)
+select b.vec, vector_norm(b.vec) as vec_norm, (select json_arrayagg(j.dim * vector_norm(b.vec)) from json_table(from_vector(b.vec), '$[*]' columns (dim number path '$')) j) as vec_normalized
+from base b
 /
 
