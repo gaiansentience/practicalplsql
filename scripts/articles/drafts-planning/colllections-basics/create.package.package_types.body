@@ -1,0 +1,68 @@
+create or replace package body package_types 
+as
+
+function get_rows_nt(l_rows in number) return rec_id_nt pipelined
+is 
+cursor c is--return rec_id is
+select level as id connect by level <= l_rows;
+l_recs rec_id_nt;
+begin
+
+    open c;
+    fetch c bulk collect into l_recs;
+    close c;
+    
+    for i in 1..l_recs.count loop
+        pipe row ( l_recs(i) );
+    end loop;
+    
+--    for r in c loop
+--        pipe row ( r );
+--    end loop;
+    
+end get_rows_nt;
+
+function get_rows_pudt(l_rows in number) return pudt_id_nt pipelined
+is 
+cursor c is
+select level as id 
+connect by level <= l_rows;
+
+begin
+    for r in c loop
+        pipe row ( udt_id(r.id) );
+    end loop;
+    
+end get_rows_pudt;
+
+function get_rows_udt(l_rows in number) return udt_id_nt pipelined
+is 
+cursor c is
+select level as id connect by level <= l_rows;
+begin
+    for r in c loop
+        pipe row ( udt_id(r.id) );
+    end loop;
+    
+end get_rows_udt;
+
+function chain_rows_rec_id(c_rows in t_cv_rec_id) return rec_id_nt pipelined
+is
+l_recs rec_id_nt;
+begin
+    --open c_rows;
+    fetch c_rows bulk collect into l_recs;
+    close c_rows;
+    
+    for i in 1..l_recs.count loop
+        pipe row ( l_recs(i) );
+        pipe row ( rec_id(l_recs(i).id * -1) );
+    end loop;    
+    
+
+end chain_rows_rec_id;
+
+
+end package_types;
+/
+
