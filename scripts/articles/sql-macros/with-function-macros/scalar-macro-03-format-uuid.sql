@@ -1,3 +1,5 @@
+--scalar-macro-03-format-uuid.sql
+
 column fmt_uuid format a36
 
 with function format_uuid(
@@ -17,8 +19,8 @@ base as (
     select sys_guid() as uuid from dual
     connect by level <= 5
 )
-select uuid, format_uuid(uuid) as fmt_uuid
-from base
+select b.uuid, format_uuid(b.uuid) as fmt_uuid
+from base b
 /
 
 /*
