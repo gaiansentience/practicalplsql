@@ -34,6 +34,6 @@ select
 from 
     (
     select n/10 as n, n as m, n * (n + 2) as o, n * (n + 2)/1000 as p
-    from row_generator(20, columns(n))
+    from row_generator(2000, columns(n))
     ) r
 /
