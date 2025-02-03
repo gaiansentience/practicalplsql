@@ -8,20 +8,20 @@ with
     is
     begin
         return q'[
-            trunc(p_date, 'mi') 
+            trunc(p_date, 'hh') 
             + numtodsinterval(
                 case p_mode
                 when 1 then
                 ceil(
-                    (p_date - trunc(p_date, 'mi') ) * 24 * 60 * 60/p_increment
+                    (p_date - trunc(p_date, 'hh') ) * 24 * 60 * 60/p_increment
                     ) 
                 when -1 then
                 floor(
-                    (p_date - trunc(p_date, 'mi') ) * 24 * 60 * 60/p_increment
+                    (p_date - trunc(p_date, 'hh') ) * 24 * 60 * 60/p_increment
                     ) 
                 else
                 round(
-                    (p_date - trunc(p_date, 'mi') ) * 24 * 60 * 60/p_increment
+                    (p_date - trunc(p_date, 'hh') ) * 24 * 60 * 60/p_increment
                     ) 
                 end                    
                     * p_increment
