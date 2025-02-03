@@ -9,20 +9,25 @@ with
     begin
         return q'[
             p_interval 
+            - numtodsinterval(extract(hour from p_interval), 'hour')
+            - numtodsinterval(extract(minute from p_interval), 'minute')
             - numtodsinterval(extract(second from p_interval), 'second')
             + numtodsinterval(
                 case p_mode
                 when 1 then
                 ceil(
-                    extract(second from p_interval)/p_increment
+                    ( (extract(hour from p_interval) * 60 * 60) + (extract(minute from p_interval) * 60) + extract(second from p_interval) )
+                    /p_increment
                     ) 
                 when -1 then
                 floor(
-                    extract(second from p_interval)/p_increment
+                    ( (extract(hour from p_interval) * 60 * 60) + (extract(minute from p_interval) * 60) + extract(second from p_interval) )
+                    /p_increment
                     ) 
                 else
                 round(
-                    extract(second from p_interval)/p_increment
+                    ( (extract(hour from p_interval) * 60 * 60) + (extract(minute from p_interval) * 60) + extract(second from p_interval) )
+                    /p_increment
                     ) 
                 end                    
                 * p_increment

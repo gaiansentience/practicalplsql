@@ -44,6 +44,8 @@ end get_rows;
 
     select a.n, mod(a.n,4) as mod_4_n, b.m, c.o
     from
+            connect by level <= p_rows
+            )
         (select i.n from get_rows(10) i ) a
         -- left outer join lateral(select n as m from row_generator_macro(mod(a.n,4)) ) b on 1 = 1
         cross apply (select ii.n as m from get_rows(a.n) ii ) b

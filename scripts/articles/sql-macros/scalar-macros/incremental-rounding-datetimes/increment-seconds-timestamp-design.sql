@@ -9,20 +9,25 @@ with
     begin
         return q'[
             p_timestamp 
+            - numtodsinterval(extract(hour from p_timestamp), 'hour')
+            - numtodsinterval(extract(minute from p_timestamp), 'minute')
             - numtodsinterval(extract(second from p_timestamp), 'second')
             + numtodsinterval(
                 case p_mode
                 when 1 then
                 ceil(
-                    extract(second from p_timestamp)/p_increment
+                    ( (extract(hour from p_timestamp) * 60 * 60) + (extract(minute from p_timestamp) * 60) + extract(second from p_timestamp) )
+                    /p_increment
                     ) 
                 when -1 then
                 floor(
-                    extract(second from p_timestamp)/p_increment
+                    ( (extract(hour from p_timestamp) * 60 * 60) + (extract(minute from p_timestamp) * 60) + extract(second from p_timestamp) )
+                    /p_increment
                     ) 
                 else
                 round(
-                    extract(second from p_timestamp)/p_increment
+                    ( (extract(hour from p_timestamp) * 60 * 60) + (extract(minute from p_timestamp) * 60) + extract(second from p_timestamp) )
+                    /p_increment
                     ) 
                 end                    
                 * p_increment
@@ -46,3 +51,4 @@ from base
 /
 
 
+select ceil(interval '3:35.34' minute to second / 5, 'MI')*5
