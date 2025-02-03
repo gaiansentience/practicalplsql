@@ -9,23 +9,24 @@ with
     begin
         return q'[
             p_timestamp 
+            - numtodsinterval(extract(hour from p_timestamp), 'hour')
             - numtodsinterval(extract(minute from p_timestamp), 'minute')
             - numtodsinterval(extract(second from p_timestamp), 'second')
             + numtodsinterval(
                 case p_mode
                 when 1 then
                 ceil(
-                    ((extract(minute from p_timestamp) * 60) + extract(second from p_timestamp))
+                    ( (extract(hour from p_timestamp) * 60 * 60) + (extract(minute from p_timestamp) * 60) + extract(second from p_timestamp) )
                     /(p_increment * 60)
                     ) 
                 when -1 then
                 floor(
-                    ((extract(minute from p_timestamp) * 60) + extract(second from p_timestamp))
+                    ( (extract(hour from p_timestamp) * 60 * 60) + (extract(minute from p_timestamp) * 60) + extract(second from p_timestamp) )
                     /(p_increment * 60)
                     ) 
                 else
                 round(
-                    ((extract(minute from p_timestamp) * 60) + extract(second from p_timestamp))
+                    ( (extract(hour from p_timestamp) * 60 * 60) + (extract(minute from p_timestamp) * 60) + extract(second from p_timestamp) )
                     /(p_increment * 60)
                     ) 
                 end                    
@@ -44,7 +45,7 @@ select
     , increment_minutes_timestamp(dt, 5) as to_5_minutes
     , increment_minutes_timestamp(dt, 10) as to_10_minutes
     , increment_minutes_timestamp(dt, 15) as to_15_minutes
-    , increment_minutes_timestamp(dt, 90/60) as to_half_minutes
+    , increment_minutes_timestamp(dt, 90/60) as to_90_seconds
 from base
 --where mod(extract(second from cast(dt as timestamp)),7) = 0
 /

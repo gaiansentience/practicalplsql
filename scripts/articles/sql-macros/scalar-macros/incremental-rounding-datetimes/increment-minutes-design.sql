@@ -38,7 +38,8 @@ select
     , increment_minutes(dt, 5) as to_5_minutes
     , increment_minutes(dt, 15) as to_15_minutes
     , increment_minutes(dt, 30) as to_30_minutes
-    ,increment_minutes(dt,15/60, 1) by_5
+    , increment_minutes(dt, 90) as to_90_minutes
+    ,increment_minutes(dt,1/4, 1) by_15_seconds
 from base
 --where mod(extract(minute from cast(dt as timestamp)),3) = 0
 /
