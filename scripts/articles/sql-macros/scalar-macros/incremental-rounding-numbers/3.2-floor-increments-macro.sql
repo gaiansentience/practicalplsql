@@ -1,42 +1,36 @@
 --3.2-floor-increments-macro.sql
     
-with
-function incremental_floor(
+create or replace function floor_increments_sqm(
     p_value in number
     , p_increment in number
-) return varchar2
-sql_macro(scalar)
+) return varchar2 sql_macro(scalar)
 is
 begin
-    return 'floor(p_value/p_increment) * p_increment';
-end incremental_floor;
+    return 'floor( p_value/p_increment ) * p_increment';
+end floor_increments_sqm;
+/
 
-base(val, inc) as (
-    select 13, 5 from dual union all
-    select 1.217, 1/4 from dual union all
-    select 17, 12 from dual union all
-    select 1.172839, 1/8 from dual union all
-    select -13, 5 from dual union all
-    select -1.217, 1/4 from dual union all
-    select -17, 12 from dual union all
-    select -1.172839, 1/8 from dual 
+with base(n, i) as (
+    values 
+        (1.217, 1/4), (1.08, 1/4)
+        , (13, 5), (11, 5)
+        , (19, 12), (14, 12)
 )
 select 
-    val
-    , inc
-    , incremental_floor(val, inc) as floor_by_inc
+    n as "number"
+    , i as "increment"
+    , floor_increments_sqm(n, i) as "result"
 from base
+order by i, n
 /
 
 /*
-       VAL        INC FLOOR_BY_INC
----------- ---------- ------------
-        13          5           10
-     1.217        .25            1
-        17         12           12
-  1.172839       .125        1.125
-       -13          5          -15
-    -1.217        .25        -1.25
-       -17         12          -24
- -1.172839       .125        -1.25
+    number  increment     result
+---------- ---------- ----------
+      1.08        .25          1
+     1.217        .25          1
+        11          5         10
+        13          5         10
+        14         12         12
+        19         12         12
 */

@@ -1,42 +1,37 @@
---1.1-round-increments-examples.sql
+--1.3-round-increments-as-scale.sql
 
 set serveroutput on;
 declare
-    l_value number := 12345.6789;
-    
-    function incremental_round(
-        p_value in number
-        , p_increment in number
-    ) return number
-    is
-    begin
-        return round(p_value/p_increment) * p_increment;
-    end incremental_round;
-    
-    procedure print_incremental_round(
-        p_value in number
-        , p_increment in number
-    )
-    is
-    begin
-        dbms_output.put_line(
-            'round: ' || p_value 
-            || ' to increments of ' || p_increment 
-            || ' = ' || incremental_round(p_value, p_increment));    
-    end print_incremental_round;
+    l_value number := 12345.6789;    
 begin
-    for e in -3..3 loop
-        print_incremental_round(l_value, power(10, e));
+    
+    dbms_output.put_line('round(n, i) = round_increments(n, power(10, i * -1)');
+    for i in reverse -2..2 loop
+        dbms_output.put( 'round(n, ' || i || ') = ' );
+        dbms_output.put_line( round(l_value, i) );
+    end loop;  
+    
+    dbms_output.put_line('round(n, e * -1) = round_increments(n, power(10, e))');
+    for e in -2..2 loop
+        dbms_output.put( 'round_increments(n, ' || power(10, e) || ') = ' );
+        dbms_output.put_line( round_increments(l_value, power(10, e)) );
     end loop;
+
 end;
 /
 
 /*
-round: 12345.6789 to increments of .001 = 12345.679
-round: 12345.6789 to increments of .01 = 12345.68
-round: 12345.6789 to increments of .1 = 12345.7
-round: 12345.6789 to increments of 1 = 12346
-round: 12345.6789 to increments of 10 = 12350
-round: 12345.6789 to increments of 100 = 12300
-round: 12345.6789 to increments of 1000 = 12000
+round(n, i) = round_increments(n, power(10, i * -1)
+round(n, 2) = 12345.68
+round(n, 1) = 12345.7
+round(n, 0) = 12346
+round(n, -1) = 12350
+round(n, -2) = 12300
+
+round(n, e * -1) = round_increments(n, power(10, e))
+round_increments(n, .01) = 12345.68
+round_increments(n, .1) = 12345.7
+round_increments(n, 1) = 12346
+round_increments(n, 10) = 12350
+round_increments(n, 100) = 12300
 */

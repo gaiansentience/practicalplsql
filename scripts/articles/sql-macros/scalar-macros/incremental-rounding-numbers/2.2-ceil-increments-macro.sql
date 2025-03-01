@@ -1,42 +1,33 @@
 --2.2-ceil-increments-macro.sql
-    
-with
-function incremental_ceil(
+
+create or replace function ceil_increments_sqm(
     p_value in number
     , p_increment in number
-) return varchar2
-sql_macro(scalar)
+) return varchar2 sql_macro(scalar)
 is
 begin
-    return 'ceil(p_value/p_increment) * p_increment';
-end incremental_ceil;
-
-base(val, inc) as (
-    select 13, 5 from dual union all
-    select 1.217, 1/4 from dual union all
-    select 17, 12 from dual union all
-    select 1.172839, 1/8 from dual union all
-    select -13, 5 from dual union all
-    select -1.217, 1/4 from dual union all
-    select -17, 12 from dual union all
-    select -1.172839, 1/8 from dual 
+    return 'ceil( p_value/p_increment ) * p_increment';
+end ceil_increments_sqm;
+/
+    
+with base(n, i) as (
+    values 
+        (1.217, 1/4), (1.08, 1/4)
+        , (13, 5), (11, 5)
 )
 select 
-    val
-    , inc
-    , incremental_ceil(val, inc) as ceil_by_inc
+    n as "number"
+    , i as "increment"
+    , ceil_increments_sqm(n, i) as "result"
 from base
+order by i, n
 /
 
 /*
-       VAL        INC CEIL_BY_INC
----------- ---------- -----------
-        13          5          15
-     1.217        .25        1.25
-        17         12          24
-  1.172839       .125        1.25
-       -13          5         -10
-    -1.217        .25          -1
-       -17         12         -12
- -1.172839       .125      -1.125
+    number  increment     result
+---------- ---------- ----------
+      1.08        .25       1.25
+     1.217        .25       1.25
+        11          5         15
+        13          5         15
 */
