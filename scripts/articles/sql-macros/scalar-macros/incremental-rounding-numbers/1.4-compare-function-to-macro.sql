@@ -1,4 +1,4 @@
---1.5-compare-function-to-macro.sql
+--1.4-compare-function-to-macro.sql
 
 set pagesize 100
 column plan_table_output format a80
@@ -24,9 +24,17 @@ select *
 from   dbms_xplan.display ( format => 'BASIC +PREDICATE' );
 
 /*
+---------------------------------------------
+| Id  | Operation         | Name            |
+---------------------------------------------
+|   0 | SELECT STATEMENT  |                 |
+|*  1 |  TABLE ACCESS FULL| TEST_INCREMENTS |
+---------------------------------------------
+ 
 Predicate Information (identified by operation id):
 ---------------------------------------------------
-   5 - filter(ROUND("number"/"increment")*"increment"=10)
+ 
+   1 - filter(ROUND("number"/"increment")*"increment"=10)
 */
 
 prompt filter by round_increments, function call is in predicates with transpiler off
@@ -40,13 +48,33 @@ select *
 from   dbms_xplan.display ( format => 'BASIC +PREDICATE' );
 
 /*
+---------------------------------------------
+| Id  | Operation         | Name            |
+---------------------------------------------
+|   0 | SELECT STATEMENT  |                 |
+|*  1 |  TABLE ACCESS FULL| TEST_INCREMENTS |
+---------------------------------------------
+ 
 Predicate Information (identified by operation id):
 ---------------------------------------------------
-   4 - filter("ROUND_INCREMENTS"("number","increment")=10)
+ 
+   1 - filter("ROUND_INCREMENTS"("number","increment")=10)
 */
 
-prompt filter by round_increments, function call is not in predicates with transpiler on
+prompt filter by round_increments, function call should not be in predicates with transpiler on
 alter session set sql_transpiler = on;
+
+prompt compile function with pragma udf, transpiler cannot convert to sql
+create or replace function round_increments(
+    p_value in number
+    , p_increment in number
+) return number
+is
+    pragma udf;
+begin
+    return round( p_value/p_increment ) * p_increment;
+end round_increments;
+/
 
 explain plan for
 select * from test_increments
@@ -56,9 +84,49 @@ select *
 from   dbms_xplan.display ( format => 'BASIC +PREDICATE' );
 
 /*
+---------------------------------------------
+| Id  | Operation         | Name            |
+---------------------------------------------
+|   0 | SELECT STATEMENT  |                 |
+|*  1 |  TABLE ACCESS FULL| TEST_INCREMENTS |
+---------------------------------------------
+ 
 Predicate Information (identified by operation id):
 ---------------------------------------------------
-   5 - filter(ROUND("number"/"increment")*"increment"=10)
+ 
+   1 - filter("ROUND_INCREMENTS"("number","increment")=10)
+*/
+
+prompt recompile function without pragma udf, transpiler can then convert to sql
+create or replace function round_increments(
+    p_value in number
+    , p_increment in number
+) return number
+is
+begin
+    return round( p_value/p_increment ) * p_increment;
+end round_increments;
+/
+
+explain plan for
+select * from test_increments
+where round_increments("number","increment") = 10;
+
+select * 
+from   dbms_xplan.display ( format => 'BASIC +PREDICATE' );
+
+/*
+---------------------------------------------
+| Id  | Operation         | Name            |
+---------------------------------------------
+|   0 | SELECT STATEMENT  |                 |
+|*  1 |  TABLE ACCESS FULL| TEST_INCREMENTS |
+---------------------------------------------
+ 
+Predicate Information (identified by operation id):
+---------------------------------------------------
+ 
+   1 - filter(ROUND("number"/"increment")*"increment"=10)
 */
 
 alter session set sql_transpiler = off;
