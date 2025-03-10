@@ -1,0 +1,86 @@
+compare timings for calling the functions from sql
+use set timing on to get basic timing
+show version for test
+
+BANNER_FULL                                                                                                                                                     
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.26.0.1.0
+
+
+Elapsed: 00:00:00.030
+**********************
+inline with function
+
+SUM(N_SQ2)
+----------
+3.3333E+17
+
+Elapsed: 00:00:00.544
+**********************
+plsql function
+
+SUM(N_SQ2)
+----------
+3.3333E+17
+
+Elapsed: 00:00:01.473
+**********************
+inline with function - pragma udf
+
+SUM(N_SQ2)
+----------
+3.3333E+17
+
+Elapsed: 00:00:00.542
+**********************
+plsql function - pragma udf
+
+SUM(N_SQ2)
+----------
+3.3333E+17
+
+Elapsed: 00:00:00.469
+**********************
+inline with function - deterministic
+
+SUM(N_SQ2)
+----------
+3.3333E+17
+
+Elapsed: 00:00:00.549
+**********************
+plsql function - deterministic
+
+SUM(N_SQ2)
+----------
+3.3333E+17
+
+Elapsed: 00:00:01.478
+**********************
+inline with function - scalar macro
+
+SUM(N_SQ2)
+----------
+3.3333E+17
+
+Elapsed: 00:00:00.307
+**********************
+scalar macro function
+
+SUM(N_SQ2)
+----------
+3.3333E+17
+
+Elapsed: 00:00:00.308
+**********************
+pure sql only
+
+SUM(N_SQ2)
+----------
+3.3333E+17
+
+Elapsed: 00:00:00.314
+**********************
+test queries complete
+Elapsed: 00:00:00.315
