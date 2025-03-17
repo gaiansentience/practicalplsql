@@ -1,0 +1,47 @@
+compare timings for calling the functions from sql
+enable the sql transpiler
+
+Session altered.
+
+use set timing on to get basic timing
+show version for test
+
+BANNER_FULL                                                                                                                                                                                                                                                       
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Oracle Database 23ai Enterprise Edition Release 23.0.0.0.0 - for Oracle Cloud and Engineered Systems
+Version 23.7.0.25.03
+
+
+**********************
+inline with function
+Elapsed: 00:00:00.580
+**********************
+plsql function
+Elapsed: 00:00:01.653
+**********************
+inline with function - pragma udf
+Elapsed: 00:00:00.640
+**********************
+plsql function - pragma udf
+Elapsed: 00:00:00.546
+**********************
+inline with function - deterministic
+Elapsed: 00:00:00.630
+**********************
+plsql function - deterministic
+Elapsed: 00:00:01.629
+**********************
+inline with function - scalar macro
+Elapsed: 00:00:00.466
+**********************
+scalar macro function
+Elapsed: 00:00:00.472
+**********************
+pure sql only
+Elapsed: 00:00:00.467
+**********************
+test queries complete
+Elapsed: 00:00:00.468
+
+Session altered.
+
