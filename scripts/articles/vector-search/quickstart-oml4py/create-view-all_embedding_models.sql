@@ -22,3 +22,9 @@ join
 order by m.model_name
 /
 
+select * from all_embedding_models
+/
+
+
+--cannot grant view without grants for all_mining_models and all_mining_model_attributes
+--ORA-01720: grant option does not exist for SYS.ALL_MINING_MODEL_ATTRIBUTES
