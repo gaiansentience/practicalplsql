@@ -12,7 +12,7 @@ declare
     select 
         b.term
         , vector_embedding(
-            dev_vector.ALL_MINILM_L6_V2 using b.term as data
+            ALL_MINILM_L6_V2 using b.term as data
             ) as embedding
     from base b;
 begin

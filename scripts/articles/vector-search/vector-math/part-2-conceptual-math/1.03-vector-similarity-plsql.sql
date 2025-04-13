@@ -37,8 +37,4 @@ end;
 /*
 (Rome - Italy + France) is more similar to Paris than London
 
-
-PL/SQL procedure successfully completed.
-
-
 */

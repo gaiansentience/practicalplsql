@@ -1,4 +1,4 @@
---2.03-france-plus-capitol.sql
+--2.03-france-plus-capital.sql
 
 set serveroutput on;
 declare
@@ -7,12 +7,7 @@ declare
     v_cities    t_vectors;
     l_distance number;
     l_distance_min number;
-    l_capitol_city varchar2(100);
-    d number;
-    i varchar2(100);
-    d_keep number;
-    i_keep varchar2(100);
-    
+    l_capital_city varchar2(100);
 
     cursor c_cities is
     with base(term) as (
@@ -26,24 +21,24 @@ declare
 begin   
 
     select vector_embedding(all_minilm_l6_v2 using 'France' as data) into v('France');
-    select vector_embedding(all_minilm_l6_v2 using 'capitol' as data) into v('capitol');
+    select vector_embedding(all_minilm_l6_v2 using 'capital' as data) into v('capital');
     
     v_cities := t_vectors(for r in c_cities index r.term => r.embedding);
     
     for city_name, city_vector in pairs of v_cities loop
         dbms_output.put_line('Checking similarity for ' || city_name);
-        l_distance := vector_distance(v('France') + v('capitol'), city_vector); 
+        l_distance := vector_distance(v('France') + v('capital'), city_vector); 
         
         if l_distance_min is null then 
             l_distance_min := l_distance;
-            l_capitol_city := city_name;  
+            l_capital_city := city_name;  
         elsif l_distance < l_distance_min then
             l_distance_min := l_distance;
-            l_capitol_city := city_name;
+            l_capital_city := city_name;
         end if;
     end loop;
     
-    dbms_output.put_line('(France + capitol) is most similar to ' || l_capitol_city);
+    dbms_output.put_line('(France + capital) is most similar to ' || l_capital_city);
     
 end;
 /
@@ -63,10 +58,5 @@ Checking similarity for Rome
 Checking similarity for Tokyo
 Checking similarity for Venice
 Checking similarity for Washington DC
-(France + capitol) is most similar to Paris
-
-
-PL/SQL procedure successfully completed.
-
-
+(France + capital) is most similar to Paris
 */

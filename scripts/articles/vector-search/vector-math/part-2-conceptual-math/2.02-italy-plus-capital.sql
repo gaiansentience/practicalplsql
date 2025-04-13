@@ -1,4 +1,4 @@
---2.02-italy-plus-capitol.sql
+--2.02-italy-plus-capital.sql
 
 set serveroutput on;
 declare
@@ -9,7 +9,7 @@ declare
     with base(term) as (
     values 
         ('Paris'),('Boston'),('Rome'),('Milan'),('Venice'),('London'),('Oxford')
-        ,('Italy'),('capitol')
+        ,('Italy'),('capital')
     )
     select term, vector_embedding(all_minilm_l6_v2 using term as data) as embedding
     from base;    
@@ -17,9 +17,9 @@ begin
 
     v := t_vectors(for r in c_vectors index r.term => r.embedding);
     
-    v('equation') := v('Italy') + v('capitol');
+    v('equation') := v('Italy') + v('capital');
 
-    dbms_output.put_line('(Italy + capitol)');
+    dbms_output.put_line('(Italy + capital)');
     dbms_output.put_line('Vector Distance to Rome: ' || (v('equation') <=> v('Rome')));  
     dbms_output.put_line('Vector Distance to Milan: ' || (v('equation') <=> v('Milan')));
     dbms_output.put_line('Vector Distance to Venice: ' || (v('equation') <=> v('Venice')));
@@ -30,16 +30,12 @@ begin
 end;
 /
 /*
-(Italy + capitol)
-Vector Distance to Rome: 2.9802262620126152E-001
-Vector Distance to Milan: 3.9387634470790855E-001
-Vector Distance to Venice: 3.630046186389756E-001
-Vector Distance to Boston: 3.3752235313420953E-001
-Vector Distance to Oxford: 6.2731439414881129E-001
-Vector Distance to London: 4.9962797324807606E-001
-
-
-PL/SQL procedure successfully completed.
-
+(Italy + capital)
+Vector Distance to Rome: 3.6240224760576656E-001
+Vector Distance to Milan: 4.1047204677196603E-001
+Vector Distance to Venice: 3.8740155351994054E-001
+Vector Distance to Boston: 3.9790772095926996E-001
+Vector Distance to Oxford: 6.1004993062506807E-001
+Vector Distance to London: 5.5103133474311905E-001
 
 */

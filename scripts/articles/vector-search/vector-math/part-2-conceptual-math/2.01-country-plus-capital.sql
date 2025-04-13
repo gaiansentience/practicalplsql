@@ -1,4 +1,4 @@
---2.01-country-plus-capitol.sql
+--2.01-country-plus-capital.sql
 
 set serveroutput on;
 declare
@@ -9,7 +9,7 @@ declare
     values 
         ('Paris'),('Rome'),('London')
         ,('France'),('Italy'),('United Kingdom')
-        ,('capitol')
+        ,('capital')
     )
     select 
         b.term, 
@@ -20,20 +20,20 @@ begin
 
     v := t_vectors(for r in c index r.term => r.embedding);
     
-    v('equation') := v('Italy') + v('capitol');
-    dbms_output.put_line('(Italy + capitol)');
+    v('equation') := v('Italy') + v('capital');
+    dbms_output.put_line('(Italy + capital)');
     dbms_output.put_line('Distance to Paris: ' || vector_distance(v('equation'), v('Paris')));
     dbms_output.put_line('Distance to London: ' || vector_distance(v('equation'), v('London')));
     dbms_output.put_line('Distance to Rome: ' || vector_distance(v('equation'), v('Rome')));
 
-    v('equation') := v('United Kingdom') + v('capitol');
-    dbms_output.put_line('(United Kingdom + capitol)');
+    v('equation') := v('United Kingdom') + v('capital');
+    dbms_output.put_line('(United Kingdom + capital)');
     dbms_output.put_line('Distance to Paris: ' || vector_distance(v('equation'), v('Paris')));
     dbms_output.put_line('Distance to London: ' || vector_distance(v('equation'), v('London')));
     dbms_output.put_line('Distance to Rome: ' || vector_distance(v('equation'), v('Rome')));
     
-    v('equation') := v('France') + v('capitol');
-    dbms_output.put_line('(France + capitol)');
+    v('equation') := v('France') + v('capital');
+    dbms_output.put_line('(France + capital)');
     dbms_output.put_line('Distance to Paris: ' || vector_distance(v('equation'), v('Paris')));
     dbms_output.put_line('Distance to London: ' || vector_distance(v('equation'), v('London')));
     dbms_output.put_line('Distance to Rome: ' || vector_distance(v('equation'), v('Rome')));
@@ -42,19 +42,18 @@ end;
 /
 
 /*
-(Italy + capitol)
-Distance to Paris: 4.3417309641346358E-001
-Distance to London: 4.9962797324807606E-001
-Distance to Rome: 2.9802262620126152E-001
-(United Kingdom + capitol)
-Distance to Paris: 4.7775750538870176E-001
-Distance to London: 3.1825374713509702E-001
-Distance to Rome: 4.7997438619014166E-001
-(France + capitol)
-Distance to Paris: 2.7786227275012021E-001
-Distance to London: 4.7659735866171526E-001
-Distance to Rome: 3.67444080817251E-001
+(Italy + capital)
+Distance to Paris: 5.0221515483701262E-001
+Distance to London: 5.5103133474311905E-001
+Distance to Rome: 3.6240224760576656E-001
 
+(United Kingdom + capital)
+Distance to Paris: 5.4262974078288229E-001
+Distance to London: 3.6615389352489458E-001
+Distance to Rome: 5.4107460014668729E-001
 
-PL/SQL procedure successfully completed.
+(France + capital)
+Distance to Paris: 3.4374537856466458E-001
+Distance to London: 5.263360473587797E-001
+Distance to Rome: 4.2970427215207985E-001
 */
