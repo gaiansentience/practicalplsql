@@ -40,12 +40,12 @@ insert_recipe('Banana, Mango and Blueberry Smoothie', 'Bananas, Frozen Mango and
 
 commit;
 
-   
-update recipes g
-set embedding = vector_embedding(ALL_MINILM_L12_V2 using g.doc as data), embedding_model = 'ALL_MINILM_L12_V2';
-
-
-commit;
+--dont create any vectors right now   
+--update recipes g
+--set embedding = vector_embedding(ALL_MINILM_L12_V2 using g.doc as data), embedding_model = 'ALL_MINILM_L12_V2';
+--
+--
+--commit;
 
 end;
 /
