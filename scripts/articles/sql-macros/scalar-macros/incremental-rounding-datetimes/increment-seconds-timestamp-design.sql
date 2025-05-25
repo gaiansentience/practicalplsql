@@ -51,4 +51,4 @@ from base
 /
 
 
-select ceil(interval '3:35.34' minute to second / 5, 'MI')*5
+select ceil(interval '3:35.34' minute to second / 15/60, 'MI')*15/60
