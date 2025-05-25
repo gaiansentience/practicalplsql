@@ -53,7 +53,7 @@ declare
                     vector_distance(
                         g.embedding
                         , vector_embedding(##model_name## using :search_expression as data)
-                        , euclidean)
+                        , cosine)
                 fetch first 3 rows only
                 )
         ]';
@@ -87,110 +87,134 @@ end;
 Mining Model: ALL_MINILM_L12_V2
 Search Expression: yummy dessert
 1-Strawberry Pie
-2-Raspberry Tarts
-3-Oatmeal Cookies
+2-Chocolate Cake
+3-Banana, Mango and Blueberry Smoothie
 --------------------------------------------------
 Mining Model: ALL_MINILM_L6_V2
 Search Expression: yummy dessert
 1-Strawberry Pie
 2-Raspberry Tarts
-3-Grilled Cheese Sandwiches
+3-Chocolate Cake
 --------------------------------------------------
 Mining Model: ALL_MPNET_BASE_V2
 Search Expression: yummy dessert
-1-Strawberry Pie
-2-Raspberry Tarts
-3-Grilled Cheese Sandwiches
---------------------------------------------------
-Mining Model: BERT_TINY
-Search Expression: yummy dessert
-1-Miso Soup
-2-Curried Tofu
-3-Grilled Cheese Sandwiches
+1-Chocolate Cake
+2-Strawberry Pie
+3-Banana, Mango and Blueberry Smoothie
 --------------------------------------------------
 Mining Model: BGE_BASE_EN_V1_5
 Search Expression: yummy dessert
-1-Raspberry Tarts
+1-Chocolate Cake
 2-Strawberry Pie
-3-Oatmeal Cookies
+3-Raspberry Tarts
 --------------------------------------------------
 Mining Model: BGE_MICRO_V2
 Search Expression: yummy dessert
-1-Raspberry Tarts
+1-Chocolate Cake
 2-Strawberry Pie
-3-Grilled Cheese Sandwiches
+3-Raspberry Tarts
 --------------------------------------------------
 Mining Model: BGE_SMALL_EN_V1_5
 Search Expression: yummy dessert
 1-Strawberry Pie
-2-Oatmeal Cookies
-3-Raspberry Tarts
---------------------------------------------------
-Mining Model: CLINICAL_BERT
-Search Expression: yummy dessert
-1-Miso Soup
-2-Strawberry Pie
-3-Raspberry Tarts
+2-Banana, Mango and Blueberry Smoothie
+3-Grilled Cheese Sandwiches
 --------------------------------------------------
 Mining Model: DISTILUSE_BASE_MULTILINGUAL_CASED_V2
 Search Expression: yummy dessert
-1-Strawberry Pie
-2-Raspberry Tarts
-3-Grilled Cheese Sandwiches
+1-Chocolate Cake
+2-Strawberry Pie
+3-Banana, Mango and Blueberry Smoothie
 --------------------------------------------------
 Mining Model: E5_BASE_V2
 Search Expression: yummy dessert
-1-Raspberry Tarts
+1-Chocolate Cake
 2-Strawberry Pie
-3-Grilled Cheese Sandwiches
+3-Banana, Mango and Blueberry Smoothie
 --------------------------------------------------
 Mining Model: E5_SMALL_V2
 Search Expression: yummy dessert
-1-Raspberry Tarts
+1-Chocolate Cake
 2-Strawberry Pie
-3-Grilled Cheese Sandwiches
---------------------------------------------------
-Mining Model: FINBERT
-Search Expression: yummy dessert
-1-Grilled Cheese Sandwiches
-2-Raspberry Tarts
-3-Strawberry Pie
+3-Banana, Mango and Blueberry Smoothie
 --------------------------------------------------
 Mining Model: GTE_BASE
 Search Expression: yummy dessert
-1-Strawberry Pie
-2-Raspberry Tarts
+1-Chocolate Cake
+2-Strawberry Pie
 3-Oatmeal Cookies
 --------------------------------------------------
 Mining Model: GTE_SMALL
 Search Expression: yummy dessert
-1-Strawberry Pie
+1-Chocolate Cake
 2-Oatmeal Cookies
-3-Raspberry Tarts
+3-Strawberry Pie
 --------------------------------------------------
 Mining Model: GTE_TINY
 Search Expression: yummy dessert
-1-Strawberry Pie
-2-Raspberry Tarts
+1-Chocolate Cake
+2-Strawberry Pie
 3-Oatmeal Cookies
+--------------------------------------------------
+Mining Model: MULTILINGUAL_E5_BASE
+Search Expression: yummy dessert
+1-Chocolate Cake
+2-Strawberry Pie
+3-Banana, Mango and Blueberry Smoothie
 --------------------------------------------------
 Mining Model: MULTILINGUAL_E5_SMALL
 Search Expression: yummy dessert
-1-Grilled Cheese Sandwiches
-2-Strawberry Pie
-3-Raspberry Tarts
+1-Chocolate Cake
+2-Banana, Mango and Blueberry Smoothie
+3-Grilled Cheese Sandwiches
 --------------------------------------------------
 Mining Model: MULTI_QA_MINILM_L6_COS_V1
 Search Expression: yummy dessert
 1-Strawberry Pie
-2-Grilled Cheese Sandwiches
-3-Raspberry Tarts
+2-Chocolate Cake
+3-Banana, Mango and Blueberry Smoothie
 --------------------------------------------------
-Mining Model: STELLA_BASE_EN_V2
+Mining Model: MXBAI_EMBED_LARGE_V1
+Search Expression: yummy dessert
+1-Chocolate Cake
+2-Strawberry Pie
+3-Oatmeal Cookies
+--------------------------------------------------
+Mining Model: MXBAI_EMBED_XSMALL_V1
 Search Expression: yummy dessert
 1-Strawberry Pie
-2-Oatmeal Cookies
-3-Grilled Cheese Sandwiches
+2-Raspberry Tarts
+3-Chocolate Cake
+--------------------------------------------------
+Mining Model: PARAPHRASE_MULTILINGUAL_MPNET_BASE_V2
+Search Expression: yummy dessert
+1-Chocolate Cake
+2-Strawberry Pie
+3-Raspberry Tarts
+--------------------------------------------------
+Mining Model: SNOWFLAKE_ARCTIC_EMBED_M
+Search Expression: yummy dessert
+1-Chocolate Cake
+2-Banana, Mango and Blueberry Smoothie
+3-Curried Tofu
+--------------------------------------------------
+Mining Model: SNOWFLAKE_ARCTIC_EMBED_S
+Search Expression: yummy dessert
+1-Chocolate Cake
+2-Strawberry Pie
+3-Banana, Mango and Blueberry Smoothie
+--------------------------------------------------
+Mining Model: SNOWFLAKE_ARCTIC_EMBED_XS
+Search Expression: yummy dessert
+1-Strawberry Pie
+2-Curried Tofu
+3-Chocolate Cake
+--------------------------------------------------
+Mining Model: STSB_XLM_R_MULTILINGUAL
+Search Expression: yummy dessert
+1-Chocolate Cake
+2-Raspberry Tarts
+3-Strawberry Pie
 
 
 PL/SQL procedure successfully completed.

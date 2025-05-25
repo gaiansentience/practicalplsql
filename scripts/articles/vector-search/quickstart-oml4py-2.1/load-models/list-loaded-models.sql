@@ -1,3 +1,5 @@
+--list-loaded-models.sql
+
 column model_name format a40
 column mining_function format a20
 column algorithm format a15

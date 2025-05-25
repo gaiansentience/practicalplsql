@@ -1,3 +1,8 @@
+--load-all-text-onnx-models.sql
+
+@drop-loaded-models.sql;
+
+
 set serveroutput on;
 
 declare
@@ -36,18 +41,8 @@ end loop;
 end;
 /
 
-select model_name, mining_function, algorithm, algorithm_type, model_size
-from user_mining_models
-where mining_function = 'EMBEDDING' and algorithm = 'ONNX'
-order by model_name
-/
+@list-loaded-models.sql;
 
-select model_name, attribute_name, attribute_type, data_type, vector_info
-from user_mining_model_attributes
-where model_name in (
-    select model_name
-    from user_mining_models
-    where mining_function = 'EMBEDDING' and algorithm = 'ONNX'
-    )
-order by model_name, attribute_name
-/
+/*
+
+*/

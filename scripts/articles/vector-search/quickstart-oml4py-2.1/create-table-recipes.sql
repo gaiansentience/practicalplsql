@@ -10,7 +10,6 @@ CREATE TABLE if not exists recipes (
 )
 /
 
---truncate table recipes preserve storage
 
 declare
 
@@ -50,4 +49,4 @@ commit;
 end;
 /
 
-select * from recipes;
+--select * from recipes;
