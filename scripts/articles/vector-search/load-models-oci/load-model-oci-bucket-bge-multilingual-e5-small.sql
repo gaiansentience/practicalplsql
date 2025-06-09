@@ -22,14 +22,15 @@ begin
 l_credential := '"OCI$RESOURCE_PRINCIPAL"';
 
 --current url syntax
-l_uri := 'https://objectstorage.us-ashburn-1.oraclecloud.com/n/idjv1ptikjf5/b/adw_ext_data/o/onnx%2F';
+--l_uri := 'https://objectstorage.us-ashburn-1.oraclecloud.com/n/idjv1ptikjf5/b/adw_ext_data/o/onnx%2F';
 
 --dedicated url syntax
---l_uri := 'https://idjv1ptikjf5.objectstorage.us-ashburn-1.oci.customer-oci.com/n/idjv1ptikjf5/b/adw_ext_data/o/onnx%2F';
+l_uri := 'https://idjv1ptikjf5.objectstorage.us-ashburn-1.oci.customer-oci.com/n/idjv1ptikjf5/b/adw_ext_data/o/onnx%2F';
 
 
-l_onnx_filename := 'all-MiniLM-L12-v2.onnx';
-l_model := 'all_MiniLM_L12_v2';
+l_onnx_filename := 'multilingual-e5-small.onnx';
+l_model := translate(replace(l_onnx_filename, '.onnx'),'-.','__');
+
 l_metadata := JSON('{"function" : "embedding", "embeddingOutput" : "embedding", "input": {"input":["DATA"]}}');
 
 

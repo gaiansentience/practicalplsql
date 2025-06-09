@@ -29,7 +29,8 @@ l_uri := 'https://objectstorage.us-ashburn-1.oraclecloud.com/n/idjv1ptikjf5/b/ad
 
 
 l_onnx_filename := 'all-MiniLM-L12-v2.onnx';
-l_model := 'all_MiniLM_L12_v2';
+l_model := replace(replace(l_onnx_filename, '.onnx'),'-','_');
+
 l_metadata := JSON('{"function" : "embedding", "embeddingOutput" : "embedding", "input": {"input":["DATA"]}}');
 
 

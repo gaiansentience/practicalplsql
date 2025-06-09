@@ -17,6 +17,7 @@ grant create view to practicalplsql;
 grant create materialized view to practicalplsql;
 grant create procedure to practicalplsql;
 grant create type to practicalplsql;
+grant create mining model to practicalplsql;
 
 --grants for 23c only
 begin
