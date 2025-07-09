@@ -6,7 +6,7 @@ from recipes g
 order by 
     vector_distance(
         g.embedding
-        , vector_embedding(MXBAI_EMBED_LARGE_V1 using 'healthy dinner' as data)
+        , vector_embedding(MXBAI_EMBED_XSMALL_V1 using 'healthy dinner' as data)
         , cosine)
 fetch first 3 rows only
 )
@@ -179,3 +179,39 @@ end to_binary_vector;
 
 select g.embedding, to_binary_vector(g.embedding) as binary_embedding
 from recipes g
+/
+
+--quantize the vectors for faster search
+update recipes g
+set g.embedding_q = to_binary_vector(g.embedding)
+/
+
+
+select rownum as ranking, name, doc
+from
+(
+select name, doc
+from recipes g
+order by 
+    vector_distance(
+        g.embedding
+        , vector_embedding(MXBAI_EMBED_XSMALL_V1 using 'healthy dinner' as data)
+        , cosine)
+fetch first 5 rows only
+)
+/
+
+
+select rownum as ranking, name, doc
+from
+(
+select name, doc
+from recipes g
+order by 
+    vector_distance(
+        g.embedding_q
+        , to_binary_vector(vector_embedding(MXBAI_EMBED_XSMALL_V1 using 'healthy dinner' as data))
+        , cosine)
+fetch first 5 rows only
+)
+/
