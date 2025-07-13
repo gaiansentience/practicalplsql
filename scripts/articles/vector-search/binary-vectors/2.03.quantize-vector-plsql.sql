@@ -1,6 +1,6 @@
 ---convert vectors to binary vectors using plsql
 
---set an inquiry directive for conditiona compilation of code that is only valid in 23.8
+--set an inquiry directive for conditional compilation of code that is only valid in 23.8
 set serveroutput on;
 DECLARE
     l_version number;

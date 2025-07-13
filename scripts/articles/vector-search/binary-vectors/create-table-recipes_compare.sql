@@ -1,13 +1,17 @@
-drop table if exists recipes purge
+drop table if exists recipes_compare purge
 /
 
-create table if not exists recipes (
+create table if not exists recipes_compare (
     id number generated always as identity primary key
     , name varchar2(100) not null unique
     , doc varchar2(4000)
-    , embedding vector(*,*)
-    , embedding_model varchar2(50)
-    , embedding_binary vector(*, binary)    
+    , embedding1 vector(*,*)
+    , embedding1_model varchar2(50)
+    , embedding1_binary vector(*, binary)
+    , embedding2 vector(*,*)
+    , embedding2_model varchar2(50)
+    , embedding2_binary vector(*, binary)
+    
 )
 /
 
@@ -17,12 +21,12 @@ declare
     procedure insert_recipe(p_name in varchar2, p_doc in varchar2)
     is
     begin
-        insert into recipes(name, doc) values (p_name, p_doc);
+        insert into recipes_compare(name, doc) values (p_name, p_doc);
     end insert_recipe;
 
 begin
 
-    execute immediate 'truncate table recipes';
+    execute immediate 'truncate table recipes_compare';
     
     insert_recipe('Grilled Cheese Sandwiches', 'Cheddar Cheese and Tomato slices on whole wheat bread.  Toasted lightly for a quick and delicious lunch');
     insert_recipe('Miso Soup', 'Miso with tofu cubes and sliced green onions are the perfect complement to dinner.');
