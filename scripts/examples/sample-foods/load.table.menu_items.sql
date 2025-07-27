@@ -1,67 +1,24 @@
-
 set serveroutput on;
 
-DECLARE
-    l_count number;
-     procedure create_category(p_name in varchar2, p_description in varchar2, p_created_by in varchar2) 
-     is
-     begin
-          insert into menu_categories (category_name, category_description, created_by)
-          values (p_name, p_description, p_created_by);
-     end;
-BEGIN
 
-    delete menu_categories;
-    
-     create_category('Appetizers', 'Starters to whet your appetite', 'admin');
-     create_category('Main Courses', 'Hearty and filling main dishes', 'admin');
-     create_category('Desserts', 'Sweet treats to end your meal', 'admin');
-     create_category('Beverages', 'Drinks to complement your meal', 'admin');
-     create_category('Salads', 'Fresh and healthy salads', 'admin');
-     create_category('Soups', 'Warm and comforting soups', 'admin');
-     create_category('Sandwiches', 'Quick and easy sandwiches', 'admin');
-     create_category('Pizzas', 'Delicious pizzas with various toppings', 'admin');
-     create_category('Pastas', 'Tasty pasta dishes with rich sauces', 'admin');
-     create_category('Seafood', 'Fresh seafood dishes', 'admin');
-     create_category('Vegetarian', 'Delicious vegetarian options', 'admin');
-     create_category('Vegan', 'Healthy and tasty vegan dishes', 'admin');
-     create_category('Gluten-Free', 'Options for gluten-sensitive diners', 'admin');
-     create_category('Breakfast', 'Morning meals to start your day', 'admin');
-
-     commit;
-     
-     select count(*) into l_count
-     from menu_categories;
-     
-     dbms_output.put_line('Created ' || l_count || ' menu categories');
-     
-
-EXCEPTION
-     when others then
-          dbms_output.put_line('Error creating categories: ' || sqlerrm);
-          rollback;
-END;
-/
-
-
-
-DECLARE
+declare
 
     l_count number;
 
     type t_category_ids is table of integer index by varchar2(100);
     l_categories t_category_ids;
     
-    procedure load_categories
+    procedure load_categories_array
     is
     begin
         l_categories := t_category_ids(for r in (select category_name, category_id from menu_categories) index r.category_name => r.category_id);
         
-        for i, v in pairs of l_categories loop
-            dbms_output.put_line('category ' || v || ' = ' || i);
-        end loop;
+--        confirm that all categories are loaded to lookup collection
+--        for i, v in pairs of l_categories loop
+--            dbms_output.put_line('category ' || v || ' = ' || i);
+--        end loop;
         
-    end load_categories;
+    end load_categories_array;
     
      procedure create_item(p_item_name in varchar2, p_category_name in varchar2, p_description in varchar2, p_created_by in varchar2)
      is
@@ -70,11 +27,12 @@ DECLARE
         insert into menu_items (item_name, category_id, item_description, created_by)
         values (p_item_name, l_category_id, p_description, p_created_by);
      end create_item;
-BEGIN
+     
+begin
 
-    load_categories;
+    load_categories_array;
 
-     delete menu_items;
+     execute immediate 'truncate table menu_items';
 
      create_item('Bruschetta','Appetizers', 'Grilled slices of rustic Italian bread brushed with olive oil, rubbed with garlic, and topped with a vibrant mixture of diced ripe tomatoes, fresh basil, extra virgin olive oil, balsamic vinegar, and a sprinkle of sea salt. Served as a classic appetizer.', 'admin');
      create_item('Caesar Salad','Salads', 'Crisp romaine lettuce tossed with creamy Caesar dressing made from anchovies, garlic, lemon juice, Dijon mustard, and parmesan cheese. Garnished with crunchy croutons and extra shaved parmesan for a savory, satisfying salad.', 'admin');
@@ -445,13 +403,13 @@ BEGIN
         group by mc.category_name
         order by mc.category_name) loop
             
-        dbms_output.put_line(r.category_name || ':  ' || r.menu_item_count || ' items.');
+        dbms_output.put_line('Menu Category ' || r.category_name || ':  ' || r.menu_item_count || ' menu items created.');
         
     end loop;
 
-EXCEPTION
+exception
      when others then
           dbms_output.put_line('Error creating menu items: ' || sqlerrm);
           rollback;
-END;
+end;
 /

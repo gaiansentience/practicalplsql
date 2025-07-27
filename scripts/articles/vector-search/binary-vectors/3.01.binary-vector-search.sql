@@ -130,13 +130,15 @@ commit;
 select i.embedding, to_binary_vector(i.embedding) as bv from menu_items i;
 
 --vector is inserted as 'INVALID VECTOR ENCODING'
-update menu_items i set i.quantized_embedding = to_binary_vector(i.embedding);
+update menu_items i set i.binary_embedding = to_binary_vector(i.embedding);
 
 commit;
 
-select embedding, quantized_embedding from menu_items;
+select embedding, from_vector(binary_embedding) as binary_embedding_serialized from menu_items;
 
 alter table recipes add binary_embedding vector(*,binary);
+
+select * from recipes;
 
 select embedding from recipes;
 
@@ -145,6 +147,7 @@ update recipes set binary_embedding = to_binary_vector(embedding);
 select binary_embedding from recipes;
 
 describe menu_items;
+
 
 alter table menu_items add binary_embedding vector(*, binary);
 --correct vectors are in table
@@ -168,30 +171,6 @@ order by
         g.embedding_q
         , to_binary_vector(vector_embedding(MXBAI_EMBED_XSMALL_V1 using 'healthy dinner' as data))
         , cosine)
-fetch first 5 rows only
-)
-/
-select rownum as float32_vector_ranking, binary_vector_ranking,item_name, item_description
-from
-(
-select binary_vector_ranking, item_name, item_description
-from
-    (
-    select rownum as binary_vector_ranking, item_name, item_description, embedding
-    from
-        (
-        select item_name, item_description, embedding
-        from menu_items g
-        order by 
-            vector_distance(
-                g.binary_embedding
-                , to_binary_vector(vector_embedding(MXBAI_EMBED_XSMALL_V1 using 'healthy dinner' as data))
-                , jaccard)
-        fetch first 25 rows only
-        )
-    )
-order by
-    vector_distance(embedding, vector_embedding(MXBAI_EMBED_XSMALL_V1 using 'healthy dinner' as data),cosine)
 fetch first 5 rows only
 )
 /
