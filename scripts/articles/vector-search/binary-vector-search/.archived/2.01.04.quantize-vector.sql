@@ -1,4 +1,4 @@
---design.1.04.condense-cte.sql
+--design.1.4-condense-cte.sql
 
 prompt add an id field to the source vector row
 prompt combine the jbase CTE with the final select statement to condense the sql
