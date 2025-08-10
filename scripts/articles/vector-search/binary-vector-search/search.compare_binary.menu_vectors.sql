@@ -62,4 +62,98 @@ begin
     
 end;
 /
+create or replace package call_counter as
 
+g_calls number := 0;
+
+function increment return number;
+
+function show return number;
+
+procedure reset;
+
+
+end call_counter;
+/
+
+create or replace package body call_counter
+as
+
+function increment return number
+is
+begin
+g_calls := g_calls + 1;
+return g_calls;
+end increment;
+
+function show return number
+is
+begin
+return g_calls;
+end show;
+
+procedure reset
+is
+begin
+g_calls := 0;
+
+end reset;
+
+end call_counter;
+/
+
+
+with function get_search_vector (search_text in varchar2, is_binary in boolean default false) return vector
+is
+    v_search vector;
+    n number;
+begin
+    n := call_counter.increment;
+        if not is_binary then
+        select vector_embedding(MXBAI_EMBED_LARGE_V1 using search_text as data)
+    into v_search;
+    else
+     select to_binary_vector(vector_embedding(MXBAI_EMBED_LARGE_V1 using search_text as data))
+     into v_search;
+    end if;
+    return v_search;
+    end get_search_vector;
+    
+        select name
+        from recipe_vectors
+        order by 
+            vector_distance(embedding_binary, get_search_vector('comfort food',true), hamming)
+        fetch first 3 rows only;
+        /
+
+
+set serveroutput on;
+exec dbms_output.put_line(call_counter.show);
+--called it 15 times
+
+
+exec  call_counter.reset;
+
+
+with function get_search_vector (search_text in varchar2, is_binary in boolean default false) return vector
+is
+    v_search vector;
+    n number;
+begin
+    n := call_counter.increment;
+        if not is_binary then
+        select vector_embedding(MXBAI_EMBED_LARGE_V1 using search_text as data)
+    into v_search;
+    else
+     select to_binary_vector(vector_embedding(MXBAI_EMBED_LARGE_V1 using search_text as data))
+     into v_search;
+    end if;
+    return v_search;
+    end get_search_vector;
+    
+        select name, (select get_search_vector('comfort food',true)) as the_search_vector
+        from recipe_vectors
+        order by 
+            vector_distance(embedding_binary, the_search_vector, hamming)
+        fetch first 3 rows only;
+        /

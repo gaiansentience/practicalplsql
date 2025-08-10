@@ -1,19 +1,7 @@
 --design.1.08.pivot-bits-grouped-by-bytes.sql
 
-column id format 9
-column byte# format 9
-column b#1 format 9
-column b#2 format 9
-column b#3 format 9
-column b#4 format 9
-column b#5 format 9
-column b#6 format 9
-column b#7 format 9
-column b#8 format 9
 
-prompt pivot the bit values so that each byte has 8 bits
-prompt pivot bit# 0 as bit#8
-
+--pivot the bit values so that each byte has 8 bits
 with base as (
     select
         1 as id
@@ -50,12 +38,9 @@ pivot(
 
 /*
 
-pivot the bit values so that each byte has 8 bits
-pivot bit# 0 as bit#8
-
-ID BYTE# B#1 B#2 B#3 B#4 B#5 B#6 B#7 B#8
--- ----- --- --- --- --- --- --- --- ---
- 1     1   0   0   1   0   1   0   1   0
- 1     2   0   0   1   0   1   0   1   0
+        ID      BYTE#        B#1        B#2        B#3        B#4        B#5        B#6        B#7        B#8
+---------- ---------- ---------- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+         1          1          0          0          1          0          1          0          1          0
+         1          2          0          0          1          0          1          0          1          0
          
 */
