@@ -1,12 +1,19 @@
 --design.2.02.convert-to-correlated-subquery.sql
 
+column embedding format a60
+column embedding_binary format a16
+
 prompt convert everything to a correlated subquery 
-prompt remove the id column from the subquery inline views
-prompt remove the reference to base CTE in the json_table source and use the r.embedding vector value
+prompt remove the reference to base CTE in the json_table source and use the b.embedding vector value
 
-
+with base as (
+    select
+        to_vector(
+            '[-22,-44,33,-13,26,-11,38,-7, -4,-12,112,-123,127,-1,17,-77]'
+            , 16, int8) as embedding
+)
 select 
-    r.name
+    b.embedding as embedding
     , (
 
         select 
@@ -28,7 +35,7 @@ select
                     , ceil(jt.dim#/8) as byte#
                 from 
                     json_table (
-                        json(vector_serialize(r.embedding returning clob))
+                        json(vector_serialize(b.embedding returning clob))
                         , '$[*]'
                         columns(
                             dim# for ordinality
@@ -43,7 +50,18 @@ select
                 ) p
             ) pb
 
-    ) as binary_vector
-from recipe_vectors r
+    ) as embedding_binary
+from base b
 /
 
+/*
+
+convert everything to a correlated subquery
+remove the reference to base CTE in the json_table source and use the b.embedding vector value
+
+EMBEDDING                                                    EMBEDDING_BINARY
+------------------------------------------------------------ ----------------
+[-22,-44,33,-13,26,-11,38,-7,-4,-12,112,-123,127,-1,17,-77]  [42,42]         
+
+
+*/

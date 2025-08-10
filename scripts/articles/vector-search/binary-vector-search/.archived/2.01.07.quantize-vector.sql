@@ -37,31 +37,3 @@ from quantized_base b
 order by b.byte#, decode(b.bit#, 0, 8, b.bit#)
 /
 
-/*
-
-prepare to pivot the bit values fro quantized_base,
-remove dim# and dimval columns to prevent unecessary grouping levels in the pivot
-
-        ID DIM_BITVAL       BIT#      BYTE#
----------- ---------- ---------- ----------
-         1          0          1          1
-         1          0          2          1
-         1          1          3          1
-         1          0          4          1
-         1          1          5          1
-         1          0          6          1
-         1          1          7          1
-         1          0          0          1
-         1          0          1          2
-         1          0          2          2
-         1          1          3          2
-         1          0          4          2
-         1          1          5          2
-         1          0          6          2
-         1          1          7          2
-         1          0          0          2
-
-16 rows selected. 
-
-
-*/

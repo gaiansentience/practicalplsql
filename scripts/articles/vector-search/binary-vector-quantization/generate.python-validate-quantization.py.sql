@@ -108,13 +108,20 @@ end;
 spool off;
 
 /* 
-python syntax
+# python syntax example
+# load Sentence Transformers
 from sentence_transformers import SentenceTransformer
 from sentence_transformers.quantization import quantize_embeddings
-e = [[0,0,1,0,1,0,1,0]]
-be = quantize_embeddings(e, precision="ubinary")
-print(be)
-[[42]]
+    
+#
+# vector quantized with macro in database
+# dimensions: 8 format: FLOAT32
+# [-1.23000003E-001,-6.53999984E-001,3.44999999E-001,-1.99999996E-002,7.88999975E-001,-5.66999972E-001,8.88000011E-001,0]
+print("vector quantized with scalar macro: [42]")
+# quantize same vector in sentence transformers:
+embeddings = [[-1.23000003E-001,-6.53999984E-001,3.44999999E-001,-1.99999996E-002,7.88999975E-001,-5.66999972E-001,8.88000011E-001,0]]
+embeddings_binary = quantize_embeddings(embeddings, precision="ubinary")
+print("same vector quantized in python:", embeddings_binary)
 */
 
 /* see generated python script in python-validate-binary-quantization.py */
