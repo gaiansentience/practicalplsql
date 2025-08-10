@@ -1,6 +1,6 @@
 --create.procedure.search_compare_recipe_vectors.sql
 
-prompt create a procedure to test different model searches between float32 and binary
+prompt create a procedure to compare different model searches between float32 and binary
 
 create or replace procedure search_compare_recipe_vectors(
     p_search_text in varchar2, 
@@ -21,7 +21,7 @@ is
     l_start timestamp;
     l_results sys.odcivarchar2list;
 begin
-    --get the model, format, dimensions currently loaded to recipe_vectors embedding or embedding_binary
+    --get the model, format, dimensions currently loaded to recipe_vectors
     l_vector_column := 'embedding' || case when p_use_binary then '_binary' end;
     l_model_sql := '
     select 
@@ -34,11 +34,16 @@ begin
     execute immediate l_model_sql
     into l_model, l_format, l_dim_count;
     
-    dbms_output.put_line('Semantic search for [' || p_search_text || '] top k=' || p_rows);
-    dbms_output.put_line('Model ' || l_model || ', metric ' || p_metric); 
-    dbms_output.put_line('Use Column ' || l_vector_column || ', dimensions ' || l_dim_count || ', format ' || l_format);
+    dbms_output.put_line(
+        'Semantic search for [' || p_search_text || '] top k=' || p_rows);
+    dbms_output.put_line(
+        'Model ' || l_model || ', metric ' || p_metric); 
+    dbms_output.put_line(
+        'Use Column ' || l_vector_column 
+        || ', dimensions ' || l_dim_count || ', format ' || l_format);
     
     --convert the search string to a vector using the correct model and format
+    --wrap the call to vector_embeddings with the macro for a binary search
     if p_use_binary then
         l_search_v_sql := '
             select 

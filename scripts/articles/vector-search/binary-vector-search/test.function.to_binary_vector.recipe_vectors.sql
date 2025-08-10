@@ -29,11 +29,10 @@ fetch first row only
 
 /*
 test the scalar macro
-
 test the macro with the recipe_vectors table
 
 V_MODEL                V_FMT         V_DIMS V_BIN_FMT V_BIN_DIMS
 ---------------------- --------- ---------- --------- ----------
-MXBAI_EMBED_LARGE_V1   FLOAT32         1024 BINARY          1024
+MXBAI_EMBED_XSMALL_V1  FLOAT32          384 BINARY           384
 
 */
