@@ -1,12 +1,14 @@
 --search.vectors.recipe_vectors.mxbai_xsmall.sql
+--generate the embeddings using the mxbai_xsmall model
 @generate.vectors.recipe_vectors.mxbai_xsmall.sql
 
 prompt search recipe_vectors.embeddings using MXBAI_EMBED_XSMALL_V1
 
 declare
+    type t_list is table of varchar2(100);
     l_model  varchar2(100) := 'MXBAI_EMBED_XSMALL_V1';
-    l_metrics sys.odcivarchar2list := sys.odcivarchar2list('cosine', 'euclidean', 'manhattan');
-    l_searches sys.odcivarchar2list := sys.odcivarchar2list('healthy dinner', 'yummy dessert');
+    l_metrics t_list := t_list('cosine', 'euclidean', 'manhattan');
+    l_searches t_list := t_list('healthy dinner', 'yummy dessert');
 begin
     for s in values of l_searches loop
         for m in values of l_metrics loop
