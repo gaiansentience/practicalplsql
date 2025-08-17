@@ -1,0 +1,794 @@
+set serveroutput on;
+
+
+declare
+
+    l_count number;
+
+    type t_category_ids is table of integer index by varchar2(100);
+    l_categories t_category_ids;
+    
+    procedure load_categories_array
+    is
+    begin
+        l_categories := t_category_ids(for r in (select category_name, category_id from menu_categories) index r.category_name => r.category_id);
+        
+--        confirm that all categories are loaded to lookup collection
+--        for i, v in pairs of l_categories loop
+--            dbms_output.put_line('category ' || v || ' = ' || i);
+--        end loop;
+        
+    end load_categories_array;
+    
+     procedure create_item(p_item_name in varchar2, p_category_name in varchar2, p_description in varchar2, p_created_by in varchar2)
+     is
+        l_category_id integer := l_categories(p_category_name);
+     begin     
+        insert into menu_items (item_name, category_id, item_description, created_by)
+        values (p_item_name, l_category_id, p_description, p_created_by);
+     end create_item;
+     
+begin
+
+    load_categories_array;
+
+     execute immediate 'truncate table menu_items';
+
+     create_item('Caesar Salad','Salads', 'Crisp romaine lettuce tossed with creamy Caesar dressing made from anchovies, garlic, lemon juice, Dijon mustard, and parmesan cheese. Garnished with crunchy croutons and extra shaved parmesan for a savory, satisfying salad.', 'admin');
+     create_item('Caprese Salad','Salads', 'A simple yet elegant salad featuring slices of creamy fresh mozzarella, juicy ripe tomatoes, and fragrant basil leaves. Drizzled with extra virgin olive oil and balsamic glaze, finished with a sprinkle of sea salt and black pepper.', 'admin');
+     create_item('Kale Caesar Salad','Salads', 'A modern twist on the classic Caesar, combining tender kale and crisp romaine lettuce, tossed in a light Caesar dressing with parmesan cheese and crunchy whole-grain croutons. Finished with a squeeze of lemon.', 'admin');
+     create_item('Spinach Strawberry Salad','Salads', 'Fresh baby spinach leaves tossed with sweet sliced strawberries, toasted walnuts, and creamy goat cheese. Dressed with a tangy balsamic vinaigrette for a refreshing and colorful salad.', 'admin');
+     create_item('Quinoa Avocado Salad','Salads', 'Protein-packed quinoa mixed with creamy avocado chunks, juicy cherry tomatoes, crisp cucumber, and fresh herbs. Tossed in a zesty lemon dressing for a light and nutritious salad.', 'admin');
+     create_item('Chickpea Greek Salad','Salads', 'A Mediterranean-inspired salad featuring chickpeas, diced cucumber, ripe tomatoes, Kalamata olives, red onion, and crumbled feta cheese. Dressed with olive oil, lemon juice, and oregano.', 'admin');
+     create_item('Arugula Beet Salad','Salads', 'Peppery arugula leaves paired with roasted beets, creamy goat cheese, and toasted walnuts. Drizzled with a honey-balsamic vinaigrette for a sweet and earthy flavor combination.', 'admin');
+     create_item('Lentil Salad','Salads', 'Nutritious salad made with cooked lentils, diced carrots, celery, red onion, and fresh parsley. Tossed in a tangy Dijon mustard vinaigrette for a hearty and satisfying dish.', 'admin');
+     create_item('Broccoli Cranberry Salad','Salads', 'Crunchy broccoli florets mixed with sweet dried cranberries, roasted sunflower seeds, and red onion. Coated in a creamy yogurt-based dressing for a sweet and savory salad.', 'admin');
+     create_item('Asian Edamame Salad','Salads', 'A vibrant salad with shelled edamame, shredded cabbage, julienned carrots, and scallions, tossed in a sesame-ginger dressing and topped with toasted sesame seeds.', 'admin');
+     create_item('Cucumber Tomato Salad','Salads', 'Refreshing salad of sliced cucumbers, ripe tomatoes, and thinly sliced red onion, tossed in a red wine vinaigrette with fresh dill and parsley.', 'admin');
+     create_item('Southwest Black Bean Salad','Salads', 'A zesty salad featuring black beans, sweet corn, diced bell peppers, red onion, and cilantro, all tossed in a tangy cilantro-lime dressing. Perfect as a side or light meal.', 'admin');
+     create_item('Apple Walnut Salad','Salads', 'Mixed greens topped with crisp apple slices, toasted walnuts, crumbled blue cheese, and dried cranberries. Finished with a honey mustard vinaigrette for a sweet and savory balance.', 'admin');
+     create_item('Roasted Sweet Potato Salad','Salads', 'Roasted cubes of sweet potato combined with fresh spinach, toasted pumpkin seeds, and red onion, all tossed in a creamy tahini dressing for a hearty, nutrient-rich salad.', 'admin');
+     create_item('Farro Vegetable Salad','Salads', 'Nutty farro grains mixed with roasted seasonal vegetables, fresh herbs, and a bright lemon-herb dressing. Served chilled or at room temperature for a wholesome side.', 'admin');
+     create_item('Watermelon Feta Salad','Salads', 'Juicy watermelon cubes tossed with crumbled feta cheese, fresh mint leaves, and a squeeze of lime juice. A refreshing and sweet-savory summer salad.', 'admin');
+     create_item('Avocado Corn Salad','Salads', 'Creamy avocado chunks, sweet corn kernels, cherry tomatoes, and red onion tossed in a tangy lime vinaigrette. Garnished with cilantro for a fresh, vibrant flavor.', 'admin');
+     create_item('Zucchini Ribbon Salad','Salads', 'Thin ribbons of zucchini tossed with toasted pine nuts, shaved parmesan, and a light lemon dressing. A delicate and elegant salad perfect for warm weather.', 'admin');
+     create_item('Carrot Ginger Salad','Salads', 'Shredded carrots tossed with fresh ginger, scallions, and a sesame-soy dressing. Topped with toasted sesame seeds for a crunchy, flavorful salad.', 'admin');
+     create_item('Mango Black Bean Salad','Salads', 'Sweet mango cubes combined with black beans, red bell pepper, jalapeño, and cilantro, all tossed in a zesty lime dressing for a tropical, protein-rich salad.', 'admin');
+     create_item('Pear Gorgonzola Salad','Salads', 'Mixed greens topped with juicy pear slices, crumbled gorgonzola cheese, toasted walnuts, and dried cranberries. Dressed with a light balsamic vinaigrette.', 'admin');
+     create_item('Tabbouleh Salad','Salads', 'A Middle Eastern salad made with finely chopped parsley, bulgur wheat, diced tomatoes, cucumber, mint, and scallions, all tossed in a lemon-olive oil dressing.', 'admin');
+     create_item('Moroccan Chickpea Salad','Salads', 'Chickpeas tossed with shredded carrots, golden raisins, fresh cilantro, and a cumin-spiced citrus dressing. Garnished with toasted almonds for crunch.', 'admin');
+     create_item('Roasted Cauliflower Salad','Salads', 'Roasted cauliflower florets combined with peppery arugula, toasted almonds, and a creamy tahini sauce. Finished with a sprinkle of pomegranate seeds.', 'admin');
+     create_item('Tomato Basil Mozzarella Salad','Salads', 'Sliced ripe tomatoes layered with fresh mozzarella and basil leaves, drizzled with balsamic glaze and extra virgin olive oil for a classic Italian salad.', 'admin');
+     create_item('Sweet Potato Kale Salad','Salads', 'Tender kale leaves massaged with olive oil, topped with roasted sweet potato cubes, dried cranberries, and toasted pecans. Tossed in a maple-balsamic dressing.', 'admin');
+     create_item('Broccoli Quinoa Salad','Salads', 'Protein-rich quinoa mixed with steamed broccoli florets, toasted almonds, and scallions, all tossed in a lemon vinaigrette for a light, healthy salad.', 'admin');
+     create_item('Cabbage Apple Slaw','Salads', 'Shredded cabbage and crisp apples tossed with grated carrots and a tangy apple cider vinaigrette. A crunchy, refreshing slaw perfect for picnics.', 'admin');
+     create_item('Mediterranean Lentil Salad','Salads', 'Earthy lentils combined with diced cucumber, tomatoes, feta cheese, Kalamata olives, and fresh herbs, all tossed in a lemon-oregano dressing.', 'admin');
+     create_item('Pumpkin Seed Spinach Salad','Salads', 'Fresh spinach leaves tossed with roasted pumpkin seeds, dried cranberries, and a tangy balsamic vinaigrette. Topped with crumbled feta cheese.', 'admin');
+     create_item('Asparagus Pea Salad','Salads', 'Tender asparagus spears and sweet green peas tossed with fresh mint and a zesty lemon dressing. Garnished with shaved parmesan for a spring-inspired salad.', 'admin');
+     create_item('Radish Cucumber Salad','Salads', 'Thinly sliced radishes and cucumbers tossed with fresh dill and a creamy yogurt dressing. Light, crisp, and refreshing.', 'admin');
+     create_item('Roasted Carrot Salad','Salads', 'Oven-roasted carrots served over a bed of arugula, topped with crumbled feta cheese and toasted pistachios. Drizzled with a honey-lemon dressing.', 'admin');
+     create_item('Chopped Detox Salad','Salads', 'A nutrient-dense salad with finely chopped broccoli, cauliflower, carrots, and kale, tossed in a bright lemon vinaigrette. Packed with vitamins and flavor.', 'admin');
+     create_item('Berry Spinach Salad','Salads', 'Baby spinach leaves tossed with a medley of fresh berries, toasted almonds, and a sweet-tart poppy seed dressing. A colorful and antioxidant-rich salad.', 'admin');
+     create_item('Warm Mushroom Salad','Salads', 'Sautéed mushrooms served warm over fresh spinach, drizzled with a balsamic reduction and topped with toasted pine nuts for a savory, earthy salad.', 'admin');
+     create_item('Fennel Orange Salad','Salads', 'Crisp fennel slices and juicy orange segments tossed with arugula and a light olive oil dressing. Finished with cracked black pepper and fresh herbs.', 'admin');
+     create_item('Grilled Zucchini Salad','Salads', 'Grilled zucchini slices tossed with crumbled feta cheese, fresh mint, and a squeeze of lemon. Served warm or at room temperature for a summery salad.', 'admin');
+     create_item('Sweet Corn Tomato Salad','Salads', 'Sweet corn kernels mixed with diced tomatoes, fresh basil, and a drizzle of olive oil. A simple, vibrant salad that highlights summer produce.', 'admin');
+     create_item('Roasted Brussels Sprout Salad','Salads', 'Roasted Brussels sprouts tossed with dried cranberries, toasted pecans, and a maple-Dijon vinaigrette. Served warm for a hearty, flavorful salad.', 'admin');
+     create_item('Avocado Chickpea Salad','Salads', 'Creamy avocado and hearty chickpeas combined with diced cucumber, cherry tomatoes, and a lemony dressing. Garnished with fresh parsley.', 'admin');
+     create_item('Pomegranate Spinach Salad','Salads', 'Fresh spinach leaves tossed with juicy pomegranate seeds, toasted walnuts, crumbled feta, and a tangy balsamic vinaigrette.', 'admin');
+     create_item('Greek Salad','Salads', 'A traditional Greek salad with crisp cucumbers, ripe tomatoes, red onion, Kalamata olives, and creamy feta cheese, tossed in a lemon-oregano vinaigrette.', 'admin');
+     create_item('Fruit Salad','Salads', 'A colorful medley of fresh seasonal fruits such as melon, berries, grapes, and citrus, cut into bite-sized pieces and lightly tossed in a citrus-honey dressing.', 'admin');
+     create_item('Garden Salad','Salads', 'A fresh mix of leafy greens, cherry tomatoes, cucumber, carrots, and red onion, tossed in your choice of dressing. A classic, crisp starter.', 'admin');
+     create_item('Cobb Salad','Salads', 'A hearty salad with rows of grilled chicken, crispy bacon, hard-boiled egg, avocado, blue cheese, tomatoes, and romaine lettuce, served with ranch or vinaigrette.', 'admin');
+     create_item('Asian Chicken Salad','Salads', 'Grilled chicken breast served over mixed greens, shredded cabbage, carrots, mandarin oranges, and crispy wonton strips, tossed in a sesame-ginger dressing.', 'admin');
+     create_item('Waldorf Salad','Salads', 'A classic salad with crisp apples, celery, grapes, and toasted walnuts, all tossed in a creamy mayonnaise dressing and served on a bed of lettuce.', 'admin');
+     create_item('Potato Salad','Salads', 'Creamy potato salad made with tender potatoes, hard-boiled eggs, celery, onions, and fresh herbs, all tossed in a tangy mayonnaise-mustard dressing.', 'admin');
+     create_item('Seitan Caesar Salad','Salads', 'Crisp romaine lettuce tossed with creamy vegan Caesar dressing, crunchy croutons, and grilled seitan strips. Finished with a sprinkle of vegan parmesan.', 'admin');
+     create_item('Tofu Buddha Bowl','Salads', 'A nourishing bowl with baked tofu, quinoa, roasted sweet potatoes, steamed broccoli, shredded carrots, and avocado, drizzled with a zesty tahini-lemon dressing.', 'admin');
+     create_item('Tofu Poke Bowl','Salads', 'Cubed tofu marinated in soy sauce and sesame oil, served over sushi rice with edamame, avocado, cucumber, seaweed salad, and pickled ginger.', 'admin');
+     create_item('Tofu Caesar Salad','Salads', 'Crisp romaine lettuce tossed with creamy vegan Caesar dressing, crunchy croutons, and grilled tofu strips. Finished with a sprinkle of vegan parmesan.', 'admin');
+     create_item('Tofu and Kale Power Bowl','Salads', 'A wholesome bowl with marinated tofu, massaged kale, roasted chickpeas, quinoa, shredded carrots, and a lemon-tahini dressing.', 'admin');
+     create_item('Tofu and Zucchini Noodle Bowl','Salads', 'Spiralized zucchini noodles tossed with baked tofu, cherry tomatoes, olives, and a basil-pesto dressing for a light, gluten-free meal.', 'admin');
+     create_item('Tofu and Mango Salad','Salads', 'Mixed greens topped with grilled tofu, juicy mango slices, red bell pepper, and a tangy chili-lime vinaigrette. Finished with toasted sesame seeds.', 'admin');
+
+
+commit;
+
+select count(*) into l_count
+from menu_items;
+
+dbms_output.put_line('Created ' || l_count || ' menu items');
+
+for r in (
+     select mc.category_name, count(*) as menu_item_count 
+     from 
+           menu_categories mc 
+           join menu_items mi on mc.category_id = mi.category_id
+     group by mc.category_name
+     order by mc.category_name) loop
+           
+     dbms_output.put_line('Menu Category ' || r.category_name || ':  ' || r.menu_item_count || ' menu items created.');
+     
+end loop;
+
+exception
+     when others then
+          dbms_output.put_line('Error creating menu items: ' || sqlerrm);
+          rollback;
+end;
+/
+     create_item('Penne Arrabbiata','Pastas', 'Penne pasta tossed in a spicy tomato sauce made with garlic, crushed red pepper flakes, and extra virgin olive oil. Garnished with fresh parsley.', 'admin');
+     create_item('Mac and Cheese','Pastas', 'Elbow macaroni baked in a creamy cheese sauce made from cheddar and parmesan, topped with buttery breadcrumbs and baked until golden.', 'admin');
+     create_item('Seafood Risotto','Seafood', 'Creamy Arborio rice risotto cooked slowly with white wine, garlic, and a medley of fresh seafood such as shrimp, scallops, and mussels. Finished with parsley and lemon.', 'admin');
+     create_item('Grilled Salmon','Seafood', 'Fresh salmon fillet marinated in lemon, garlic, and herbs, then grilled to perfection. Served with seasonal vegetables and a wedge of lemon.', 'admin');
+     create_item('Shrimp Scampi','Seafood', 'Succulent shrimp sautéed in garlic butter and white wine sauce, tossed with linguine pasta and finished with fresh parsley and a squeeze of lemon.', 'admin');
+     create_item('Fish and Chips','Seafood', 'Crispy battered fish fillet fried until golden, served with thick-cut fries, tartar sauce, and a wedge of lemon. A classic pub favorite.', 'admin');
+     create_item('Crab Cakes','Seafood', 'Pan-seared crab cakes made with lump crab meat, herbs, and spices, served with a zesty remoulade sauce and a side of mixed greens.', 'admin');
+     create_item('Vegetable Curry','Vegetarian', 'A medley of fresh vegetables simmered in a fragrant curry sauce made with coconut milk, tomatoes, ginger, garlic, and a blend of spices. Served with steamed rice.', 'admin');
+     create_item('Stuffed Peppers','Vegetarian', 'Bell peppers filled with a savory mixture of rice, vegetables, herbs, and cheese, baked until the peppers are tender and the filling is golden.', 'admin');
+     create_item('Mushroom Risotto','Vegetarian', 'Creamy risotto made with Arborio rice, sautéed mushrooms, onions, garlic, and parmesan cheese. Finished with fresh herbs and a drizzle of truffle oil.', 'admin');
+     create_item('Tofu Stir-Fry','Vegetarian', 'Cubes of tofu stir-fried with colorful vegetables in a savory soy-ginger sauce. Served over steamed jasmine rice for a healthy, plant-based meal.', 'admin');
+     create_item('Mapo Tofu','Vegetarian', 'A classic Sichuan dish featuring soft tofu cubes simmered in a spicy, aromatic sauce made with fermented bean paste, ground Sichuan peppercorns, minced garlic, and ground pork or mushrooms. Served hot with steamed rice.', 'admin');
+     create_item('Tofu Pad Thai','Vegan', 'Rice noodles stir-fried with crispy tofu, bean sprouts, scallions, and peanuts in a tangy tamarind sauce. Garnished with lime wedges and fresh cilantro for a vibrant, plant-based twist on the Thai favorite.', 'admin');
+     create_item('Tofu Tikka Masala','Vegetarian', 'Marinated tofu cubes grilled and simmered in a creamy, spiced tomato sauce with ginger, garlic, and garam masala. Served with basmati rice and warm naan bread.', 'admin');
+     create_item('Seitan Stir-Fry','Vegetarian', 'Tender strips of seitan sautéed with colorful bell peppers, broccoli, carrots, and snap peas in a savory garlic-ginger soy sauce. Served over steamed jasmine rice for a protein-packed meal.', 'admin');
+     create_item('Seitan Fajitas','Vegan', 'Sizzling seitan strips marinated in smoky spices, grilled with onions and peppers, and served with warm flour tortillas, guacamole, salsa, and lime wedges.', 'admin');
+     create_item('Seitan Bourguignon','Vegetarian', 'Hearty stew featuring seitan chunks braised in red wine with mushrooms, pearl onions, carrots, and fresh thyme. Served over creamy mashed potatoes or crusty bread.', 'admin');
+     create_item('Seitan Schnitzel','Main Courses', 'Breaded and pan-fried seitan cutlets with a golden, crispy crust. Served with lemon wedges, potato salad, and a side of tangy mustard sauce.', 'admin');
+     create_item('Seitan Gyros','Sandwiches', 'Thinly sliced seitan seasoned with Mediterranean spices, served in warm pita bread with lettuce, tomatoes, onions, and creamy vegan tzatziki sauce.', 'admin');
+     create_item('Seitan BBQ Sandwich','Sandwiches', 'Pulled seitan tossed in smoky barbecue sauce, piled high on a toasted bun with crunchy coleslaw and pickles. Served with a side of fries.', 'admin');
+     create_item('Seitan Tikka Masala','Vegetarian', 'Chunks of seitan marinated in Indian spices, grilled, and simmered in a rich, creamy tomato-cashew sauce. Served with basmati rice and naan.', 'admin');
+     create_item('Seitan Satay Skewers','Appetizers', 'Grilled skewers of marinated seitan served with a spicy, creamy peanut dipping sauce and a side of cucumber salad.', 'admin');
+     create_item('Seitan and Broccoli Stir-Fry','Vegetarian', 'Seitan strips and crisp broccoli florets stir-fried in a savory hoisin-garlic sauce, finished with toasted sesame seeds. Served over steamed rice.', 'admin');
+     create_item('Seitan Piccata','Vegan', 'Pan-seared seitan cutlets in a tangy lemon-caper sauce, served with sautéed spinach and roasted potatoes for a Mediterranean-inspired entrée.', 'admin');
+     create_item('Seitan and Vegetable Curry','Vegetarian', 'Seitan cubes simmered with assorted vegetables in a fragrant coconut curry sauce, flavored with ginger, garlic, and spices. Served with jasmine rice.', 'admin');
+     create_item('Seitan Philly Cheesesteak','Sandwiches', 'Sautéed seitan strips, onions, and bell peppers piled into a toasted hoagie roll and topped with melted vegan cheese sauce.', 'admin');
+     create_item('Seitan Teriyaki Bowl','Vegetarian', 'Grilled seitan glazed with sweet and savory teriyaki sauce, served over steamed rice with broccoli, carrots, and edamame.', 'admin');
+     create_item('Seitan Pot Roast','Main Courses', 'Slow-cooked seitan roast with potatoes, carrots, onions, and celery in a savory herb gravy. Served hot for a comforting, hearty meal.', 'admin');
+     create_item('Seitan Caesar Salad','Salads', 'Crisp romaine lettuce tossed with creamy vegan Caesar dressing, crunchy croutons, and grilled seitan strips. Finished with a sprinkle of vegan parmesan.', 'admin');
+     create_item('Seitan Burrito','Sandwiches', 'A large flour tortilla filled with seasoned seitan, black beans, rice, sautéed peppers, onions, and salsa. Rolled up and grilled for a satisfying, plant-based meal.', 'admin');
+     create_item('Seitan and Mushroom Stroganoff','Vegan', 'Sautéed seitan and mushrooms in a creamy, dairy-free stroganoff sauce with onions, garlic, and paprika. Served over egg-free noodles or rice.', 'admin');
+     create_item('Seitan Katsu Curry','Vegetarian', 'Breaded and fried seitan cutlets served over steamed rice and topped with a rich Japanese curry sauce made from onions, carrots, potatoes, and mild spices.', 'admin');
+     create_item('Seitan Bolognese','Pastas', 'Hearty Italian pasta dish with seitan crumbles simmered in a rich tomato sauce with garlic, onions, carrots, and Italian herbs. Served over spaghetti.', 'admin');
+     create_item('Seitan Jambalaya','Vegetarian', 'A spicy Creole rice dish with seitan chunks, bell peppers, celery, onions, tomatoes, and Cajun spices. Slow-cooked for deep, smoky flavor.', 'admin');
+     create_item('Seitan Tacos','Vegan', 'Soft corn tortillas filled with seasoned seitan, shredded lettuce, pico de gallo, avocado, and a drizzle of chipotle crema.', 'admin');
+     create_item('Seitan and Spinach Lasagna','Vegan', 'Layers of pasta, seitan crumbles, sautéed spinach, marinara sauce, and vegan cheese, baked until bubbly and golden.', 'admin');
+     create_item('Seitan Pad Thai','Vegan', 'Rice noodles stir-fried with seitan strips, bean sprouts, scallions, and peanuts in a tangy tamarind sauce. Garnished with lime wedges and cilantro.', 'admin');
+     create_item('Seitan Wellington','Main Courses', 'A savory seitan loaf wrapped in flaky puff pastry with mushroom duxelles and spinach, baked until golden. Served with a rich red wine gravy.', 'admin');
+     create_item('Tofu Buddha Bowl','Salads', 'A nourishing bowl with baked tofu, quinoa, roasted sweet potatoes, steamed broccoli, shredded carrots, and avocado, drizzled with a zesty tahini-lemon dressing.', 'admin');
+     create_item('Tofu Banh Mi','Sandwiches', 'A Vietnamese sandwich with marinated tofu slices, pickled carrots and daikon, cucumber, cilantro, and spicy mayo, all tucked into a crisp baguette.', 'admin');
+     create_item('Tofu Scramble','Breakfast', 'Crumbled tofu sautéed with turmeric, onions, bell peppers, and spinach, mimicking scrambled eggs. Served hot with toast or breakfast potatoes.', 'admin');
+     create_item('Tofu Katsu Curry','Vegetarian', 'Breaded and fried tofu cutlets served over steamed rice and topped with a rich Japanese curry sauce made from onions, carrots, potatoes, and mild spices.', 'admin');
+     create_item('Tofu Lettuce Wraps','Appetizers', 'Crispy tofu crumbles stir-fried with water chestnuts, mushrooms, and hoisin sauce, served in crisp lettuce cups and garnished with scallions and sesame seeds.', 'admin');
+     create_item('Tofu Pho','Soups', 'A fragrant Vietnamese noodle soup with rice noodles, silken tofu, bean sprouts, fresh herbs, and a savory, aromatic broth infused with star anise and cinnamon.', 'admin');
+     create_item('Tofu and Vegetable Skewers','Vegetarian', 'Marinated tofu cubes and colorful vegetables threaded onto skewers and grilled until lightly charred. Served with a tangy peanut dipping sauce.', 'admin');
+     create_item('Tofu Enchiladas','Vegan', 'Corn tortillas filled with sautéed tofu, black beans, and vegetables, rolled and baked in a spicy enchilada sauce. Topped with vegan cheese and fresh cilantro.', 'admin');
+     create_item('Tofu Poke Bowl','Salads', 'Cubed tofu marinated in soy sauce and sesame oil, served over sushi rice with edamame, avocado, cucumber, seaweed salad, and pickled ginger.', 'admin');
+     create_item('Tofu Lasagna','Vegan', 'Layers of pasta, tofu ricotta, spinach, and marinara sauce baked until bubbly and golden. A hearty, dairy-free take on the Italian classic.', 'admin');
+     create_item('Tofu and Broccoli Stir-Fry','Vegetarian', 'Tofu cubes and crisp broccoli florets stir-fried in a savory garlic-ginger sauce, finished with toasted sesame seeds. Served with steamed jasmine rice.', 'admin');
+     create_item('Tofu Satay','Appetizers', 'Grilled skewers of marinated tofu served with a creamy, spicy peanut sauce and a side of cucumber salad for a Southeast Asian-inspired appetizer.', 'admin');
+     create_item('Tofu Miso Soup','Soups', 'A light Japanese soup with silken tofu cubes, wakame seaweed, and scallions in a savory miso broth. Served hot as a comforting starter.', 'admin');
+     create_item('Tofu Burrito','Sandwiches', 'A large flour tortilla filled with seasoned tofu, black beans, rice, sautéed peppers, onions, and salsa. Rolled up and grilled for a satisfying, plant-based meal.', 'admin');
+     create_item('Tofu and Spinach Quiche','Breakfast', 'A savory, eggless quiche made with blended tofu, sautéed spinach, onions, and herbs in a flaky pastry crust. Baked until golden and set.', 'admin');
+     create_item('Tofu Coconut Curry','Vegetarian', 'Tofu cubes simmered in a creamy coconut milk curry with bell peppers, snap peas, and carrots. Flavored with ginger, garlic, and lemongrass, served over jasmine rice.', 'admin');
+     create_item('Tofu Sushi Rolls','Pizzas', 'Nori rolls filled with seasoned sushi rice, marinated tofu strips, avocado, cucumber, and carrots. Served with soy sauce, pickled ginger, and wasabi.', 'admin');
+     create_item('Tofu Parmigiana','Vegan', 'Breaded tofu slices baked with marinara sauce and vegan mozzarella, served over spaghetti for a plant-based twist on the Italian-American favorite.', 'admin');
+     create_item('Tofu and Eggplant Stir-Fry','Vegetarian', 'Tofu and tender eggplant pieces stir-fried with garlic, ginger, and a sweet-spicy soy sauce. Served with steamed rice and garnished with scallions.', 'admin');
+     create_item('Tofu Caesar Salad','Salads', 'Crisp romaine lettuce tossed with creamy vegan Caesar dressing, crunchy croutons, and grilled tofu strips. Finished with a sprinkle of vegan parmesan.', 'admin');
+     create_item('Tofu and Kimchi Stew','Soups', 'A spicy Korean jjigae with tofu cubes, kimchi, mushrooms, and scallions simmered in a rich, flavorful broth. Served bubbling hot with steamed rice.', 'admin');
+     create_item('Tofu Piccata','Vegan', 'Pan-seared tofu cutlets in a tangy lemon-caper sauce, served with sautéed spinach and roasted potatoes for a Mediterranean-inspired entrée.', 'admin');
+     create_item('Tofu and Vegetable Tempura','Appetizers', 'Lightly battered tofu and assorted vegetables fried until crisp and golden. Served with a soy-based dipping sauce for a crunchy appetizer.', 'admin');
+     create_item('Tofu and Pea Risotto','Vegan', 'Creamy Arborio rice risotto with tender peas and pan-seared tofu cubes, finished with fresh herbs and a drizzle of olive oil.', 'admin');
+     create_item('Tofu and Sweet Potato Curry','Vegetarian', 'Tofu and sweet potato chunks simmered in a fragrant curry sauce with coconut milk, ginger, and spices. Served with steamed basmati rice.', 'admin');
+     create_item('Tofu and Mushroom Stroganoff','Vegan', 'Sautéed tofu and mushrooms in a creamy, dairy-free stroganoff sauce with onions, garlic, and paprika. Served over egg-free noodles or rice.', 'admin');
+     create_item('Tofu and Kale Power Bowl','Salads', 'A wholesome bowl with marinated tofu, massaged kale, roasted chickpeas, quinoa, shredded carrots, and a lemon-tahini dressing.', 'admin');
+     create_item('Tofu and Pineapple Fried Rice','Pastas', 'Stir-fried jasmine rice with tofu cubes, sweet pineapple, peas, carrots, and cashews in a savory soy sauce. Garnished with scallions and cilantro.', 'admin');
+     create_item('Tofu and Avocado Wrap','Sandwiches', 'A soft tortilla filled with grilled tofu, creamy avocado, mixed greens, shredded carrots, and a zesty lime dressing. Rolled up for a fresh, portable meal.', 'admin');
+     create_item('Tofu and Black Bean Chili','Vegan', 'A hearty chili with crumbled tofu, black beans, tomatoes, bell peppers, and smoky spices. Simmered until thick and served with cornbread.', 'admin');
+     create_item('Tofu and Zucchini Noodle Bowl','Salads', 'Spiralized zucchini noodles tossed with baked tofu, cherry tomatoes, olives, and a basil-pesto dressing for a light, gluten-free meal.', 'admin');
+     create_item('Tofu and Peanut Noodles','Pastas', 'Rice noodles tossed with crispy tofu, shredded vegetables, and a creamy peanut sauce. Topped with chopped peanuts and fresh cilantro.', 'admin');
+     create_item('Tofu and Mango Salad','Salads', 'Mixed greens topped with grilled tofu, juicy mango slices, red bell pepper, and a tangy chili-lime vinaigrette. Finished with toasted sesame seeds.', 'admin');
+     create_item('Tofu and Lentil Shepherd''s Pie','Vegan', 'A comforting casserole with a savory tofu and lentil filling, topped with creamy mashed potatoes and baked until golden.', 'admin');
+     create_item('Tofu and Tomato Shakshuka','Breakfast', 'A North African-inspired breakfast with tofu cubes simmered in a spicy tomato and bell pepper sauce, seasoned with cumin and paprika. Served with crusty bread.', 'admin');
+     create_item('Tofu and Vegetable Paella','Vegan', 'A Spanish-style rice dish with saffron-infused rice, tofu cubes, bell peppers, peas, and artichoke hearts. Cooked until golden and aromatic.', 'admin');
+     create_item('Tofu and Broccoli Alfredo','Vegan', 'Pasta tossed in a creamy, dairy-free Alfredo sauce made from blended tofu and cashews, with steamed broccoli florets and cracked black pepper.', 'admin');
+     create_item('Vegetarian Chili','Vegetarian', 'Hearty chili made with a variety of beans, tomatoes, bell peppers, corn, and spices. Slow-cooked for rich flavor and served with cornbread or rice.', 'admin');
+     create_item('Vegan Tacos','Vegan', 'Soft corn tortillas filled with seasoned lentils, sautéed vegetables, fresh salsa, and creamy avocado. Topped with cilantro and lime for a flavorful vegan meal.', 'admin');
+     create_item('Quinoa Salad','Vegan', 'A protein-rich salad with fluffy quinoa, diced vegetables, fresh herbs, and a lemony vinaigrette. Light, nutritious, and perfect for a healthy lunch.', 'admin');
+     create_item('Vegan Pad Thai','Vegan', 'Rice noodles stir-fried with tofu, bean sprouts, scallions, and peanuts in a tangy tamarind-peanut sauce. Garnished with lime wedges and cilantro.', 'admin');
+     create_item('Vegan Lasagna','Vegan', 'Layers of pasta, roasted vegetables, and vegan cheese, baked in a rich tomato sauce until bubbly and golden. A comforting, plant-based twist on a classic.', 'admin');
+     create_item('Chickpea Burger','Vegan', 'A flavorful burger patty made from mashed chickpeas, herbs, and spices, grilled and served on a bun with lettuce, tomato, and vegan mayo.', 'admin');
+     create_item('Gluten-Free Pizza','Gluten-Free', 'Pizza made with a gluten-free crust, topped with tomato sauce, mozzarella cheese, and your choice of toppings. Baked until crisp and golden.', 'admin');
+     create_item('Gluten-Free Brownie','Gluten-Free', 'Fudgy chocolate brownie made without gluten, featuring rich cocoa flavor and a moist, chewy texture. Perfect for gluten-sensitive dessert lovers.', 'admin');
+     create_item('Gluten-Free Bread','Gluten-Free', 'Freshly baked bread made from gluten-free flours, with a soft crumb and golden crust. Ideal for sandwiches or toast.', 'admin');
+     create_item('Gluten-Free Pancakes','Gluten-Free', 'Fluffy pancakes made with gluten-free flour, served hot with maple syrup and fresh fruit. Light, airy, and perfect for breakfast.', 'admin');
+     create_item('Gluten-Free Muffin','Gluten-Free', 'Moist blueberry muffin made without gluten, bursting with juicy berries and topped with a crunchy streusel. Great for breakfast or snacking.', 'admin');
+     create_item('Pancakes','Breakfast', 'Stack of fluffy pancakes made from scratch, served with butter and warm maple syrup. Optionally topped with fresh fruit or whipped cream.', 'admin');
+     create_item('French Toast','Breakfast', 'Slices of bread soaked in a cinnamon-vanilla egg mixture, pan-fried until golden, and served with powdered sugar, syrup, and fresh berries.', 'admin');
+     create_item('Breakfast Burrito','Breakfast', 'A large flour tortilla filled with scrambled eggs, cheese, sausage or bacon, potatoes, and salsa. Rolled up and served hot for a hearty breakfast.', 'admin');
+     create_item('Avocado Toast','Breakfast', 'Toasted artisan bread topped with smashed ripe avocado, a sprinkle of sea salt, cracked black pepper, and optional toppings like poached eggs or tomatoes.', 'admin');
+     create_item('Eggs Benedict','Breakfast', 'Poached eggs and Canadian bacon layered on toasted English muffin halves, topped with rich, velvety hollandaise sauce. Served with breakfast potatoes.', 'admin');
+     create_item('Fruit Salad','Salads', 'A colorful medley of fresh seasonal fruits such as melon, berries, grapes, and citrus, cut into bite-sized pieces and lightly tossed in a citrus-honey dressing.', 'admin');
+     create_item('Caesar Wrap','Sandwiches', 'Grilled chicken, crisp romaine lettuce, parmesan cheese, and creamy Caesar dressing wrapped in a soft tortilla. Served with a side of chips or salad.', 'admin');
+     create_item('Tomato Soup','Soups', 'Classic creamy tomato soup made from ripe tomatoes, onions, garlic, and herbs, simmered and blended until smooth. Served hot with a swirl of cream.', 'admin');
+     create_item('Chicken Noodle Soup','Soups', 'Comforting soup with tender chicken pieces, egg noodles, carrots, celery, and onions, simmered in a savory broth and seasoned with herbs.', 'admin');
+     create_item('Beef Stew','Soups', 'Hearty stew with chunks of beef, potatoes, carrots, and onions, slow-cooked in a rich, savory broth until the meat is tender and the flavors are deep.', 'admin');
+     create_item('Miso Soup','Soups', 'Traditional Japanese soup with a savory miso broth, soft tofu cubes, seaweed, and scallions. Light, warming, and perfect as a starter.', 'admin');
+     create_item('Pumpkin Soup','Soups', 'Creamy soup made from roasted pumpkin, onions, garlic, and warming spices, blended until smooth and finished with a swirl of cream and toasted seeds.', 'admin');
+     create_item('Garden Salad','Salads', 'A fresh mix of leafy greens, cherry tomatoes, cucumber, carrots, and red onion, tossed in your choice of dressing. A classic, crisp starter.', 'admin');
+     create_item('Cobb Salad','Salads', 'A hearty salad with rows of grilled chicken, crispy bacon, hard-boiled egg, avocado, blue cheese, tomatoes, and romaine lettuce, served with ranch or vinaigrette.', 'admin');
+     create_item('Asian Chicken Salad','Salads', 'Grilled chicken breast served over mixed greens, shredded cabbage, carrots, mandarin oranges, and crispy wonton strips, tossed in a sesame-ginger dressing.', 'admin');
+     create_item('Waldorf Salad','Salads', 'A classic salad with crisp apples, celery, grapes, and toasted walnuts, all tossed in a creamy mayonnaise dressing and served on a bed of lettuce.', 'admin');
+     create_item('Potato Salad','Salads', 'Creamy potato salad made with tender potatoes, hard-boiled eggs, celery, onions, and fresh herbs, all tossed in a tangy mayonnaise-mustard dressing.', 'admin');
+     create_item('Lemonade','Beverages', 'Refreshing beverage made from freshly squeezed lemons, pure cane sugar, and cold water, served over ice with a slice of lemon.', 'admin');
+     create_item('Espresso','Beverages', 'A strong, concentrated shot of Italian coffee brewed under pressure, served in a small cup. Rich, bold, and aromatic.', 'admin');
+     create_item('Cappuccino','Beverages', 'Classic Italian coffee drink with equal parts espresso, steamed milk, and frothy milk foam. Served hot and dusted with cocoa powder.', 'admin');
+     create_item('Herbal Tea','Beverages', 'Caffeine-free tea brewed from a blend of dried herbs, flowers, and fruits. Served hot or iced, with a variety of flavors available.', 'admin');
+     create_item('Smoothie','Beverages', 'A thick, blended beverage made from fresh fruit, yogurt, and juice or milk. Served chilled and packed with vitamins and flavor.', 'admin');
+
+
+commit;
+
+select count(*) into l_count
+from menu_items;
+
+dbms_output.put_line('Created ' || l_count || ' menu items');
+
+for r in (
+     select mc.category_name, count(*) as menu_item_count 
+     from 
+           menu_categories mc 
+           join menu_items mi on mc.category_id = mi.category_id
+     group by mc.category_name
+     order by mc.category_name) loop
+           
+     dbms_output.put_line('Menu Category ' || r.category_name || ':  ' || r.menu_item_count || ' menu items created.');
+     
+end loop;
+
+exception
+     when others then
+          dbms_output.put_line('Error creating menu items: ' || sqlerrm);
+          rollback;
+end;
+/
+     create_item('Hot Chocolate','Beverages', 'A decadent drink made from rich cocoa powder and steamed milk, sweetened to perfection and topped with a generous swirl of whipped cream and chocolate shavings. Perfect for warming up on a chilly day.', 'admin');
+     create_item('Iced Tea','Beverages', 'Refreshing black tea brewed and chilled over ice, served with a slice of lemon and a touch of sweetness. A classic, thirst-quenching beverage ideal for hot weather.', 'admin');
+     create_item('Breakfast Sandwich','Breakfast', 'A hearty morning sandwich featuring a freshly cooked egg, melted cheese, and crispy bacon layered on a toasted English muffin. Served hot and perfect for a grab-and-go breakfast.', 'admin');
+     create_item('Bagel with Cream Cheese','Breakfast', 'A freshly toasted bagel, crisp on the outside and chewy inside, generously spread with smooth, tangy cream cheese. Often served plain or with toppings like smoked salmon, capers, or sliced tomatoes for a classic breakfast treat.', 'admin');
+     create_item('Huevos Rancheros','Breakfast', 'A traditional Mexican breakfast dish featuring fried eggs served on lightly fried corn tortillas, topped with a savory tomato-chili sauce, refried beans, avocado slices, and crumbled cheese. Garnished with cilantro and often accompanied by rice.', 'admin');
+     create_item('Shakshuka','Breakfast', 'A North African and Middle Eastern breakfast of eggs poached in a spicy, aromatic tomato and bell pepper sauce, seasoned with cumin, paprika, and garlic. Served hot in a skillet, often with crusty bread for dipping.', 'admin');
+     create_item('Baklava','Desserts', 'A rich, sweet pastry made of layers of flaky phyllo dough filled with finely chopped nuts, such as pistachios or walnuts, and sweetened with honey or syrup. Finished with a fragrant hint of cinnamon or clove and cut into diamond shapes.', 'admin');
+     create_item('Cannoli','Desserts', 'A classic Sicilian dessert consisting of crisp, fried pastry tubes filled with a creamy, sweetened ricotta cheese mixture, often studded with chocolate chips or candied fruit. The ends are typically dusted with powdered sugar or dipped in crushed pistachios.', 'admin');
+     create_item('Crème Brûlée','Desserts', 'A decadent French dessert featuring a rich, silky vanilla custard base topped with a thin, crackly layer of caramelized sugar. Served chilled, the contrast between the creamy custard and crisp sugar topping is irresistible.', 'admin');
+     create_item('Eclair','Desserts', 'A delicate French pastry made from choux dough, baked until golden and hollow, then filled with smooth pastry cream and finished with a glossy chocolate glaze. Light, airy, and indulgent.', 'admin');
+     create_item('Profiteroles','Desserts', 'Small, round choux pastry puffs filled with sweet whipped cream, custard, or ice cream, and drizzled with warm chocolate sauce. Often served stacked as a dramatic dessert centerpiece.', 'admin');
+     create_item('Brownie','Desserts', 'A dense, fudgy chocolate cake square with a crackly top and rich, moist interior. Sometimes studded with nuts or chocolate chips, brownies are beloved for their deep cocoa flavor and chewy texture.', 'admin');
+     create_item('Lemon Tart','Desserts', 'A crisp, buttery pastry shell filled with tangy, silky lemon curd. The tart is baked until set and often finished with a dusting of powdered sugar or a swirl of whipped cream for a refreshing, zesty dessert.', 'admin');
+     create_item('Rice Pudding','Desserts', 'A comforting dessert made by simmering rice in soymilk and sugar until creamy, then flavored with vanilla, cinnamon, and sometimes raisins. Served warm or chilled, often sprinkled with ground cinnamon.', 'admin');
+     create_item('Bread Pudding','Desserts', 'A homey dessert made from cubes of stale bread soaked in a rich custard of eggs, milk, sugar, and spices, then baked until golden. Often includes raisins or nuts and served with a warm sauce.', 'admin');
+     create_item('Banoffee Pie','Desserts', 'A British dessert pie with a buttery biscuit crust, layered with sliced bananas, luscious toffee caramel, and clouds of whipped cream. Sometimes topped with chocolate shavings for extra indulgence.', 'admin');
+     create_item('Sticky Toffee Pudding','Desserts', 'A moist British sponge cake made with finely chopped dates, drenched in a warm, buttery toffee sauce. Served hot, often with vanilla ice cream or custard for a comforting finish.', 'admin');
+     create_item('Peach Cobbler','Desserts', 'A classic Southern dessert featuring sweet, juicy peaches baked beneath a golden, biscuit-like topping. Served warm, often with a scoop of vanilla ice cream or whipped cream.', 'admin');
+     create_item('Pecan Pie','Desserts', 'A Southern favorite with a flaky pie crust filled with a gooey, caramel-like mixture of eggs, butter, and brown sugar, generously studded with toasted pecan halves. Sweet, nutty, and rich.', 'admin');
+     create_item('Pumpkin Pie','Desserts', 'A holiday staple with a flaky crust and a creamy, spiced pumpkin filling made with cinnamon, nutmeg, and cloves. Baked until set and served with a dollop of whipped cream.', 'admin');
+     create_item('Key Lime Pie','Desserts', 'A tangy, creamy pie made with key lime juice, sweetened condensed milk, and egg yolks in a crisp graham cracker crust. Topped with whipped cream or meringue for a refreshing finish.', 'admin');
+     create_item('Bread and Butter Pudding','Desserts', 'A British dessert of buttered bread slices layered in a dish, soaked in a sweet egg custard with raisins or currants, and baked until golden and puffed. Finished with a sprinkle of nutmeg or cinnamon.', 'admin');
+     create_item('Apple Crumble','Desserts', 'Warm baked apples tossed with sugar and cinnamon, topped with a crumbly mixture of flour, butter, and brown sugar. Baked until bubbling and golden, served with custard or ice cream.', 'admin');
+     create_item('Cherry Clafoutis','Desserts', 'A rustic French dessert of fresh cherries baked in a thick, flan-like batter. The result is a custardy, lightly sweet treat, dusted with powdered sugar and served warm.', 'admin');
+     create_item('Chocolate Soufflé','Desserts', 'A light, airy baked dessert made with rich chocolate and whipped egg whites, resulting in a delicate, puffy texture. Served hot, often with a dusting of powdered sugar or a scoop of ice cream.', 'admin');
+     create_item('Molten Lava Cake','Desserts', 'A decadent individual chocolate cake with a warm, gooey, molten chocolate center that flows out when cut. Served with vanilla ice cream or berries for a dramatic dessert.', 'admin');
+     create_item('Fruit Sorbet','Desserts', 'A refreshing frozen dessert made from pureed fruit, sugar, and water, churned until smooth and icy. Dairy-free and intensely flavorful, perfect as a palate cleanser or light dessert.', 'admin');
+     create_item('Gelato','Desserts', 'An Italian-style ice cream with a dense, creamy texture and intense flavor, made with less air and fat than traditional ice cream. Available in a variety of classic and creative flavors.', 'admin');
+     create_item('Affogato','Desserts', 'A simple yet elegant Italian dessert where a scoop of creamy vanilla gelato is "drowned" with a shot of hot, freshly brewed espresso, creating a delightful contrast of temperatures and flavors.', 'admin');
+     create_item('Semifreddo','Desserts', 'An Italian "half-frozen" dessert with a mousse-like texture, made from whipped cream, eggs, and sugar, often flavored with chocolate, fruit, or nuts. Served sliced, soft, and creamy.', 'admin');
+     create_item('Tartufo','Desserts', 'An Italian frozen dessert consisting of a ball of gelato with a hidden center of fruit or syrup, coated in a chocolate shell and sometimes rolled in cocoa or nuts.', 'admin');
+     create_item('Zabaglione','Desserts', 'A classic Italian custard dessert made by whisking egg yolks, sugar, and sweet wine (usually Marsala) over gentle heat until light and frothy. Served warm or chilled, sometimes with fruit.', 'admin');
+     create_item('Cassata','Desserts', 'A traditional Sicilian cake made with layers of sponge cake soaked in liqueur, sweet ricotta cheese, candied fruit, and a covering of marzipan and colorful icing.', 'admin');
+     create_item('Sfogliatella','Desserts', 'A shell-shaped Italian pastry with crisp, flaky layers, filled with a sweet ricotta and semolina mixture, often flavored with candied citrus and cinnamon.', 'admin');
+     create_item('Pastel de Nata','Desserts', 'A Portuguese custard tart with a crisp, flaky pastry shell and a creamy, caramelized egg custard filling. Served warm, dusted with cinnamon and powdered sugar.', 'admin');
+     create_item('Tres Leches Cake','Desserts', 'A light sponge cake soaked in a mixture of three milks—evaporated, condensed, and heavy cream—resulting in a moist, sweet, and creamy dessert. Topped with whipped cream and fruit.', 'admin');
+     create_item('Churros','Desserts', 'Spanish fried dough pastries, crisp on the outside and soft inside, coated in cinnamon sugar and often served with a cup of thick, rich chocolate sauce for dipping.', 'admin');
+     create_item('Flan','Desserts', 'A creamy caramel custard dessert with a silky texture, made from eggs, milk, and sugar, baked in a caramel-lined mold and inverted to reveal a golden caramel sauce.', 'admin');
+     create_item('Dulce de Leche','Desserts', 'A luscious, sweet caramel spread made by slowly simmering milk and sugar until thick and golden. Used as a filling or topping for cakes, cookies, and pastries.', 'admin');
+     create_item('Alfajores','Desserts', 'South American shortbread cookies sandwiched with a layer of dulce de leche and often rolled in coconut or dusted with powdered sugar. Tender, crumbly, and sweet.', 'admin');
+     create_item('Arroz con Leche','Desserts', 'A traditional Spanish and Latin American rice pudding made by simmering rice with milk, sugar, and cinnamon until creamy. Sometimes garnished with raisins or citrus zest.', 'admin');
+     create_item('Mango Sticky Rice','Desserts', 'A popular Thai dessert featuring sweet, glutinous rice cooked in coconut milk, served with ripe mango slices and drizzled with more coconut cream. Finished with a sprinkle of sesame seeds or mung beans.', 'admin');
+     create_item('Halo-Halo','Desserts', 'A vibrant Filipino shaved ice dessert layered with sweetened beans, jellies, fruits, and leche flan, topped with evaporated milk and purple yam ice cream. Served in a tall glass for mixing.', 'admin');
+     create_item('Bibingka','Desserts', 'A Filipino coconut rice cake baked in banana leaves, resulting in a soft, slightly chewy texture. Topped with salted egg, cheese, and grated coconut for a sweet-savory flavor.', 'admin');
+     create_item('Kheer','Desserts', 'An Indian rice pudding simmered with milk, sugar, and fragrant cardamom, often garnished with slivered almonds, pistachios, and golden raisins. Served chilled or warm.', 'admin');
+     create_item('Gulab Jamun','Desserts', 'Soft, deep-fried milk-based dough balls soaked in a fragrant sugar syrup flavored with rose water or cardamom. Served warm and enjoyed during celebrations.', 'admin');
+     create_item('Rasgulla','Desserts', 'Spongy, soft cheese balls made from chenna (Indian cottage cheese), cooked in a light sugar syrup. A popular Bengali dessert, served chilled and syrupy.', 'admin');
+     create_item('Jalebi','Desserts', 'Bright orange, spiral-shaped Indian sweets made by deep-frying fermented batter and soaking the crisp coils in saffron-infused sugar syrup. Sweet, sticky, and aromatic.', 'admin');
+     create_item('Kulfi','Desserts', 'A dense, creamy Indian frozen dessert made from slowly simmered milk, flavored with cardamom, saffron, or pistachios, and molded into cones or sticks.', 'admin');
+     create_item('Barfi','Desserts', 'A traditional Indian sweet made from condensed milk and sugar, cooked until thick and cut into squares. Often flavored with cardamom, nuts, or coconut, and garnished with edible silver leaf.', 'admin');
+     create_item('Bakso','Desserts', 'Sweet Indonesian dessert balls made from glutinous rice flour, filled with palm sugar and sometimes coconut, boiled until chewy and served in sweet syrup.', 'admin');
+     create_item('Sago Pudding','Desserts', 'A creamy pudding made from translucent tapioca pearls simmered in coconut milk and sweetened with sugar. Served chilled, sometimes with fruit or syrup.', 'admin');
+     create_item('Egg Tart','Desserts', 'A delicate pastry shell filled with smooth, lightly sweetened egg custard, baked until just set. Popular in Chinese bakeries and often enjoyed with tea.', 'admin');
+     create_item('Mochi','Desserts', 'A Japanese treat made from glutinous rice pounded into a chewy, elastic dough, then filled with sweet red bean paste, ice cream, or fruit. Soft, stretchy, and subtly sweet.', 'admin');
+     create_item('Dorayaki','Desserts', 'A Japanese confection consisting of two fluffy, pancake-like cakes sandwiched around a sweet red bean paste filling. Soft, moist, and perfect for snacking.', 'admin');
+     create_item('Taiyaki','Desserts', 'A fish-shaped Japanese cake with a crisp exterior and a sweet filling, typically red bean paste, custard, or chocolate. Popular as a street food snack.', 'admin');
+     create_item('Daifuku','Desserts', 'A soft, round mochi (glutinous rice cake) stuffed with a sweet filling, usually red bean paste or fruit. Chewy and delicate, often dusted with potato starch.', 'admin');
+     create_item('Yokan','Desserts', 'A traditional Japanese dessert made from red bean paste, agar, and sugar, set into a firm, sliceable jelly. Served in neat blocks, subtly sweet and smooth.', 'admin');
+     create_item('Che','Desserts', 'A Vietnamese sweet dessert soup or pudding, made with a variety of ingredients such as beans, jellies, fruit, and coconut milk. Served cold or at room temperature.', 'admin');
+     create_item('Bingsu','Desserts', 'A popular Korean shaved ice dessert topped with sweetened condensed milk, fruit, red beans, mochi, and sometimes ice cream. Light, refreshing, and customizable.', 'admin');
+     create_item('Tteok','Desserts', 'A Korean rice cake dessert made from steamed glutinous rice flour, often filled with sweetened red bean paste or coated in powdered beans. Chewy and subtly sweet.', 'admin');
+     create_item('Lamington','Desserts', 'An Australian sponge cake cut into squares, dipped in chocolate icing, and rolled in desiccated coconut. Sometimes filled with jam or cream for extra richness.', 'admin');
+     create_item('Pavlova','Desserts', 'A meringue-based dessert with a crisp crust and soft, marshmallow-like center, topped with whipped cream and fresh fruit such as kiwi, strawberries, and passionfruit. Light and elegant.', 'admin');
+     create_item('Anzac Biscuit','Desserts', 'A traditional Australian and New Zealand cookie made with rolled oats, coconut, golden syrup, and butter. Crisp, chewy, and with a caramelized flavor.', 'admin');
+     create_item('Sticky Rice Cake','Desserts', 'A sweet Asian dessert made from glutinous rice, sometimes filled with sweet bean paste or nuts, and steamed or baked until chewy and sticky.', 'admin');
+     create_item('Sacher Torte','Desserts', 'A famous Austrian chocolate cake with layers of dense chocolate sponge, apricot jam, and a smooth dark chocolate glaze. Served with unsweetened whipped cream.', 'admin');
+     create_item('Linzer Torte','Desserts', 'An Austrian tart made with a buttery, nutty dough (often almonds or hazelnuts) and filled with raspberry or red currant jam, topped with a lattice crust.', 'admin');
+     create_item('Dobos Torte','Desserts', 'A Hungarian cake with multiple thin layers of sponge cake and chocolate buttercream, topped with a crisp caramel layer. Elegant and rich.', 'admin');
+     create_item('Kremes','Desserts', 'A Hungarian dessert consisting of layers of crisp puff pastry filled with a thick, creamy vanilla custard. Cut into squares and dusted with powdered sugar.', 'admin');
+     create_item('Tufahije','Desserts', 'A Bosnian dessert of poached apples stuffed with walnuts and sugar, simmered in syrup and often topped with whipped cream. Served chilled for a refreshing treat.', 'admin');
+     create_item('Knafeh','Desserts', 'A Middle Eastern dessert made with shredded phyllo dough layered with sweet cheese or semolina, baked until golden, and soaked in fragrant sugar syrup. Garnished with pistachios.', 'admin');
+     create_item('Basbousa','Desserts', 'A moist, sweet semolina cake from the Middle East, soaked in simple syrup and often flavored with rose or orange blossom water. Topped with almonds or coconut.', 'admin');
+     create_item('Maamoul','Desserts', 'Shortbread-like cookies from the Middle East, filled with dates, nuts, or figs, and molded into decorative shapes. Delicate, buttery, and lightly sweet.', 'admin');
+     create_item('Qatayef','Desserts', 'A stuffed pancake dessert popular during Ramadan, filled with sweet cheese or nuts, folded and fried or baked, then drizzled with syrup.', 'admin');
+     create_item('Chocolate Eclair','Desserts', 'A classic French pastry made from choux dough, filled with rich vanilla pastry cream and topped with a glossy chocolate glaze. Light, airy, and indulgent.', 'admin');
+     create_item('Classic New York Cheesecake','Desserts', 'A rich, dense, and creamy cheesecake made with cream cheese, eggs, and sugar atop a buttery graham cracker crust. Baked to perfection and served plain or with a strawberry topping.', 'admin');
+     create_item('Strawberry Swirl Cheesecake','Desserts', 'Creamy vanilla cheesecake with ribbons of sweet strawberry puree swirled throughout, baked on a crisp graham cracker crust and topped with fresh strawberries.', 'admin');
+     create_item('Chocolate Marble Cheesecake','Desserts', 'A decadent cheesecake with a marbled blend of creamy vanilla and rich chocolate batters, baked on a chocolate cookie crust and finished with chocolate shavings.', 'admin');
+     create_item('Lemon Ricotta Cheesecake','Desserts', 'A light and tangy cheesecake made with ricotta cheese and fresh lemon zest, baked on a buttery shortbread crust and dusted with powdered sugar.', 'admin');
+     create_item('Blueberry Cheesecake','Desserts', 'Classic cheesecake topped with a vibrant blueberry compote, featuring plump, juicy berries and a hint of lemon over a crisp graham cracker base.', 'admin');
+     create_item('Salted Caramel Cheesecake','Desserts', 'Ultra-creamy cheesecake layered with luscious salted caramel sauce, set on a buttery cookie crust and finished with a sprinkle of flaky sea salt.', 'admin');
+     create_item('Oreo Cheesecake','Desserts', 'A cookies-and-cream lover’s dream: smooth cheesecake studded with crushed Oreo cookies, baked on a chocolate cookie crust and topped with whipped cream and more Oreos.', 'admin');
+     create_item('Pumpkin Cheesecake','Desserts', 'A seasonal favorite with spiced pumpkin puree blended into creamy cheesecake, baked on a gingersnap crust and topped with cinnamon whipped cream.', 'admin');
+     create_item('Raspberry White Chocolate Cheesecake','Desserts', 'Silky white chocolate cheesecake swirled with tart raspberry puree, baked on a chocolate cookie crust and garnished with fresh raspberries.', 'admin');
+     create_item('Matcha Green Tea Cheesecake','Desserts', 'A Japanese-inspired cheesecake infused with earthy matcha green tea powder, creating a delicate flavor and a beautiful green hue, set on a crisp cookie crust.', 'admin');
+     create_item('Mango Cheesecake','Desserts', 'Tropical mango puree blended into creamy cheesecake, layered on a coconut-graham crust and topped with a glossy mango glaze and fresh mango slices.', 'admin');
+     create_item('Red Velvet Cheesecake','Desserts', 'A striking red velvet cake base topped with a layer of classic cheesecake, finished with cream cheese frosting and white chocolate curls.', 'admin');
+     create_item('Turtle Cheesecake','Desserts', 'A decadent treat with a chocolate cookie crust, creamy cheesecake, and layers of gooey caramel, toasted pecans, and rich chocolate ganache.', 'admin');
+     create_item('Key Lime Cheesecake','Desserts', 'A tangy, refreshing cheesecake made with key lime juice and zest, baked on a graham cracker crust and topped with whipped cream and lime slices.', 'admin');
+     create_item('Espresso Cheesecake','Desserts', 'Bold espresso-infused cheesecake with a chocolate cookie crust, topped with chocolate-covered coffee beans and a dusting of cocoa powder.', 'admin');
+     create_item('Dulce de Leche Cheesecake','Desserts', 'Creamy cheesecake swirled with sweet, caramel-like dulce de leche, baked on a cinnamon graham crust and finished with a drizzle of more dulce de leche.', 'admin');
+     create_item('Peanut Butter Cup Cheesecake','Desserts', 'Rich peanut butter cheesecake loaded with chunks of peanut butter cups, set on a chocolate cookie crust and topped with chocolate ganache and chopped peanuts.', 'admin');
+     create_item('S’mores Cheesecake','Desserts', 'A campfire-inspired cheesecake with a graham cracker crust, chocolate cheesecake filling, and a toasted marshmallow topping.', 'admin');
+     create_item('Amaretto Almond Cheesecake','Desserts', 'Smooth cheesecake flavored with amaretto liqueur and almond extract, baked on an almond cookie crust and topped with toasted sliced almonds.', 'admin');
+     create_item('Black Forest Cheesecake','Desserts', 'A chocolate cheesecake layered with sweet cherry compote and whipped cream, set on a chocolate cookie crust and garnished with chocolate curls and cherries.', 'admin');
+     create_item('Pistachio Cheesecake','Desserts', 'Creamy cheesecake blended with roasted pistachios, set on a pistachio shortbread crust and topped with whipped cream and chopped pistachios.', 'admin');
+     create_item('Baileys Irish Cream Cheesecake','Desserts', 'A luscious cheesecake infused with Baileys Irish Cream liqueur, baked on a chocolate cookie crust and topped with chocolate ganache and whipped cream.', 'admin');
+     create_item('Meyer Lemon Cheesecake','Desserts', 'A bright and tangy cheesecake made with sweet Meyer lemon juice and zest, baked on a vanilla wafer crust and topped with candied lemon slices.', 'admin');
+     create_item('Chocolate Hazelnut Cheesecake','Desserts', 'A decadent cheesecake swirled with chocolate hazelnut spread, set on a chocolate-hazelnut crust and topped with toasted hazelnuts and chocolate drizzle.', 'admin');
+     create_item('Opera Cake','Desserts', 'A sophisticated French dessert with layers of almond sponge cake soaked in coffee syrup, coffee buttercream, and chocolate ganache, finished with a shiny chocolate glaze.', 'admin');
+     create_item('Financier','Desserts', 'A small, moist French almond cake with a delicate crumb and a crisp, golden exterior. Traditionally baked in rectangular molds and enjoyed with tea or coffee.', 'admin');
+     create_item('Madeleine','Desserts', 'A classic French sponge cake baked in a distinctive shell shape, with a light, buttery texture and a hint of lemon or vanilla. Perfect for dipping in tea.', 'admin');
+     create_item('Clafoutis','Desserts', 'A rustic French dessert of fresh fruit, typically cherries, baked in a thick, pancake-like batter until puffed and golden. Served warm and dusted with powdered sugar.', 'admin');
+     create_item('Tarte Tatin','Desserts', 'A French upside-down tart made by caramelizing apples in butter and sugar, then baking with a pastry crust. Inverted before serving to reveal glossy, tender fruit.', 'admin');
+     create_item('Mont Blanc','Desserts', 'A French dessert made with sweetened chestnut puree piped over a mound of whipped cream, resembling a snow-capped mountain. Sometimes served on a crisp meringue base.', 'admin');
+     create_item('Paris-Brest','Desserts', 'A ring-shaped French choux pastry filled with rich praline-flavored cream and topped with toasted almonds and powdered sugar. Created to commemorate a famous bicycle race.', 'admin');
+     create_item('Rum Baba','Desserts', 'A small yeast cake soaked in rum syrup, often filled with whipped cream or pastry cream. Moist, boozy, and served as an elegant dessert.', 'admin');
+     create_item('Charlotte','Desserts', 'A classic French dessert made by lining a mold with ladyfingers or sponge cake and filling it with fruit mousse, custard, or Bavarian cream. Chilled and unmolded for serving.', 'admin');
+     create_item('Fruit Parfait','Desserts', 'A layered dessert of fresh fruit, creamy yogurt or custard, and crunchy granola or cake, served in a tall glass for a colorful and refreshing treat.', 'admin');
+     create_item('Ice Cream Sundae','Desserts', 'A classic dessert featuring scoops of ice cream topped with sauces, whipped cream, nuts, sprinkles, and a cherry. Customizable with endless flavor and topping combinations.', 'admin');
+     create_item('Frozen Yogurt','Desserts', 'A chilled dessert made from cultured yogurt, offering a tangy flavor and creamy texture. Served soft-serve style and often topped with fruit, nuts, or candy.', 'admin');
+     create_item('Peanut Butter Pie','Desserts', 'A creamy, no-bake pie with a chocolate cookie crust and a rich peanut butter filling, topped with whipped cream and chocolate shavings for a sweet-salty treat.', 'admin');
+     create_item('Rocky Road','Desserts', 'A chocolate confection loaded with marshmallows, roasted nuts, and sometimes dried fruit, creating a chewy, crunchy, and sweet treat. Served as bars or ice cream.', 'admin');
+     create_item('Smore','Desserts', 'A campfire favorite made by sandwiching toasted marshmallow and a square of chocolate between two graham crackers. Gooey, melty, and nostalgic.', 'admin');
+     create_item('Pumpkin Roll','Desserts', 'A spiced pumpkin cake baked in a thin sheet, spread with sweet cream cheese filling, and rolled into a spiral. Sliced to reveal a beautiful swirl pattern.', 'admin');
+     create_item('Red Velvet Cake','Desserts', 'A striking red cocoa cake with a tender crumb, layered with tangy cream cheese frosting. Moist, slightly chocolatey, and visually stunning.', 'admin');
+     create_item('Black Forest Cake','Desserts', 'A German chocolate sponge cake layered with whipped cream and cherries, soaked with cherry liqueur, and decorated with chocolate shavings and more cherries.', 'admin');
+     create_item('German Chocolate Cake','Desserts', 'A layered chocolate cake filled and topped with a rich coconut-pecan frosting. Sweet, nutty, and deeply chocolatey, with a moist crumb.', 'admin');
+     create_item('Boston Cream Pie','Desserts', 'A classic American dessert with layers of light sponge cake filled with smooth vanilla pastry cream and topped with a glossy chocolate ganache.', 'admin');
+     create_item('Angel Food Cake','Desserts', 'A light and airy sponge cake made with whipped egg whites, sugar, and flour, known for its fluffy texture and subtle sweetness. Often served with berries or a dusting of powdered sugar.', 'admin');
+     create_item('Pineapple Upside-Down Cake','Desserts', 'A moist vanilla cake baked with caramelized pineapple rings and maraschino cherries on the bottom, then inverted to reveal a glossy, fruity topping.', 'admin');
+     create_item('Carrot Cake','Desserts', 'A spiced cake made with grated carrots, walnuts, and warm spices, layered with rich cream cheese frosting. Moist and flavorful, often garnished with nuts or carrot decorations.', 'admin');
+     create_item('Coconut Cream Pie','Desserts', 'A flaky pie crust filled with creamy coconut custard, topped with whipped cream and toasted coconut flakes for a tropical, decadent dessert.', 'admin');
+     create_item('Mississippi Mud Pie','Desserts', 'A rich chocolate pie with a crumbly cookie crust, gooey chocolate filling, and a layer of whipped cream or marshmallow topping. Named for its dense, "muddy" appearance.', 'admin');
+     create_item('Chess Pie','Desserts', 'A classic Southern pie with a buttery, flaky crust and a sweet, dense custard filling made from eggs, sugar, butter, and a hint of cornmeal or vinegar.', 'admin');
+     create_item('Buttermilk Pie','Desserts', 'A traditional Southern dessert featuring a creamy, tangy custard made with buttermilk, eggs, and sugar, baked in a flaky pie shell and often dusted with nutmeg.', 'admin');
+     create_item('Shoofly Pie','Desserts', 'A Pennsylvania Dutch pie with a molasses-based filling, topped with a crumbly streusel. The sweet, sticky filling contrasts with the crisp crust and crumb topping.', 'admin');
+     create_item('Grasshopper Pie','Desserts', 'A no-bake pie with a chocolate cookie crust and a creamy, mint-flavored filling made with crème de menthe and crème de cacao, often topped with whipped cream and chocolate shavings.', 'admin');
+     create_item('Lemon Meringue Pie','Desserts', 'A tart and tangy lemon curd filling in a flaky crust, topped with a billowy, golden-brown meringue. The perfect balance of sweet and sour flavors.', 'admin');
+     create_item('Chocolate Chip Cookie','Desserts', 'A classic American cookie made with buttery dough and loaded with semi-sweet chocolate chips. Crispy on the edges and chewy in the center.', 'admin');
+     create_item('Snickerdoodle','Desserts', 'A soft, chewy cookie rolled in cinnamon sugar before baking, giving it a crackled surface and a warm, spicy flavor. A nostalgic favorite.', 'admin');
+     create_item('Oatmeal Raisin Cookie','Desserts', 'A hearty cookie made with rolled oats, plump raisins, and a hint of cinnamon. Chewy and wholesome, often enjoyed as a comforting snack.', 'admin');
+     create_item('Peanut Butter Cookie','Desserts', 'A rich, crumbly cookie with a deep peanut butter flavor, often marked with a crisscross pattern on top. Salty-sweet and satisfying.', 'admin');
+     create_item('Sugar Cookie','Desserts', 'A sweet, buttery cookie with a tender crumb, perfect for decorating with icing or sprinkles. Simple yet delicious, popular for holidays and celebrations.', 'admin');
+
+-- 100 unique cookie items, detailed and appealing descriptions
+create_item('Almond Biscotti','Desserts', 'Crunchy twice-baked Italian cookies studded with toasted almonds, perfect for dipping in coffee or dessert wine. Their crisp texture and nutty flavor make them a classic treat.', 'admin');
+create_item('Chocolate Dipped Macaroons','Desserts', 'Chewy coconut macaroons dipped in rich dark chocolate, offering a delightful contrast between sweet coconut and bittersweet chocolate. Each bite is moist and decadent.', 'admin');
+create_item('White Chocolate Cranberry Cookie','Desserts', 'Soft cookies loaded with creamy white chocolate chips and tart dried cranberries, creating a festive blend of flavors and colors. Perfect for holiday gatherings.', 'admin');
+create_item('Salted Caramel Cookie','Desserts', 'Buttery cookies filled with gooey caramel and finished with a sprinkle of flaky sea salt. The sweet-salty combination is irresistible and melts in your mouth.', 'admin');
+create_item('Double Chocolate Chunk Cookie','Desserts', 'A rich chocolate cookie base packed with oversized chunks of milk and dark chocolate, delivering a fudgy, indulgent experience in every bite.', 'admin');
+create_item('Espresso Cookie','Desserts', 'Bold espresso-infused cookies with a tender crumb and a hint of cocoa, perfect for coffee lovers seeking a sophisticated treat.', 'admin');
+create_item('Hazelnut Chocolate Cookie','Desserts', 'Soft cookies blended with roasted hazelnuts and swirls of chocolate, offering a nutty aroma and a luxurious, melt-in-your-mouth texture.', 'admin');
+create_item('Lemon Poppy Seed Cookie','Desserts', 'Bright and zesty cookies bursting with fresh lemon zest and crunchy poppy seeds, finished with a sweet lemon glaze for a refreshing twist.', 'admin');
+create_item('Maple Walnut Cookie','Desserts', 'Chewy cookies flavored with pure maple syrup and studded with toasted walnuts, delivering a warm, comforting sweetness and a satisfying crunch.', 'admin');
+create_item('Cherry Almond Cookie','Desserts', 'Tender cookies filled with dried cherries and slivered almonds, offering a delightful balance of tart fruit and nutty richness.', 'admin');
+create_item('Triple Ginger Cookie','Desserts', 'Spicy cookies made with fresh, ground, and crystallized ginger, creating layers of warmth and flavor. Their chewy texture and aromatic spice are unforgettable.', 'admin');
+create_item('Pumpkin Spice Cookie','Desserts', 'Soft cookies infused with pumpkin puree and autumn spices, topped with a cinnamon cream cheese drizzle. Perfect for cozy fall afternoons.', 'admin');
+create_item('Molasses Spice Cookie','Desserts', 'Dark, chewy cookies with deep molasses flavor and a blend of cinnamon, cloves, and ginger. Their crackled tops and rich aroma evoke holiday nostalgia.', 'admin');
+create_item('Coconut Lime Cookie','Desserts', 'Tropical cookies combining sweet coconut flakes and tangy lime zest, finished with a light lime glaze for a refreshing, summery treat.', 'admin');
+create_item('Brown Butter Pecan Cookie','Desserts', 'Chewy cookies made with nutty brown butter and loaded with toasted pecans, offering a rich, caramelized flavor and a satisfying crunch.', 'admin');
+create_item('Strawberry Shortcake Cookie','Desserts', 'Soft cookies bursting with real strawberry pieces and creamy white chocolate, reminiscent of classic strawberry shortcake in every bite.', 'admin');
+create_item('Oatmeal Chocolate Chunk Cookie','Desserts', 'Hearty oatmeal cookies packed with large chocolate chunks, offering a chewy texture and a comforting blend of wholesome oats and rich chocolate.', 'admin');
+create_item('Toffee Chip Cookie','Desserts', 'Buttery cookies loaded with crunchy toffee bits and chocolate chips, delivering a sweet, caramelized flavor and a delightful texture.', 'admin');
+create_item('Peanut Butter Chocolate Swirl Cookie','Desserts', 'Soft peanut butter cookies marbled with ribbons of chocolate, creating a visually stunning and deliciously balanced treat.', 'admin');
+create_item('Raspberry Thumbprint Cookie','Desserts', 'Tender butter cookies with a center of vibrant raspberry jam, finished with a dusting of powdered sugar for a classic, elegant look.', 'admin');
+create_item('Orange Cardamom Cookie','Desserts', 'Fragrant cookies infused with fresh orange zest and aromatic cardamom, offering a unique citrus-spice flavor profile and a delicate crumb.', 'admin');
+create_item('Chocolate Mint Cookie','Desserts', 'Rich chocolate cookies with a cool mint filling, reminiscent of classic after-dinner mints. Their fudgy texture and refreshing flavor are a crowd-pleaser.', 'admin');
+create_item('Apricot Pistachio Cookie','Desserts', 'Soft cookies filled with chewy dried apricots and crunchy pistachios, delivering a sophisticated blend of sweet and nutty flavors.', 'admin');
+create_item('Snickers Cookie','Desserts', 'Chewy cookies packed with chopped Snickers bars, caramel, peanuts, and chocolate, creating a decadent, candy-inspired treat.', 'admin');
+create_item('S’mores Cookie','Desserts', 'Graham cracker cookies loaded with gooey marshmallows and melted chocolate chunks, capturing the essence of campfire s’mores in every bite.', 'admin');
+create_item('Chai Spice Cookie','Desserts', 'Soft cookies infused with chai spices like cinnamon, cardamom, ginger, and cloves, offering a warm, aromatic flavor and a comforting texture.', 'admin');
+create_item('Pistachio Rose Cookie','Desserts', 'Delicate cookies flavored with rosewater and studded with roasted pistachios, finished with a light glaze for a floral, nutty treat.', 'admin');
+create_item('Caramel Apple Cookie','Desserts', 'Chewy cookies with bits of dried apple and swirls of caramel, evoking the flavors of a classic caramel apple in a portable form.', 'admin');
+create_item('Chocolate Orange Cookie','Desserts', 'Rich chocolate cookies infused with orange zest and topped with a drizzle of orange glaze, offering a sophisticated citrus-chocolate pairing.', 'admin');
+create_item('Banana Nut Cookie','Desserts', 'Soft cookies made with ripe bananas and crunchy walnuts, delivering a moist texture and a comforting, banana bread-inspired flavor.', 'admin');
+create_item('Matcha White Chocolate Cookie','Desserts', 'Chewy cookies infused with earthy matcha green tea and studded with creamy white chocolate chips, creating a vibrant and unique treat.', 'admin');
+create_item('Cranberry Pistachio Cookie','Desserts', 'Festive cookies filled with tart dried cranberries and crunchy pistachios, offering a colorful and flavorful combination perfect for celebrations.', 'admin');
+create_item('Chocolate Cherry Cookie','Desserts', 'Fudgy chocolate cookies packed with dried cherries, delivering a rich, fruity twist and a chewy, decadent texture.', 'admin');
+create_item('Honey Lavender Cookie','Desserts', 'Delicate cookies sweetened with honey and infused with fragrant lavender, offering a floral aroma and a subtly sweet flavor.', 'admin');
+create_item('Ginger Lemon Cookie','Desserts', 'Soft cookies with a zesty lemon base and spicy ginger pieces, finished with a lemon glaze for a refreshing and aromatic treat.', 'admin');
+create_item('Cinnamon Roll Cookie','Desserts', 'Swirled cookies with layers of cinnamon sugar and a sweet vanilla glaze, capturing the essence of a classic cinnamon roll in a bite-sized form.', 'admin');
+create_item('Chocolate Peanut Butter Pretzel Cookie','Desserts', 'Chewy cookies loaded with chocolate chips, peanut butter, and crunchy pretzel pieces, offering a sweet-salty flavor explosion.', 'admin');
+create_item('Blueberry Muffin Cookie','Desserts', 'Soft cookies bursting with juicy blueberries and topped with a crunchy streusel, reminiscent of a classic blueberry muffin.', 'admin');
+create_item('Key Lime Cookie','Desserts', 'Tangy cookies infused with key lime juice and zest, finished with a sweet lime glaze for a refreshing, tropical treat.', 'admin');
+create_item('Chocolate Coconut Cookie','Desserts', 'Fudgy chocolate cookies packed with shredded coconut, offering a chewy texture and a rich, tropical flavor.', 'admin');
+create_item('Pecan Sandie','Desserts', 'Tender shortbread cookies loaded with toasted pecans, delivering a buttery, crumbly texture and a nutty, satisfying flavor.', 'admin');
+create_item('Caramel Pecan Turtle Cookie','Desserts', 'Chewy cookies topped with gooey caramel, toasted pecans, and a drizzle of chocolate, inspired by classic turtle candies.', 'admin');
+create_item('Chocolate Espresso Crinkle Cookie','Desserts', 'Dark chocolate cookies with a hint of espresso, rolled in powdered sugar and baked to create a crackled, crinkly surface.', 'admin');
+create_item('Pumpkin Chocolate Chip Cookie','Desserts', 'Soft pumpkin cookies studded with melty chocolate chips, offering a moist texture and a blend of autumn spices.', 'admin');
+create_item('Lime Coconut Macaroon','Desserts', 'Chewy coconut macaroons infused with fresh lime zest, finished with a light lime glaze for a tropical, tangy twist.', 'admin');
+create_item('Chocolate Almond Cookie','Desserts', 'Rich chocolate cookies packed with toasted almond slivers, offering a crunchy texture and a deep, nutty flavor.', 'admin');
+create_item('Raspberry White Chocolate Chip Cookie','Desserts', 'Soft cookies filled with sweet raspberry pieces and creamy white chocolate chips, creating a vibrant and indulgent treat.', 'admin');
+create_item('Spiced Apple Oatmeal Cookie','Desserts', 'Hearty oatmeal cookies with bits of dried apple and a blend of cinnamon and nutmeg, delivering a comforting, autumn-inspired flavor.', 'admin');
+create_item('Chocolate Hazelnut Sandwich Cookie','Desserts', 'Crisp chocolate cookies sandwiched with creamy hazelnut spread, offering a decadent, Nutella-inspired experience.', 'admin');
+create_item('Lemon Ricotta Cookie','Desserts', 'Soft, cake-like cookies made with creamy ricotta cheese and bright lemon zest, finished with a sweet lemon glaze.', 'admin');
+create_item('Peanut Butter Oatmeal Cookie','Desserts', 'Chewy cookies combining creamy peanut butter and hearty oats, delivering a wholesome texture and a rich, nutty flavor.', 'admin');
+create_item('Chocolate Caramel Cookie','Desserts', 'Fudgy chocolate cookies with pockets of gooey caramel, creating a decadent, melt-in-your-mouth treat.', 'admin');
+create_item('Cranberry Orange Cookie','Desserts', 'Tender cookies bursting with tart dried cranberries and fresh orange zest, finished with a sweet orange glaze.', 'admin');
+create_item('Almond Joy Cookie','Desserts', 'Chewy coconut cookies loaded with chocolate chips and toasted almonds, inspired by the classic candy bar.', 'admin');
+create_item('White Chocolate Macadamia Cookie','Desserts', 'Soft cookies packed with creamy white chocolate chips and buttery macadamia nuts, offering a luxurious, tropical flavor.', 'admin');
+create_item('Chocolate Toffee Pecan Cookie','Desserts', 'Rich chocolate cookies loaded with crunchy toffee bits and toasted pecans, delivering a sweet, nutty, and caramelized flavor.', 'admin');
+create_item('Pumpkin Oatmeal Cookie','Desserts', 'Hearty oatmeal cookies infused with pumpkin puree and autumn spices, offering a chewy texture and a warm, comforting flavor.', 'admin');
+create_item('Chocolate Raspberry Cookie','Desserts', 'Fudgy chocolate cookies filled with sweet raspberry jam, creating a rich, fruity twist and a decadent texture.', 'admin');
+create_item('Cinnamon Sugar Cookie','Desserts', 'Soft cookies rolled in cinnamon sugar before baking, delivering a crackled surface and a warm, spicy flavor.', 'admin');
+create_item('Chocolate Walnut Cookie','Desserts', 'Chewy chocolate cookies packed with toasted walnuts, offering a rich, nutty flavor and a satisfying crunch.', 'admin');
+create_item('Lemon Blueberry Cookie','Desserts', 'Tender cookies bursting with fresh blueberries and bright lemon zest, finished with a sweet lemon glaze.', 'admin');
+create_item('Chocolate Pistachio Cookie','Desserts', 'Rich chocolate cookies studded with roasted pistachios, offering a vibrant color and a unique, nutty flavor.', 'admin');
+create_item('Caramel Snickerdoodle Cookie','Desserts', 'Soft snickerdoodle cookies with a gooey caramel center, dusted with cinnamon sugar for a sweet-spicy twist.', 'admin');
+create_item('Chocolate Chipotle Cookie','Desserts', 'Fudgy chocolate cookies with a hint of smoky chipotle pepper, delivering a subtle heat and a bold, complex flavor.', 'admin');
+create_item('Peanut Butter Banana Cookie','Desserts', 'Soft cookies made with creamy peanut butter and ripe bananas, offering a moist texture and a comforting, nostalgic flavor.', 'admin');
+create_item('Chocolate Cherry Almond Cookie','Desserts', 'Chewy cookies packed with dried cherries, toasted almonds, and chocolate chips, delivering a rich, fruity, and nutty experience.', 'admin');
+create_item('Lemon Coconut Cookie','Desserts', 'Tender cookies infused with fresh lemon zest and sweet coconut flakes, finished with a light lemon glaze.', 'admin');
+create_item('Chocolate Marshmallow Cookie','Desserts', 'Soft chocolate cookies with gooey marshmallow centers, offering a decadent, s’mores-inspired treat.', 'admin');
+create_item('Pistachio Cranberry Cookie','Desserts', 'Chewy cookies filled with roasted pistachios and tart dried cranberries, delivering a festive blend of flavors and colors.', 'admin');
+create_item('Chocolate Orange Biscotti','Desserts', 'Crunchy twice-baked cookies infused with orange zest and studded with chocolate chunks, perfect for dipping in coffee or tea.', 'admin');
+create_item('Peanut Butter Pretzel Cookie','Desserts', 'Chewy peanut butter cookies loaded with crunchy pretzel pieces, offering a sweet-salty flavor explosion.', 'admin');
+create_item('Chocolate Coconut Macaroon','Desserts', 'Chewy coconut macaroons dipped in rich chocolate, offering a tropical flavor and a decadent finish.', 'admin');
+create_item('Lemon Thyme Cookie','Desserts', 'Delicate cookies infused with fresh lemon zest and aromatic thyme, offering a unique citrus-herb flavor profile.', 'admin');
+create_item('Chocolate Almond Biscotti','Desserts', 'Crunchy biscotti packed with toasted almonds and chocolate chunks, perfect for dipping in coffee or dessert wine.', 'admin');
+create_item('Pumpkin Cranberry Cookie','Desserts', 'Soft pumpkin cookies filled with tart dried cranberries, offering a moist texture and a blend of autumn flavors.', 'admin');
+create_item('Chocolate Peanut Butter Cookie','Desserts', 'Fudgy chocolate cookies swirled with creamy peanut butter, delivering a classic flavor combination and a decadent texture.', 'admin');
+create_item('Lemon Pistachio Cookie','Desserts', 'Tender cookies bursting with fresh lemon zest and crunchy pistachios, finished with a sweet lemon glaze.', 'admin');
+create_item('Chocolate Caramel Pecan Cookie','Desserts', 'Chewy chocolate cookies topped with gooey caramel and toasted pecans, inspired by classic turtle candies.', 'admin');
+create_item('Cranberry White Chocolate Cookie','Desserts', 'Soft cookies filled with tart dried cranberries and creamy white chocolate chips, offering a festive and indulgent treat.', 'admin');
+create_item('Chocolate Mint Sandwich Cookie','Desserts', 'Crisp chocolate cookies sandwiched with cool mint cream, reminiscent of classic after-dinner mints.', 'admin');
+create_item('Peanut Butter Chocolate Chip Cookie','Desserts', 'Chewy peanut butter cookies packed with melty chocolate chips, delivering a rich, nutty flavor and a decadent texture.', 'admin');
+create_item('Lemon Lavender Cookie','Desserts', 'Delicate cookies infused with fresh lemon zest and fragrant lavender, offering a floral aroma and a subtly sweet flavor.', 'admin');
+create_item('Chocolate Chunk Cookie','Desserts', 'Soft cookies loaded with oversized chunks of milk and dark chocolate, delivering a fudgy, indulgent experience in every bite.', 'admin');
+create_item('Pumpkin White Chocolate Chip Cookie','Desserts', 'Soft pumpkin cookies studded with creamy white chocolate chips, offering a moist texture and a blend of autumn spices.', 'admin');
+create_item('Chocolate Hazelnut Cookie','Desserts', 'Rich chocolate cookies packed with toasted hazelnuts, offering a crunchy texture and a deep, nutty flavor.', 'admin');
+create_item('Lemon Sugar Cookie','Desserts', 'Tender sugar cookies infused with fresh lemon zest, finished with a sweet lemon glaze for a refreshing twist.', 'admin');
+create_item('Chocolate Coconut Chip Cookie','Desserts', 'Chewy chocolate cookies loaded with sweet coconut flakes and chocolate chips, offering a tropical flavor and a decadent texture.', 'admin');
+create_item('Pistachio White Chocolate Cookie','Desserts', 'Soft cookies packed with roasted pistachios and creamy white chocolate chips, delivering a luxurious, nutty flavor.', 'admin');
+create_item('Caramel Chocolate Chip Cookie','Desserts', 'Chewy cookies filled with gooey caramel and melty chocolate chips, creating a decadent, melt-in-your-mouth treat.', 'admin');
+create_item('Cranberry Oatmeal Cookie','Desserts', 'Hearty oatmeal cookies filled with tart dried cranberries, offering a chewy texture and a comforting, wholesome flavor.', 'admin');
+create_item('Chocolate Peanut Butter Cup Cookie','Desserts', 'Soft cookies packed with chopped peanut butter cups and chocolate chips, delivering a rich, candy-inspired treat.', 'admin');
+create_item('Lemon Blueberry Oatmeal Cookie','Desserts', 'Hearty oatmeal cookies bursting with fresh blueberries and bright lemon zest, finished with a sweet lemon glaze.', 'admin');
+create_item('Chocolate Cherry Cookie','Desserts', 'Fudgy chocolate cookies packed with dried cherries, delivering a rich, fruity twist and a chewy, decadent texture.', 'admin');
+create_item('Pumpkin Pecan Cookie','Desserts', 'Soft pumpkin cookies loaded with toasted pecans, offering a moist texture and a blend of autumn spices.', 'admin');
+create_item('Chocolate Macadamia Cookie','Desserts', 'Rich chocolate cookies packed with buttery macadamia nuts, offering a luxurious, tropical flavor and a satisfying crunch.', 'admin');
+create_item('Lemon Raspberry Cookie','Desserts', 'Tender cookies bursting with fresh lemon zest and sweet raspberry pieces, finished with a light lemon glaze.', 'admin');
+create_item('Chocolate Walnut Biscotti','Desserts', 'Crunchy biscotti packed with toasted walnuts and chocolate chunks, perfect for dipping in coffee or dessert wine.', 'admin');
+create_item('Peanut Butter Marshmallow Cookie','Desserts', 'Chewy peanut butter cookies with gooey marshmallow centers, offering a decadent, s’mores-inspired treat.', 'admin');
+create_item('Lemon Almond Cookie','Desserts', 'Tender cookies infused with fresh lemon zest and toasted almonds, finished with a sweet lemon glaze.', 'admin');
+create_item('Chocolate Caramel Sandwich Cookie','Desserts', 'Crisp chocolate cookies sandwiched with gooey caramel, offering a decadent, melt-in-your-mouth treat.', 'admin');
+create_item('Cranberry Pistachio Biscotti','Desserts', 'Crunchy biscotti filled with tart dried cranberries and roasted pistachios, offering a festive blend of flavors and colors.', 'admin');
+create_item('Chocolate Peanut Butter Sandwich Cookie','Desserts', 'Crisp chocolate cookies sandwiched with creamy peanut butter, delivering a classic flavor combination and a decadent texture.', 'admin');
+create_item('Lemon White Chocolate Cookie','Desserts', 'Soft cookies infused with fresh lemon zest and packed with creamy white chocolate chips, finished with a sweet lemon glaze.', 'admin');
+create_item('Pumpkin Cranberry Oatmeal Cookie','Desserts', 'Hearty oatmeal cookies infused with pumpkin puree and filled with tart dried cranberries, offering a chewy texture and a blend of autumn flavors.', 'admin');
+create_item('Chocolate Almond Sandwich Cookie','Desserts', 'Crisp chocolate cookies sandwiched with creamy almond filling, offering a decadent, nutty treat.', 'admin');
+create_item('Lemon Pistachio Biscotti','Desserts', 'Crunchy biscotti bursting with fresh lemon zest and roasted pistachios, perfect for dipping in coffee or tea.', 'admin');
+create_item('Chocolate Hazelnut Sandwich Cookie','Desserts', 'Crisp chocolate cookies sandwiched with creamy hazelnut spread, offering a decadent, Nutella-inspired experience.', 'admin');
+create_item('Lemon Raspberry Biscotti','Desserts', 'Crunchy biscotti filled with sweet raspberry pieces and fresh lemon zest, offering a vibrant and refreshing treat.', 'admin');
+create_item('Chocolate Macadamia Biscotti','Desserts', 'Crunchy biscotti packed with buttery macadamia nuts and chocolate chunks, perfect for dipping in coffee or dessert wine.', 'admin');
+create_item('Lemon Almond Biscotti','Desserts', 'Crunchy biscotti infused with fresh lemon zest and toasted almonds, offering a bright, nutty flavor and a satisfying crunch.', 'admin');
+create_item('Chocolate Caramel Biscotti','Desserts', 'Crunchy biscotti filled with gooey caramel and chocolate chunks, offering a decadent, melt-in-your-mouth treat.', 'admin');
+create_item('Cranberry White Chocolate Biscotti','Desserts', 'Crunchy biscotti filled with tart dried cranberries and creamy white chocolate chips, offering a festive and indulgent treat.', 'admin');
+create_item('Chocolate Peanut Butter Biscotti','Desserts', 'Crunchy biscotti packed with chocolate chips and swirls of creamy peanut butter, delivering a classic flavor combination and a decadent texture.', 'admin');
+create_item('Lemon Blueberry Biscotti','Desserts', 'Crunchy biscotti bursting with fresh blueberries and bright lemon zest, finished with a sweet lemon glaze.', 'admin');
+create_item('Pumpkin Pecan Biscotti','Desserts', 'Crunchy biscotti infused with pumpkin puree and loaded with toasted pecans, offering a blend of autumn spices and a satisfying crunch.', 'admin');
+create_item('Chocolate Walnut Sandwich Cookie','Desserts', 'Crisp chocolate cookies sandwiched with creamy walnut filling, offering a decadent, nutty treat.', 'admin');
+create_item('Lemon Coconut Biscotti','Desserts', 'Crunchy biscotti infused with fresh lemon zest and sweet coconut flakes, finished with a light lemon glaze.', 'admin');
+create_item('Chocolate Marshmallow Biscotti','Desserts', 'Crunchy biscotti filled with gooey marshmallow and chocolate chunks, offering a decadent, s’mores-inspired treat.', 'admin');
+create_item('Pistachio Cranberry Sandwich Cookie','Desserts', 'Crisp cookies packed with roasted pistachios and tart dried cranberries, sandwiched with creamy filling for a festive treat.', 'admin');
+create_item('Chocolate Mint Biscotti','Desserts', 'Crunchy biscotti infused with cool mint and packed with chocolate chips, reminiscent of classic after-dinner mints.', 'admin');
+create_item('Peanut Butter Chocolate Chip Biscotti','Desserts', 'Crunchy biscotti packed with creamy peanut butter and melty chocolate chips, delivering a rich, nutty flavor and a decadent texture.', 'admin');
+create_item('Lemon Lavender Biscotti','Desserts', 'Crunchy biscotti infused with fresh lemon zest and fragrant lavender, offering a floral aroma and a subtly sweet flavor.', 'admin');
+create_item('Chocolate Chunk Biscotti','Desserts', 'Crunchy biscotti loaded with oversized chunks of milk and dark chocolate, delivering a fudgy, indulgent experience in every bite.', 'admin');
+create_item('Pumpkin White Chocolate Chip Biscotti','Desserts', 'Crunchy biscotti infused with pumpkin puree and studded with creamy white chocolate chips, offering a blend of autumn spices and a satisfying crunch.', 'admin');
+create_item('Chocolate Hazelnut Biscotti','Desserts', 'Crunchy biscotti packed with toasted hazelnuts and chocolate chunks, offering a deep, nutty flavor and a satisfying crunch.', 'admin');
+
+create_item('Chocolate Fudge Cake','Desserts', 'A rich, moist chocolate cake layered with velvety chocolate fudge frosting and finished with glossy ganache. Each bite delivers deep cocoa flavor and a melt-in-your-mouth texture.', 'admin');
+create_item('Vanilla Bean Layer Cake','Desserts', 'Tender vanilla sponge cake infused with real vanilla bean, stacked with creamy vanilla buttercream and decorated with delicate sugar pearls for an elegant finish.', 'admin');
+create_item('Strawberry Shortcake','Desserts', 'Light sponge cake layered with sweet macerated strawberries and clouds of whipped cream, offering a refreshing balance of fruit and cream in every slice.', 'admin');
+create_item('Lemon Drizzle Cake','Desserts', 'Moist lemon cake soaked with tangy lemon syrup and topped with a zesty lemon glaze, creating a bright, citrusy flavor that awakens the palate.', 'admin');
+create_item('Coconut Layer Cake','Desserts', 'Fluffy coconut cake filled and frosted with coconut cream, finished with a generous coating of toasted coconut flakes for tropical flair.', 'admin');
+create_item('Caramel Apple Cake','Desserts', 'Spiced apple cake layered with creamy caramel frosting and studded with tender apple pieces, evoking the flavors of a classic caramel apple.', 'admin');
+create_item('Hazelnut Praline Cake','Desserts', 'Decadent hazelnut sponge cake filled with crunchy praline and silky hazelnut buttercream, topped with caramelized hazelnuts for a nutty crunch.', 'admin');
+create_item('Raspberry Lemonade Cake','Desserts', 'Lemon cake layered with raspberry compote and lemon cream, finished with a swirl of raspberry glaze for a sweet-tart sensation.', 'admin');
+create_item('Tiramisu Layer Cake','Desserts', 'Coffee-soaked sponge cake layered with mascarpone cream and dusted with cocoa powder, capturing the essence of classic tiramisu in cake form.', 'admin');
+create_item('Almond Amaretto Cake','Desserts', 'Tender almond cake infused with amaretto liqueur, filled with almond cream and topped with toasted almond slivers for a sophisticated treat.', 'admin');
+create_item('Pistachio Rose Cake','Desserts', 'Delicate pistachio sponge cake layered with rosewater cream and adorned with crushed pistachios and edible rose petals for a floral, nutty finish.', 'admin');
+create_item('Banana Caramel Cake','Desserts', 'Moist banana cake layered with luscious caramel frosting and finished with caramelized banana slices for a comforting, nostalgic flavor.', 'admin');
+create_item('Mocha Espresso Cake','Desserts', 'Chocolate cake infused with espresso, layered with mocha buttercream and finished with chocolate-covered coffee beans for a bold, aromatic dessert.', 'admin');
+create_item('Peach Melba Cake','Desserts', 'Vanilla sponge cake layered with peach compote and raspberry cream, topped with fresh peach slices and a drizzle of raspberry sauce.', 'admin');
+create_item('Maple Walnut Cake','Desserts', 'Soft maple-flavored cake filled with maple buttercream and studded with toasted walnuts, delivering a warm, comforting sweetness.', 'admin');
+create_item('Cherry Almond Cake','Desserts', 'Almond cake layered with cherry preserves and almond cream, finished with a crown of glazed cherries and toasted almonds.', 'admin');
+create_item('Chocolate Mousse Cake','Desserts', 'Layers of airy chocolate mousse and moist chocolate sponge, finished with a glossy chocolate glaze and chocolate curls for a decadent experience.', 'admin');
+create_item('Orange Blossom Cake','Desserts', 'Fragrant orange cake infused with orange blossom water, layered with citrus cream and decorated with candied orange peel.', 'admin');
+create_item('Pineapple Coconut Cake','Desserts', 'Tropical pineapple cake filled with coconut cream and pineapple chunks, topped with toasted coconut and pineapple flowers.', 'admin');
+create_item('Spiced Chai Cake','Desserts', 'Soft cake infused with chai spices like cinnamon, cardamom, and ginger, layered with spiced cream cheese frosting and dusted with cinnamon.', 'admin');
+create_item('Blackberry Lavender Cake','Desserts', 'Lavender-scented sponge cake layered with blackberry compote and lavender cream, finished with fresh blackberries and edible flowers.', 'admin');
+create_item('Salted Caramel Cake','Desserts', 'Buttery cake layered with salted caramel sauce and caramel buttercream, topped with a sprinkle of flaky sea salt for a sweet-salty delight.', 'admin');
+create_item('Matcha Green Tea Cake','Desserts', 'Vibrant matcha sponge cake layered with matcha cream and white chocolate ganache, finished with a dusting of matcha powder.', 'admin');
+create_item('Apricot Almond Cake','Desserts', 'Almond cake filled with apricot preserves and almond cream, topped with glazed apricot halves and toasted almond flakes.', 'admin');
+create_item('Chocolate Raspberry Cake','Desserts', 'Rich chocolate cake layered with raspberry jam and chocolate ganache, finished with fresh raspberries and chocolate shavings.', 'admin');
+create_item('Pumpkin Spice Cake','Desserts', 'Moist pumpkin cake spiced with cinnamon and nutmeg, layered with cream cheese frosting and topped with candied pecans.', 'admin');
+create_item('Blueberry Lemon Cake','Desserts', 'Lemon cake studded with juicy blueberries, layered with lemon cream and blueberry compote, finished with a lemon glaze.', 'admin');
+create_item('Honey Fig Cake','Desserts', 'Tender honey cake layered with fig preserves and honey cream, topped with fresh figs and a drizzle of honey.', 'admin');
+create_item('Chocolate Peanut Butter Cake','Desserts', 'Chocolate cake layered with creamy peanut butter frosting and finished with chocolate ganache and peanut butter cups.', 'admin');
+create_item('Red Currant Cake','Desserts', 'Light sponge cake layered with tangy red currant jam and vanilla cream, topped with a cascade of fresh red currants.', 'admin');
+create_item('Cranberry Orange Cake','Desserts', 'Orange cake filled with cranberry compote and orange cream, finished with candied orange slices and sugared cranberries.', 'admin');
+create_item('Rum Raisin Cake','Desserts', 'Spiced cake soaked with rum and studded with plump raisins, layered with rum buttercream and topped with golden raisins.', 'admin');
+create_item('Chocolate Pistachio Cake','Desserts', 'Chocolate cake layered with pistachio cream and chocolate ganache, finished with chopped pistachios and chocolate shards.', 'admin');
+create_item('Lime Coconut Cake','Desserts', 'Zesty lime cake filled with coconut cream and lime curd, topped with toasted coconut and lime zest.', 'admin');
+create_item('Carrot Pineapple Cake','Desserts', 'Moist carrot cake with pineapple chunks, layered with tangy cream cheese frosting and finished with toasted coconut.', 'admin');
+create_item('Pear Ginger Cake','Desserts', 'Spiced ginger cake layered with pear compote and ginger cream, topped with poached pear slices and candied ginger.', 'admin');
+create_item('Chocolate Orange Cake','Desserts', 'Chocolate cake infused with orange zest, layered with orange cream and chocolate ganache, finished with candied orange peel.', 'admin');
+create_item('Chestnut Cream Cake','Desserts', 'Delicate chestnut sponge cake layered with chestnut cream and whipped cream, topped with glazed chestnuts.', 'admin');
+create_item('Passionfruit Cake','Desserts', 'Light vanilla cake layered with tangy passionfruit curd and cream, finished with a glossy passionfruit glaze.', 'admin');
+create_item('Mocha Hazelnut Cake','Desserts', 'Coffee-infused chocolate cake layered with hazelnut cream and mocha ganache, topped with toasted hazelnuts.', 'admin');
+create_item('Apple Cinnamon Cake','Desserts', 'Spiced apple cake layered with cinnamon cream and apple compote, finished with caramelized apple slices.', 'admin');
+create_item('Chocolate Strawberry Cake','Desserts', 'Chocolate cake layered with strawberry jam and chocolate mousse, topped with fresh strawberries and chocolate curls.', 'admin');
+create_item('Lemon Poppy Seed Cake','Desserts', 'Lemon cake studded with crunchy poppy seeds, layered with lemon cream and finished with a sweet lemon glaze.', 'admin');
+create_item('Mango Coconut Cake','Desserts', 'Tropical mango cake filled with coconut cream and mango puree, topped with fresh mango slices and toasted coconut.', 'admin');
+create_item('Walnut Coffee Cake','Desserts', 'Coffee-flavored cake layered with walnut cream and coffee buttercream, finished with toasted walnuts and a dusting of cocoa.', 'admin');
+create_item('Chocolate Chili Cake','Desserts', 'Dark chocolate cake with a hint of chili, layered with chocolate ganache and finished with candied chili slices for a spicy kick.', 'admin');
+create_item('Rhubarb Vanilla Cake','Desserts', 'Vanilla cake layered with tangy rhubarb compote and vanilla cream, topped with roasted rhubarb and a vanilla glaze.', 'admin');
+create_item('Cinnamon Roll Cake','Desserts', 'Swirled cinnamon cake layered with cream cheese frosting and finished with a drizzle of vanilla glaze.', 'admin');
+create_item('Black Forest Mousse Cake','Desserts', 'Chocolate sponge cake layered with cherry mousse and whipped cream, finished with chocolate shavings and cherries.', 'admin');
+create_item('Almond Raspberry Cake','Desserts', 'Almond cake filled with raspberry preserves and almond cream, topped with fresh raspberries and sliced almonds.', 'admin');
+create_item('Chocolate Caramel Cake','Desserts', 'Chocolate cake layered with gooey caramel and chocolate buttercream, finished with caramel drizzle and chocolate shards.', 'admin');
+create_item('Gingerbread Cake','Desserts', 'Spiced gingerbread cake layered with molasses cream and finished with gingerbread crumbs and candied ginger.', 'admin');
+create_item('Pineapple Upside-Down Cake','Desserts', 'Moist vanilla cake baked with caramelized pineapple rings and cherries on top, inverted to reveal a glossy, fruity topping.', 'admin');
+create_item('Hazelnut Chocolate Mousse Cake','Desserts', 'Hazelnut sponge cake layered with chocolate mousse and hazelnut cream, finished with chocolate glaze and hazelnut praline.', 'admin');
+create_item('Lemon Blueberry Layer Cake','Desserts', 'Lemon cake layered with blueberry compote and lemon cream, finished with fresh blueberries and lemon zest.', 'admin');
+create_item('Chocolate Almond Cake','Desserts', 'Chocolate cake filled with almond cream and chocolate ganache, topped with toasted almonds and chocolate curls.', 'admin');
+create_item('Orange Cardamom Cake','Desserts', 'Fragrant orange cake infused with cardamom, layered with orange cream and finished with candied orange slices.', 'admin');
+create_item('Strawberry Champagne Cake','Desserts', 'Champagne-infused sponge cake layered with strawberry cream and fresh strawberries, finished with a sparkling glaze.', 'admin');
+create_item('Pumpkin Maple Cake','Desserts', 'Pumpkin cake layered with maple cream cheese frosting and topped with candied pecans and a maple drizzle.', 'admin');
+create_item('Chocolate Coconut Cake','Desserts', 'Chocolate cake filled with coconut cream and chocolate ganache, finished with toasted coconut flakes.', 'admin');
+create_item('Pear Almond Cake','Desserts', 'Almond cake layered with poached pear slices and almond cream, topped with toasted almonds and pear glaze.', 'admin');
+create_item('Raspberry White Chocolate Cake','Desserts', 'Vanilla cake layered with raspberry preserves and white chocolate cream, finished with fresh raspberries and white chocolate curls.', 'admin');
+create_item('Spiced Plum Cake','Desserts', 'Spiced cake layered with plum compote and cinnamon cream, topped with roasted plums and a cinnamon glaze.', 'admin');
+create_item('Chocolate Hazelnut Layer Cake','Desserts', 'Chocolate cake filled with hazelnut cream and chocolate ganache, finished with toasted hazelnuts and chocolate shards.', 'admin');
+create_item('Lemon Thyme Cake','Desserts', 'Lemon cake infused with fresh thyme, layered with lemon cream and finished with candied lemon slices and thyme sprigs.', 'admin');
+create_item('Mango Passionfruit Cake','Desserts', 'Mango cake layered with passionfruit curd and mango cream, topped with fresh mango and passionfruit seeds.', 'admin');
+create_item('Cranberry Pistachio Cake','Desserts', 'Pistachio cake filled with cranberry compote and pistachio cream, finished with sugared cranberries and chopped pistachios.', 'admin');
+create_item('Chocolate Mint Cake','Desserts', 'Chocolate cake layered with cool mint cream and chocolate ganache, finished with chocolate curls and mint leaves.', 'admin');
+create_item('Almond Joy Layer Cake','Desserts', 'Coconut cake filled with almond cream and chocolate ganache, topped with toasted almonds and coconut flakes.', 'admin');
+create_item('Caramel Pecan Cake','Desserts', 'Buttery cake layered with caramel cream and toasted pecans, finished with caramel drizzle and pecan halves.', 'admin');
+create_item('Strawberry Lemon Cake','Desserts', 'Lemon cake layered with strawberry compote and lemon cream, finished with fresh strawberries and lemon zest.', 'admin');
+create_item('Chocolate Blackberry Cake','Desserts', 'Chocolate cake filled with blackberry preserves and chocolate cream, topped with fresh blackberries and chocolate shavings.', 'admin');
+create_item('Pumpkin Chocolate Chip Cake','Desserts', 'Pumpkin cake studded with chocolate chips, layered with spiced cream cheese frosting and finished with chocolate drizzle.', 'admin');
+create_item('Lemon Ricotta Cake','Desserts', 'Tender ricotta cake infused with lemon zest, layered with lemon cream and finished with candied lemon slices.', 'admin');
+create_item('Chocolate Cherry Layer Cake','Desserts', 'Chocolate cake filled with cherry preserves and chocolate mousse, topped with fresh cherries and chocolate curls.', 'admin');
+create_item('Vanilla Hazelnut Cake','Desserts', 'Vanilla cake layered with hazelnut cream and vanilla buttercream, finished with toasted hazelnuts and vanilla glaze.', 'admin');
+create_item('Orange Cranberry Cake','Desserts', 'Orange cake filled with cranberry compote and orange cream, topped with candied orange slices and sugared cranberries.', 'admin');
+create_item('Chocolate Banana Cake','Desserts', 'Chocolate cake layered with banana cream and chocolate ganache, finished with caramelized banana slices and chocolate curls.', 'admin');
+create_item('Lime Raspberry Cake','Desserts', 'Lime cake layered with raspberry preserves and lime cream, topped with fresh raspberries and lime zest.', 'admin');
+create_item('Caramel Macadamia Cake','Desserts', 'Buttery cake filled with caramel cream and toasted macadamia nuts, finished with caramel drizzle and macadamia halves.', 'admin');
+create_item('Strawberry Pistachio Cake','Desserts', 'Pistachio cake layered with strawberry compote and pistachio cream, topped with fresh strawberries and chopped pistachios.', 'admin');
+create_item('Chocolate Walnut Cake','Desserts', 'Chocolate cake filled with walnut cream and chocolate ganache, finished with toasted walnuts and chocolate shards.', 'admin');
+create_item('Lemon Blueberry Mousse Cake','Desserts', 'Lemon cake layered with blueberry mousse and lemon cream, finished with fresh blueberries and lemon zest.', 'admin');
+create_item('Pumpkin Cranberry Cake','Desserts', 'Pumpkin cake filled with cranberry compote and spiced cream cheese frosting, topped with sugared cranberries.', 'admin');
+create_item('Chocolate Almond Mousse Cake','Desserts', 'Chocolate cake layered with almond mousse and chocolate ganache, finished with toasted almonds and chocolate curls.', 'admin');
+create_item('Raspberry Pistachio Cake','Desserts', 'Pistachio cake filled with raspberry preserves and pistachio cream, topped with fresh raspberries and chopped pistachios.', 'admin');
+create_item('Vanilla Strawberry Cake','Desserts', 'Vanilla cake layered with strawberry cream and fresh strawberries, finished with vanilla buttercream and strawberry glaze.', 'admin');
+create_item('Chocolate Orange Mousse Cake','Desserts', 'Chocolate cake layered with orange mousse and chocolate ganache, finished with candied orange peel and chocolate curls.', 'admin');
+create_item('Lemon Coconut Layer Cake','Desserts', 'Lemon cake filled with coconut cream and lemon curd, topped with toasted coconut and lemon zest.', 'admin');
+create_item('Caramel Hazelnut Cake','Desserts', 'Hazelnut cake layered with caramel cream and hazelnut buttercream, finished with caramel drizzle and toasted hazelnuts.', 'admin');
+create_item('Strawberry Mango Cake','Desserts', 'Mango cake layered with strawberry cream and fresh mango, finished with strawberry glaze and mango slices.', 'admin');
+create_item('Chocolate Pear Cake','Desserts', 'Chocolate cake filled with poached pear slices and chocolate cream, topped with glazed pears and chocolate shavings.', 'admin');
+create_item('Pumpkin Walnut Cake','Desserts', 'Pumpkin cake filled with walnut cream and spiced cream cheese frosting, topped with toasted walnuts.', 'admin');
+create_item('Lemon Raspberry Layer Cake','Desserts', 'Lemon cake layered with raspberry preserves and lemon cream, finished with fresh raspberries and lemon zest.', 'admin');
+create_item('Chocolate Coconut Mousse Cake','Desserts', 'Chocolate cake layered with coconut mousse and chocolate ganache, finished with toasted coconut flakes.', 'admin');
+create_item('Almond Blueberry Cake','Desserts', 'Almond cake filled with blueberry compote and almond cream, topped with fresh blueberries and sliced almonds.', 'admin');
+create_item('Caramel Apple Spice Cake','Desserts', 'Spiced apple cake layered with caramel cream and apple compote, finished with caramel drizzle and apple slices.', 'admin');
+create_item('Strawberry Lemon Mousse Cake','Desserts', 'Lemon cake layered with strawberry mousse and lemon cream, finished with fresh strawberries and lemon zest.', 'admin');
+create_item('Chocolate Pistachio Mousse Cake','Desserts', 'Chocolate cake layered with pistachio mousse and chocolate ganache, finished with chopped pistachios and chocolate curls.', 'admin');
+create_item('Lime Coconut Cake','Desserts', 'Lime cake filled with coconut cream and lime curd, topped with toasted coconut and lime zest.', 'admin');
+create_item('Pumpkin Pecan Cake','Desserts', 'Pumpkin cake filled with pecan cream and spiced cream cheese frosting, topped with toasted pecans.', 'admin');
+create_item('Chocolate Hazelnut Mousse Cake','Desserts', 'Chocolate cake layered with hazelnut mousse and chocolate ganache, finished with toasted hazelnuts and chocolate curls.', 'admin');
+create_item('Raspberry Lemon Cake','Desserts', 'Lemon cake layered with raspberry preserves and lemon cream, finished with fresh raspberries and lemon zest.', 'admin');
+create_item('Vanilla Mango Cake','Desserts', 'Vanilla cake layered with mango cream and fresh mango, finished with vanilla buttercream and mango glaze.', 'admin');
+create_item('Chocolate Cherry Mousse Cake','Desserts', 'Chocolate cake layered with cherry mousse and chocolate ganache, finished with fresh cherries and chocolate curls.', 'admin');
+create_item('Lemon Pistachio Cake','Desserts', 'Lemon cake filled with pistachio cream and lemon curd, topped with chopped pistachios and lemon zest.', 'admin');
+create_item('Caramel Banana Cake','Desserts', 'Banana cake layered with caramel cream and banana slices, finished with caramel drizzle and banana chips.', 'admin');
+create_item('Strawberry Almond Cake','Desserts', 'Almond cake filled with strawberry cream and fresh strawberries, topped with sliced almonds and strawberry glaze.', 'admin');
+create_item('Chocolate Blueberry Cake','Desserts', 'Chocolate cake filled with blueberry compote and chocolate cream, topped with fresh blueberries and chocolate shavings.', 'admin');
+create_item('Pumpkin Maple Layer Cake','Desserts', 'Pumpkin cake layered with maple cream cheese frosting and topped with candied pecans and a maple drizzle.', 'admin');
+create_item('Lemon Blackberry Cake','Desserts', 'Lemon cake filled with blackberry preserves and lemon cream, finished with fresh blackberries and lemon zest.', 'admin');
+create_item('Chocolate Walnut Mousse Cake','Desserts', 'Chocolate cake layered with walnut mousse and chocolate ganache, finished with toasted walnuts and chocolate curls.', 'admin');
+create_item('Raspberry Coconut Cake','Desserts', 'Coconut cake filled with raspberry preserves and coconut cream, topped with fresh raspberries and toasted coconut.', 'admin');
+create_item('Vanilla Pistachio Cake','Desserts', 'Vanilla cake layered with pistachio cream and vanilla buttercream, finished with chopped pistachios and vanilla glaze.', 'admin');
+create_item('Chocolate Lemon Cake','Desserts', 'Chocolate cake filled with lemon cream and chocolate ganache, topped with candied lemon slices and chocolate curls.', 'admin');
+create_item('Pumpkin Cranberry Mousse Cake','Desserts', 'Pumpkin cake layered with cranberry mousse and spiced cream cheese frosting, topped with sugared cranberries.', 'admin');
+create_item('Lemon Strawberry Cake','Desserts', 'Lemon cake filled with strawberry cream and lemon curd, topped with fresh strawberries and lemon zest.', 'admin');
+create_item('Chocolate Almond Mousse Cake','Desserts', 'Chocolate cake layered with almond mousse and chocolate ganache, finished with toasted almonds and chocolate curls.', 'admin');
+create_item('Raspberry Lemon Mousse Cake','Desserts', 'Lemon cake layered with raspberry mousse and lemon cream, finished with fresh raspberries and lemon zest.', 'admin');
+create_item('Vanilla Blueberry Cake','Desserts', 'Vanilla cake filled with blueberry compote and vanilla cream, topped with fresh blueberries and vanilla glaze.', 'admin');
+create_item('Chocolate Pistachio Layer Cake','Desserts', 'Chocolate cake layered with pistachio cream and chocolate ganache, finished with chopped pistachios and chocolate curls.', 'admin');
+create_item('Pumpkin Walnut Mousse Cake','Desserts', 'Pumpkin cake layered with walnut mousse and spiced cream cheese frosting, topped with toasted walnuts.', 'admin');
+create_item('Lemon Raspberry Mousse Cake','Desserts', 'Lemon cake layered with raspberry mousse and lemon cream, finished with fresh raspberries and lemon zest.', 'admin');
+create_item('Chocolate Coconut Layer Cake','Desserts', 'Chocolate cake filled with coconut cream and chocolate ganache, finished with toasted coconut flakes.', 'admin');
+create_item('Almond Lemon Cake','Desserts', 'Almond cake filled with lemon cream and almond buttercream, topped with sliced almonds and lemon zest.', 'admin');
+create_item('Caramel Apple Mousse Cake','Desserts', 'Spiced apple cake layered with caramel mousse and apple compote, finished with caramel drizzle and apple slices.', 'admin');
+create_item('Strawberry Pistachio Mousse Cake','Desserts', 'Pistachio cake layered with strawberry mousse and pistachio cream, topped with fresh strawberries and chopped pistachios.', 'admin');
+create_item('Chocolate Hazelnut Layer Cake','Desserts', 'Chocolate cake filled with hazelnut cream and chocolate ganache, finished with toasted hazelnuts and chocolate shards.', 'admin');
+
+create_item('Apple Pie Supreme','Desserts', 'Classic double-crust pie brimming with tender, cinnamon-spiced apples, baked until golden and bubbling. Served warm with a scoop of vanilla ice cream for a comforting finish.', 'admin');
+create_item('Blueberry Crumble Pie','Desserts', 'Juicy blueberries nestled in a flaky crust, topped with a buttery oat crumble that bakes to a crisp, golden perfection. Each bite bursts with sweet-tart berry flavor.', 'admin');
+create_item('Cherry Lattice Pie','Desserts', 'Plump, tart cherries enveloped in a glossy filling, encased in a flaky crust with a decorative lattice top. Finished with a dusting of sugar for a beautiful presentation.', 'admin');
+create_item('Peach Bourbon Pie','Desserts', 'Ripe peaches tossed with brown sugar and a splash of bourbon, baked in a tender crust for a rich, caramelized flavor. Perfect for summer gatherings.', 'admin');
+create_item('Strawberry Rhubarb Pie','Desserts', 'Sweet strawberries and tangy rhubarb meld together in a vibrant filling, wrapped in a golden crust. The balance of flavors creates a refreshing, nostalgic treat.', 'admin');
+create_item('Blackberry Almond Pie','Desserts', 'Luscious blackberries layered over a delicate almond cream, all nestled in a buttery crust. Finished with toasted almond flakes for added crunch.', 'admin');
+create_item('Raspberry Lemon Pie','Desserts', 'Bright raspberries and zesty lemon curd combine in a crisp pastry shell, offering a sweet-tart sensation with every forkful.', 'admin');
+create_item('Maple Pecan Pie','Desserts', 'Toasted pecans suspended in a silky maple custard, baked in a flaky crust. The deep maple flavor and crunchy nuts make this a decadent Southern classic.', 'admin');
+create_item('Chocolate Silk Pie','Desserts', 'A velvety chocolate mousse filling set in a crisp cookie crust, topped with clouds of whipped cream and chocolate shavings for a luxurious finish.', 'admin');
+create_item('Banana Cream Pie','Desserts', 'Layers of ripe banana slices and smooth vanilla custard in a buttery crust, crowned with whipped cream and a sprinkle of toasted coconut.', 'admin');
+create_item('Coconut Custard Pie','Desserts', 'Rich coconut custard baked in a golden shell, finished with a layer of toasted coconut flakes for a tropical twist.', 'admin');
+create_item('Key Lime Meringue Pie','Desserts', 'Tangy key lime filling in a graham cracker crust, topped with billowy, golden-brown meringue. The perfect balance of sweet and tart.', 'admin');
+create_item('Pumpkin Chai Pie','Desserts', 'Creamy pumpkin filling infused with chai spices, baked in a flaky crust and topped with cinnamon whipped cream for a warming autumn treat.', 'admin');
+create_item('Salted Caramel Apple Pie','Desserts', 'Tender apples layered with gooey salted caramel, baked in a buttery crust and finished with a sprinkle of flaky sea salt.', 'admin');
+create_item('Chocolate Peanut Butter Pie','Desserts', 'Decadent peanut butter mousse layered with rich chocolate ganache in a crisp cookie crust, topped with chopped peanuts and chocolate curls.', 'admin');
+create_item('Lemon Chess Pie','Desserts', 'A Southern favorite featuring a tangy lemon custard filling in a flaky shell, baked until set and finished with a dusting of powdered sugar.', 'admin');
+create_item('Mixed Berry Pie','Desserts', 'A medley of strawberries, blueberries, raspberries, and blackberries baked in a golden crust, bursting with juicy, sweet-tart flavor.', 'admin');
+create_item('Apricot Hazelnut Pie','Desserts', 'Sweet apricots simmered with honey and layered over a hazelnut frangipane, all nestled in a crisp pastry shell.', 'admin');
+create_item('Chocolate Chess Pie','Desserts', 'Rich chocolate custard baked in a flaky crust, with a crackly top and a fudgy interior. A Southern classic with a cocoa twist.', 'admin');
+create_item('Pear Ginger Pie','Desserts', 'Tender pears tossed with fresh ginger and brown sugar, baked in a buttery crust for a fragrant, subtly spicy dessert.', 'admin');
+create_item('Plum Cardamom Pie','Desserts', 'Juicy plums and aromatic cardamom combine in a golden pastry shell, offering a sophisticated blend of sweet and spice.', 'admin');
+create_item('Sweet Potato Pie','Desserts', 'Creamy sweet potato filling spiced with cinnamon and nutmeg, baked in a flaky crust and topped with whipped cream.', 'admin');
+create_item('Chocolate Bourbon Pecan Pie','Desserts', 'Toasted pecans and rich chocolate chunks in a bourbon-infused custard, baked in a buttery shell for a grown-up twist on a classic.', 'admin');
+create_item('Pineapple Mango Pie','Desserts', 'Tropical pineapple and mango chunks in a sweet filling, baked in a crisp crust and finished with a sprinkle of toasted coconut.', 'admin');
+create_item('Cranberry Orange Pie','Desserts', 'Tart cranberries and bright orange zest meld in a golden crust, creating a festive, vibrant dessert.', 'admin');
+create_item('Almond Joy Pie','Desserts', 'Chocolate custard layered with coconut and toasted almonds in a cookie crust, inspired by the classic candy bar.', 'admin');
+create_item('Mocha Cream Pie','Desserts', 'Silky mocha custard in a chocolate cookie crust, topped with espresso whipped cream and chocolate-covered coffee beans.', 'admin');
+create_item('Raspberry White Chocolate Pie','Desserts', 'Sweet raspberries and creamy white chocolate mousse in a crisp shell, finished with fresh berries and white chocolate curls.', 'admin');
+create_item('Caramel Macadamia Pie','Desserts', 'Buttery caramel filling studded with roasted macadamia nuts, baked in a golden crust for a sweet-salty treat.', 'admin');
+create_item('Hazelnut Praline Pie','Desserts', 'Crunchy hazelnut praline layered over a smooth chocolate filling in a crisp pastry shell, topped with whipped cream and caramel drizzle.', 'admin');
+create_item('Strawberry Cream Cheese Pie','Desserts', 'Fresh strawberries atop a tangy cream cheese layer in a graham cracker crust, finished with a glossy strawberry glaze.', 'admin');
+create_item('Chocolate Mint Pie','Desserts', 'Cool mint mousse layered with rich chocolate ganache in a cookie crust, topped with whipped cream and chocolate shavings.', 'admin');
+create_item('Peach Melba Pie','Desserts', 'Juicy peaches and raspberry sauce baked in a flaky crust, finished with a swirl of vanilla cream.', 'admin');
+create_item('Lime Coconut Pie','Desserts', 'Zesty lime custard and creamy coconut filling in a crisp shell, topped with toasted coconut and lime zest.', 'admin');
+create_item('Black Forest Pie','Desserts', 'Layers of chocolate custard, cherry compote, and whipped cream in a chocolate crust, garnished with chocolate curls and cherries.', 'admin');
+create_item('Pumpkin Maple Pie','Desserts', 'Pumpkin custard sweetened with pure maple syrup, baked in a buttery shell and topped with maple whipped cream.', 'admin');
+create_item('Apple Cranberry Pie','Desserts', 'Tender apples and tart cranberries baked together in a golden crust, offering a harmonious blend of sweet and tangy flavors.', 'admin');
+create_item('Chocolate Raspberry Pie','Desserts', 'Fudgy chocolate filling swirled with raspberry preserves in a crisp shell, finished with fresh raspberries and chocolate drizzle.', 'admin');
+create_item('Pistachio Cream Pie','Desserts', 'Smooth pistachio custard in a buttery crust, topped with whipped cream and chopped roasted pistachios.', 'admin');
+create_item('Gingerbread Pie','Desserts', 'Spiced gingerbread custard baked in a molasses-infused crust, topped with cinnamon whipped cream and candied ginger.', 'admin');
+create_item('Caramel Banana Pie','Desserts', 'Layers of sliced bananas and creamy caramel in a crisp shell, finished with whipped cream and caramel drizzle.', 'admin');
+create_item('Lemon Blueberry Pie','Desserts', 'Tangy lemon curd and juicy blueberries nestled in a flaky crust, topped with a sweet crumble and lemon zest.', 'admin');
+create_item('Chocolate Orange Pie','Desserts', 'Rich chocolate custard infused with orange zest in a crisp shell, garnished with candied orange slices.', 'admin');
+create_item('Cherry Almond Pie','Desserts', 'Tart cherries and almond cream baked in a golden crust, finished with toasted almond flakes.', 'admin');
+create_item('Pumpkin Chocolate Chip Pie','Desserts', 'Pumpkin custard studded with chocolate chips, baked in a buttery shell and topped with whipped cream.', 'admin');
+create_item('Apricot Pistachio Pie','Desserts', 'Sweet apricots and crunchy pistachios layered in a crisp crust, finished with a honey glaze.', 'admin');
+create_item('Chocolate Coconut Pie','Desserts', 'Creamy chocolate filling layered with toasted coconut in a cookie crust, topped with whipped cream and more coconut.', 'admin');
+create_item('Pear Almond Pie','Desserts', 'Tender pears and almond frangipane baked in a buttery shell, finished with sliced almonds and powdered sugar.', 'admin');
+create_item('Strawberry Lemonade Pie','Desserts', 'Sweet strawberries and tangy lemon curd in a graham cracker crust, topped with whipped cream and lemon zest.', 'admin');
+create_item('Maple Walnut Pie','Desserts', 'Toasted walnuts in a silky maple custard, baked in a flaky crust and finished with a drizzle of maple syrup.', 'admin');
+create_item('Chocolate Caramel Pie','Desserts', 'Layers of rich chocolate custard and gooey caramel in a crisp shell, topped with whipped cream and chocolate shavings.', 'admin');
+create_item('Pumpkin Pecan Pie','Desserts', 'Creamy pumpkin filling topped with a layer of toasted pecans, baked in a buttery shell for a festive twist.', 'admin');
+create_item('Lemon Blackberry Pie','Desserts', 'Bright lemon custard and juicy blackberries nestled in a golden crust, finished with a sweet glaze.', 'admin');
+create_item('Chocolate Hazelnut Pie','Desserts', 'Silky chocolate filling blended with roasted hazelnuts in a crisp shell, topped with whipped cream and hazelnut praline.', 'admin');
+create_item('Peach Raspberry Pie','Desserts', 'Ripe peaches and tart raspberries baked together in a flaky crust, offering a vibrant, summery flavor.', 'admin');
+create_item('Cranberry Pecan Pie','Desserts', 'Tart cranberries and crunchy pecans in a sweet custard, baked in a golden shell for a festive treat.', 'admin');
+create_item('Banana Toffee Pie','Desserts', 'Layers of sliced bananas and creamy toffee in a crisp crust, topped with whipped cream and toffee bits.', 'admin');
+create_item('Chocolate Strawberry Pie','Desserts', 'Fudgy chocolate filling topped with fresh strawberries in a cookie crust, finished with chocolate drizzle.', 'admin');
+create_item('Pumpkin Cheesecake Pie','Desserts', 'Pumpkin custard layered over creamy cheesecake in a graham cracker crust, topped with cinnamon whipped cream.', 'admin');
+create_item('Lime Raspberry Pie','Desserts', 'Tangy lime curd and sweet raspberries nestled in a crisp shell, finished with whipped cream and lime zest.', 'admin');
+create_item('Chocolate Almond Pie','Desserts', 'Rich chocolate custard and toasted almonds in a buttery crust, topped with whipped cream and almond slivers.', 'admin');
+create_item('Apple Walnut Pie','Desserts', 'Tender apples and toasted walnuts baked in a golden crust, finished with a cinnamon streusel topping.', 'admin');
+create_item('Strawberry Rhubarb Crumble Pie','Desserts', 'Sweet strawberries and tart rhubarb in a flaky shell, topped with a buttery oat crumble for added texture.', 'admin');
+create_item('Maple Pumpkin Pie','Desserts', 'Pumpkin custard sweetened with pure maple syrup, baked in a crisp shell and topped with maple whipped cream.', 'admin');
+create_item('Chocolate Cherry Pie','Desserts', 'Fudgy chocolate filling swirled with cherry preserves in a cookie crust, finished with fresh cherries and chocolate curls.', 'admin');
+create_item('Peach Blackberry Pie','Desserts', 'Juicy peaches and blackberries baked together in a golden crust, offering a harmonious blend of sweet and tart flavors.', 'admin');
+create_item('Lemon Raspberry Pie','Desserts', 'Tangy lemon curd and sweet raspberries nestled in a crisp shell, finished with whipped cream and lemon zest.', 'admin');
+create_item('Pumpkin Walnut Pie','Desserts', 'Creamy pumpkin filling and toasted walnuts baked in a buttery shell, topped with cinnamon whipped cream.', 'admin');
+create_item('Chocolate Pistachio Pie','Desserts', 'Silky chocolate custard and crunchy pistachios in a crisp shell, topped with whipped cream and chopped pistachios.', 'admin');
+create_item('Apple Caramel Pie','Desserts', 'Tender apples layered with gooey caramel in a golden crust, finished with a sprinkle of sea salt.', 'admin');
+create_item('Strawberry Cream Pie','Desserts', 'Fresh strawberries atop a smooth vanilla cream in a graham cracker crust, finished with whipped cream and strawberry glaze.', 'admin');
+create_item('Maple Pecan Chocolate Pie','Desserts', 'Toasted pecans and chocolate chunks in a silky maple custard, baked in a flaky shell for a decadent treat.', 'admin');
+create_item('Pumpkin Cranberry Pie','Desserts', 'Pumpkin custard and tart cranberries baked together in a buttery shell, topped with whipped cream.', 'admin');
+create_item('Chocolate Banana Pie','Desserts', 'Layers of sliced bananas and creamy chocolate custard in a crisp shell, finished with whipped cream and chocolate shavings.', 'admin');
+create_item('Peach Almond Pie','Desserts', 'Ripe peaches and almond cream baked in a golden crust, finished with toasted almond flakes.', 'admin');
+create_item('Lemon Coconut Pie','Desserts', 'Tangy lemon custard and creamy coconut filling in a crisp shell, topped with toasted coconut and lemon zest.', 'admin');
+create_item('Pumpkin Maple Walnut Pie','Desserts', 'Pumpkin custard sweetened with maple syrup and studded with toasted walnuts, baked in a buttery shell.', 'admin');
+create_item('Chocolate Blueberry Pie','Desserts', 'Fudgy chocolate filling and juicy blueberries nestled in a cookie crust, finished with whipped cream and chocolate curls.', 'admin');
+create_item('Apple Blackberry Pie','Desserts', 'Tender apples and blackberries baked together in a golden crust, offering a vibrant, summery flavor.', 'admin');
+create_item('Strawberry Pistachio Pie','Desserts', 'Sweet strawberries and crunchy pistachios layered in a crisp shell, finished with whipped cream and chopped pistachios.', 'admin');
+create_item('Maple Pumpkin Pecan Pie','Desserts', 'Pumpkin custard sweetened with maple syrup and topped with toasted pecans, baked in a flaky shell.', 'admin');
+create_item('Chocolate Hazelnut Banana Pie','Desserts', 'Silky chocolate filling blended with roasted hazelnuts and sliced bananas in a crisp shell, topped with whipped cream.', 'admin');
+create_item('Peach Blueberry Pie','Desserts', 'Juicy peaches and blueberries baked together in a golden crust, offering a harmonious blend of sweet and tart flavors.', 'admin');
+create_item('Lemon Strawberry Pie','Desserts', 'Tangy lemon curd and sweet strawberries nestled in a crisp shell, finished with whipped cream and lemon zest.', 'admin');
+create_item('Pumpkin Chocolate Pecan Pie','Desserts', 'Pumpkin custard layered with chocolate and toasted pecans in a buttery shell, topped with whipped cream.', 'admin');
+create_item('Chocolate Raspberry Almond Pie','Desserts', 'Fudgy chocolate filling swirled with raspberry preserves and toasted almonds in a cookie crust, finished with whipped cream.', 'admin');
+create_item('Apple Hazelnut Pie','Desserts', 'Tender apples and roasted hazelnuts baked in a golden crust, finished with a cinnamon streusel topping.', 'admin');
+create_item('Strawberry Lemon Cream Pie','Desserts', 'Fresh strawberries atop a tangy lemon cream in a graham cracker crust, finished with whipped cream and lemon zest.', 'admin');
+create_item('Maple Walnut Pumpkin Pie','Desserts', 'Pumpkin custard sweetened with maple syrup and studded with toasted walnuts, baked in a buttery shell.', 'admin');
+create_item('Chocolate Cherry Almond Pie','Desserts', 'Fudgy chocolate filling swirled with cherry preserves and toasted almonds in a cookie crust, finished with whipped cream.', 'admin');
+create_item('Peach Raspberry Almond Pie','Desserts', 'Ripe peaches, tart raspberries, and almond cream baked in a golden crust, finished with toasted almond flakes.', 'admin');
+create_item('Lemon Blueberry Cream Pie','Desserts', 'Tangy lemon curd and juicy blueberries atop a smooth vanilla cream in a crisp shell, finished with whipped cream.', 'admin');
+create_item('Pumpkin Maple Pecan Pie','Desserts', 'Pumpkin custard sweetened with maple syrup and topped with toasted pecans, baked in a flaky shell.', 'admin');
+create_item('Chocolate Banana Walnut Pie','Desserts', 'Layers of sliced bananas, creamy chocolate custard, and toasted walnuts in a crisp shell, finished with whipped cream.', 'admin');
+create_item('Apple Cranberry Walnut Pie','Desserts', 'Tender apples, tart cranberries, and toasted walnuts baked together in a golden crust, finished with a cinnamon streusel topping.', 'admin');
+create_item('Strawberry Lemon Pistachio Pie','Desserts', 'Sweet strawberries, tangy lemon curd, and crunchy pistachios layered in a crisp shell, finished with whipped cream.', 'admin');
+create_item('Maple Pumpkin Chocolate Pie','Desserts', 'Pumpkin custard sweetened with maple syrup and layered with chocolate in a buttery shell, topped with whipped cream.', 'admin');
+create_item('Chocolate Hazelnut Raspberry Pie','Desserts', 'Silky chocolate filling blended with roasted hazelnuts and raspberry preserves in a crisp shell, topped with whipped cream.', 'admin');
+create_item('Peach Blueberry Almond Pie','Desserts', 'Juicy peaches, blueberries, and almond cream baked together in a golden crust, finished with toasted almond flakes.', 'admin');
+create_item('Lemon Strawberry Cream Pie','Desserts', 'Tangy lemon curd and sweet strawberries atop a smooth vanilla cream in a graham cracker crust, finished with whipped cream.', 'admin');
+create_item('Pumpkin Maple Walnut Pecan Pie','Desserts', 'Pumpkin custard sweetened with maple syrup and studded with toasted walnuts and pecans, baked in a buttery shell.', 'admin');
+create_item('Chocolate Banana Hazelnut Pie','Desserts', 'Layers of sliced bananas, creamy chocolate custard, and roasted hazelnuts in a crisp shell, finished with whipped cream.', 'admin');
+create_item('Apple Blackberry Almond Pie','Desserts', 'Tender apples, blackberries, and almond cream baked together in a golden crust, finished with toasted almond flakes.', 'admin');
+create_item('Strawberry Lemon Blueberry Pie','Desserts', 'Sweet strawberries, tangy lemon curd, and juicy blueberries nestled in a crisp shell, finished with whipped cream.', 'admin');
+create_item('Maple Pumpkin Chocolate Pecan Pie','Desserts', 'Pumpkin custard sweetened with maple syrup and layered with chocolate and toasted pecans in a buttery shell.', 'admin');
+create_item('Chocolate Hazelnut Banana Walnut Pie','Desserts', 'Silky chocolate filling blended with roasted hazelnuts, sliced bananas, and toasted walnuts in a crisp shell, topped with whipped cream.', 'admin');
+create_item('Peach Raspberry Blueberry Pie','Desserts', 'Ripe peaches, tart raspberries, and juicy blueberries baked together in a golden crust, offering a vibrant, summery flavor.', 'admin');
+create_item('Lemon Strawberry Pistachio Cream Pie','Desserts', 'Tangy lemon curd, sweet strawberries, and crunchy pistachios atop a smooth vanilla cream in a crisp shell, finished with whipped cream.', 'admin');
+create_item('Pumpkin Maple Walnut Chocolate Pie','Desserts', 'Pumpkin custard sweetened with maple syrup and layered with chocolate and toasted walnuts in a buttery shell.', 'admin');
+create_item('Chocolate Hazelnut Raspberry Almond Pie','Desserts', 'Fudgy chocolate filling swirled with raspberry preserves, roasted hazelnuts, and toasted almonds in a cookie crust, finished with whipped cream.', 'admin');
+create_item('Peach Blueberry Almond Cream Pie','Desserts', 'Juicy peaches, blueberries, and almond cream baked together in a golden crust, finished with toasted almond flakes.', 'admin');
+create_item('Lemon Strawberry Blueberry Cream Pie','Desserts', 'Tangy lemon curd, sweet strawberries, and juicy blueberries atop a smooth vanilla cream in a crisp shell, finished with whipped cream.', 'admin');
+create_item('Pumpkin Maple Walnut Pecan Chocolate Pie','Desserts', 'Pumpkin custard sweetened with maple syrup and layered with chocolate, toasted walnuts, and pecans in a buttery shell.', 'admin');
+create_item('Chocolate Hazelnut Banana Walnut Raspberry Pie','Desserts', 'Silky chocolate filling blended with roasted hazelnuts, sliced bananas, toasted walnuts, and raspberry preserves in a crisp shell, topped with whipped cream.', 'admin');
+
+
+
+
+
+
+
+
+
+
+commit;
+
+select count(*) into l_count
+from menu_items;
+
+dbms_output.put_line('Created ' || l_count || ' menu items');
+
+for r in (
+     select mc.category_name, count(*) as menu_item_count 
+     from 
+           menu_categories mc 
+           join menu_items mi on mc.category_id = mi.category_id
+     group by mc.category_name
+     order by mc.category_name) loop
+           
+     dbms_output.put_line('Menu Category ' || r.category_name || ':  ' || r.menu_item_count || ' menu items created.');
+     
+end loop;
+
+exception
+     when others then
+          dbms_output.put_line('Error creating menu items: ' || sqlerrm);
+          rollback;
+end;
+/
