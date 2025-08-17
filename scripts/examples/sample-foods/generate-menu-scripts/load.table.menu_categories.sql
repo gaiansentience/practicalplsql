@@ -1,5 +1,5 @@
 prompt loading menu categories
-prompt script generated: 2025-08-17 21:10:29
+prompt script generated: 2025-08-17 21:17:12
 
 set feedback on;
 set serveroutput on;
@@ -21,8 +21,8 @@ declare
 begin
 
 
-    --delete menu_items;
-    --dbms_output.put_line('Deleted ' || sql%rowcount || ' existing menu items');
+    delete menu_items;
+    dbms_output.put_line('Deleted ' || sql%rowcount || ' existing menu items');
 
     delete menu_categories;  
     dbms_output.put_line('Deleted ' || sql%rowcount || ' existing menu categories');
