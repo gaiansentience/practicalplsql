@@ -17,6 +17,7 @@ grant create view to practicalplsql;
 grant create materialized view to practicalplsql;
 grant create procedure to practicalplsql;
 grant create type to practicalplsql;
+grant create mining model to practicalplsql;
 
 --grants for 23c only
 begin
@@ -54,3 +55,9 @@ grant advisor to practicalplsql;
 grant select on v_$diag_trace_file to practicalplsql;
 grant select on v_$diag_trace_file_contents to practicalplsql;
 
+--Oracle 23ai VirtualBox Linux Appliance with external data path
+create or replace directory 
+    ml_models_dir as '/home/oracle/ext-data/ora-db-directories/shared/ml-models';
+
+grant read on directory ml_models_dir to practicalplsql;
+grant write on directory ml_models_dir to practicalplsql;

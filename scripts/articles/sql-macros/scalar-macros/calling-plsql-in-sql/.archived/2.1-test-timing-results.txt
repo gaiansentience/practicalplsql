@@ -1,0 +1,86 @@
+compare timings for calling the functions from sql
+use set timing on to get basic timing
+show version for test
+
+BANNER_FULL                                                                                                                                                                                                                                                       
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Oracle Database 23ai Enterprise Edition Release 23.0.0.0.0 - for Oracle Cloud and Engineered Systems
+Version 23.7.0.25.03
+
+
+Elapsed: 00:00:00.032
+**********************
+inline with function
+
+SUM(N_SQ2)
+----------
+3.3333E+17
+
+Elapsed: 00:00:00.936
+**********************
+plsql function
+
+SUM(N_SQ2)
+----------
+3.3333E+17
+
+Elapsed: 00:00:02.501
+**********************
+inline with function - pragma udf
+
+SUM(N_SQ2)
+----------
+3.3333E+17
+
+Elapsed: 00:00:00.740
+**********************
+plsql function - pragma udf
+
+SUM(N_SQ2)
+----------
+3.3333E+17
+
+Elapsed: 00:00:00.652
+**********************
+inline with function - deterministic
+
+SUM(N_SQ2)
+----------
+3.3333E+17
+
+Elapsed: 00:00:00.706
+**********************
+plsql function - deterministic
+
+SUM(N_SQ2)
+----------
+3.3333E+17
+
+Elapsed: 00:00:02.212
+**********************
+inline with function - scalar macro
+
+SUM(N_SQ2)
+----------
+3.3333E+17
+
+Elapsed: 00:00:00.428
+**********************
+scalar macro function
+
+SUM(N_SQ2)
+----------
+3.3333E+17
+
+Elapsed: 00:00:00.446
+**********************
+pure sql only
+
+SUM(N_SQ2)
+----------
+3.3333E+17
+
+Elapsed: 00:00:00.422
+**********************
+test queries complete
+Elapsed: 00:00:00.424

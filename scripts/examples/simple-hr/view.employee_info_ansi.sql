@@ -13,4 +13,5 @@ from
     left outer join employees m on e.manager_id = m.id
     join job_info j on e.job_id = j.job_id
     join department_info d on e.department_id = d.department_id
-    left outer join location_info l on e.location_id = l.location_id;
+    left outer join location_info l on e.location_id = l.location_id
+/

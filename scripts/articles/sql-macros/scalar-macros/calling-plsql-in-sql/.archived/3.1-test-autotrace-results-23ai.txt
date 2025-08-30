@@ -1,0 +1,79 @@
+compare statistics for calling the functions from sql
+use autotrace to get more execution information
+
+Session altered.
+
+Autotrace TraceOnly
+ Exhibits the performance statistics with silent query output
+show version for test
+
+1 row selected. 
+
+
+
+**********************
+inline with function
+
+             101  CPU used by this session
+             101  CPU used when call started
+             103  DB time
+       1,016,975  RM usage by this session
+**********************
+plsql function
+
+             237  CPU used by this session
+             237  CPU used when call started
+             237  DB time
+       2,372,158  RM usage by this session
+**********************
+inline with function - pragma udf
+
+             114  CPU used by this session
+             114  CPU used when call started
+             123  DB time
+       1,143,132  RM usage by this session
+**********************
+plsql function - pragma udf
+
+             101  CPU used by this session
+             101  CPU used when call started
+             110  DB time
+       1,020,222  RM usage by this session
+**********************
+inline with function - deterministic
+
+             124  CPU used by this session
+             124  CPU used when call started
+             177  DB time
+       1,231,514  RM usage by this session
+**********************
+plsql function - deterministic
+
+             301  CPU used by this session
+             301  CPU used when call started
+             473  DB time
+       3,007,856  RM usage by this session
+**********************
+inline with function - scalar macro
+
+              74  CPU used by this session
+              74  CPU used when call started
+             102  DB time
+         743,322  RM usage by this session
+**********************
+scalar macro function
+
+              70  CPU used by this session
+              70  CPU used when call started
+             100  DB time
+         709,362  RM usage by this session
+**********************
+pure sql only
+
+              71  CPU used by this session
+              71  CPU used when call started
+              88  DB time
+         700,185  RM usage by this session
+**********************
+test queries complete
+Autotrace Disabled
