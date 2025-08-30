@@ -1,6 +1,6 @@
 set echo off
 set feedback off
-prompt script generated 2025-08-17 21:10:29
+prompt script generated 2025-08-17 21:17:12
 
 
 @load.table.menu_items.by_category.appetizers.sql;
