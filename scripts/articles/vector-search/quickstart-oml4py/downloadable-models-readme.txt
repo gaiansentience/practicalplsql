@@ -7,7 +7,8 @@ Models
 
 
 ONNX files are shared on Google Drive in this folder:
-https://drive.google.com/drive/folders/1Y0ubPZw3--1l3xd16B-uDo_zO6WQ3o60?usp=sharing
+LLM4Oracle/oml4py-2.0-onnx-models
+https://drive.google.com/drive/folders/1-88FcXdF62IRfwDMzn4GNR2sq3DTTaj0?usp=drive_link
 
 
 sentence-transformers/all-MiniLM-L6-v2

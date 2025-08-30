@@ -1,0 +1,25 @@
+
+--load-model-distiluse_base_multilingual_cased_v2.sql    
+    
+begin
+    dbms_vector.load_onnx_model(
+        'ML_MODELS_DIR',
+        'distiluse-base-multilingual-cased-v2.onnx',
+        'distiluse_base_multilingual_cased_v2');
+end;
+/
+
+select model_name, mining_function, algorithm, algorithm_type, model_size
+from user_mining_models
+where model_name = 'DISTILUSE_BASE_MULTILINGUAL_CASED_V2'
+order by model_name
+/ 
+
+
+select model_name, attribute_name, attribute_type, data_type, vector_info
+from user_mining_model_attributes
+where model_name = 'DISTILUSE_BASE_MULTILINGUAL_CASED_V2'
+order by attribute_name
+/
+
+    

@@ -8,7 +8,7 @@
 
 
 --Oracle 23ai VirtualBox Linux Appliance with external data path
---CREATE OR REPLACE DIRECTORY GEODATA_DIR AS '/home/oracle/ext-data/ora-db-directories/shared/geodata';
+CREATE OR REPLACE DIRECTORY GEODATA_DIR AS '/home/oracle/ext-data/ora-db-directories/shared/geodata';
 
 --grant directory access to user
 GRANT READ ON DIRECTORY GEODATA_DIR TO PRACTICALPLSQL;
