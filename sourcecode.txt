@@ -2,8 +2,8 @@ SourceCode Branches
 
 development - primary branch.  updated when a release is closed.
 
-release/2025 -open for pull requests from feature/2023
-feature/2025 -current working branch
+release/2026 -open for pull requests from feature/2026
+feature/2026 -current working branch
 
 release/YYYY
 feature/YYYY 
