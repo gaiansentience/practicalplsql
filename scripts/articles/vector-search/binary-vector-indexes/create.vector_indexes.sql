@@ -5,19 +5,28 @@ select * from user_tables;
 describe menU_vectors;
 
 
-create vector index menu_vectors_e0 on menu_vectors (embedding) 
+create vector index menu_vectors_e0_cosine on menu_vectors (embedding) 
 organization neighbor partitions
 distance cosine
 with target accuracy 80;
 
+create vector index menu_vectors_e0_euclidean on menu_vectors (embedding) 
+organization neighbor partitions
+distance euclidean
+with target accuracy 80;
 
 
-create vector index menu_vectors_eb0 on menu_vectors (embedding_binary) 
+create vector index menu_vectors_eb0_jaccard on menu_vectors (embedding_binary) 
 organization neighbor partitions
 distance jaccard
 with target accuracy 80;
 
-create vector index menu_vectors_e1 on menu_vectors (embedding1) 
+create vector index menu_vectors_eb0_hamming on menu_vectors (embedding_binary) 
+organization neighbor partitions
+distance hamming
+with target accuracy 80;
+
+create vector index menu_vectors_e1_cosine on menu_vectors (embedding1) 
 organization neighbor partitions
 distance cosine
 with target accuracy 80;
