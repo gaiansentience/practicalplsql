@@ -114,10 +114,6 @@ begin
 end;
 /   
 
-declare 
-    v1 vector;
-    v2 vector;
-    
 
 ---textual vector
 declare
