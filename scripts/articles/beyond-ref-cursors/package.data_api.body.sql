@@ -3,7 +3,7 @@ is
 
      procedure get_ref_cursor(
           p_rows in number default 10,
-          p_results out sys_refcursor)
+          p_results out rc_data)
      is
      begin
           open p_results for
@@ -11,21 +11,52 @@ is
           connect by level <= p_rows;
 
      end get_ref_cursor;
+     
+    function fget_ref_cursor(
+        p_rows in number default 10
+    ) return rc_data
+    is
+        rc rc_data;
+    begin
+        get_ref_cursor(p_rows, rc);
+        return rc;
+    end fget_ref_cursor;
           
-     procedure get_json(
-          p_rows in number default 10,
-          p_results out clob)
-     is
-     begin
-          select json_arrayagg(
-                    json_object(
-                         'id' value level,
-                         'info' value 'item ' || level
-                    )
-               returning clob value) into p_results
-          connect by level <= p_rows;
-
-     end get_json;
+    procedure get_json(
+        p_rows in number default 10,
+        p_results out clob)
+    is
+        rc rc_data;
+        t data_tab;
+    begin
+    
+        get_ref_cursor(p_rows, rc);
+        fetch rc bulk collect into t;
+        close rc;
+        
+        select json_arrayagg(json_object(c.*) returning clob)
+        into p_results
+        from table(t) c;
+    
+    end get_json;
+    
+    function fget_json(
+        p_rows in number default 10
+    ) return clob
+    is
+        c clob;
+    begin
+        get_json(p_rows, c);
+        return c;
+    end fget_json;
+     
+    function loopback(
+        p_value in number default 1)
+    return number
+    is
+    begin
+        return p_value;
+    end loopback;
 
 begin
      null;
