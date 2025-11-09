@@ -1,0 +1,277 @@
+21dd2f6f-4f27-4c4a-aa0b-f3b84aed81ad:1762434483256:0:S:set autotrace traceonly stat
+b2a2e69c-ffac-41b1-b300-1001ab5fda1b:1762434483297:0:S:set arraysize 100
+105f02c3-b191-4905-8f47-dc292bafe8fc:1762434483435:0:F:select level as n\nconnect by level < 1000\n/
+a9158ccb-3f58-41b2-86ad-c6b1d77d7f39:1762434483505:0:F:select ora_database_name;
+243739cd-1712-4a07-a7e8-ab0cd4c31b37:1762434483714:3:S:select user;
+430c7364-179b-4d76-b6b7-92ca47b3a324:1762434483787:33:S:grant select on v_$sesstat to devgym;
+9ab19fbd-29d3-4703-b945-f38424ef03af:1762434483866:7:S:grant select on v_$statname to devgym;
+5f1fe8b1-2052-49fa-bfa0-2be4c00ef063:1762434483916:8:S:grant select on v_$session to devgym;
+dfae11f7-5113-4c62-9e5a-d09a9a88e196:1762434484057:0:F:select user;
+a7079281-1259-4a02-b1f0-b8fc9489d699:1762434484127:0:S:set autotrace traceonly stat
+35e857dc-e043-4271-a4c8-e0dbac094d62:1762434484164:0:S:set arraysize 100
+9b556e09-dbec-41b9-8aeb-bf0b4296716e:1762434484246:0:F:select level as n\nconnect by level < 1000\n/
+e9a5e09e-cb76-488c-9f90-4212e2c8b641:1762434533661:0:S:set autotrace traceonly stat
+0c9c6b77-e619-4abe-9ce3-8cb1e7e49c52:1762434533697:0:S:set arraysize 100
+1078978a-4f26-4876-9f04-bae1a7ee2b88:1762434533772:0:F:select level as n\nconnect by level < 1000\n/
+a256a1e3-7319-4a51-8b8e-ebc8c0f7b2b8:1762434533839:0:F:select ora_database_name;
+724f9e66-f6c3-4ea9-a633-ce500662dde7:1762434534006:2:S:select user;
+b3b7903a-98f5-4d0c-a4c3-885e0415e191:1762434534075:7:S:grant select on v_$sesstat to devgym;
+a7c86736-795f-459b-885e-782e3cd8036d:1762434534125:3:S:grant select on v_$statname to devgym;
+5f87c7c5-0e7d-4f2c-b390-44cd85df268f:1762434534170:6:S:grant select on v_$session to devgym;
+11361ae9-5c12-441e-b387-8eb921b2f283:1762434534350:1:S:select user;
+f6763f5d-40f1-4b32-98b7-4561f384ed86:1762434534419:0:S:set autotrace traceonly stat
+966e7f38-4f07-454f-96f7-8a3b8888cbdc:1762434534456:0:S:set arraysize 100
+a0adf16f-80f1-49f2-b83e-dd71e871f814:1762434534537:6:S:select level as n\nconnect by level < 1000\n/
+cd5eeedc-761d-4802-9d98-aac652556db6:1762434609626:0:S:set autotrace traceonly stat
+62ad9670-78e1-48e5-a787-69d2f41b0f25:1762434609665:0:S:set arraysize 100
+d8afbd42-52b6-4839-9de1-c8c7aeed39be:1762434609741:0:F:select level as n\nconnect by level < 1000\n/
+4d1a95ff-ae82-4b3d-8a0e-5bc532fde0dd:1762434609803:0:F:select ora_database_name;
+72e71e9a-3639-4ce9-bed3-ef84291a8367:1762434610046:2:S:select user;
+a029d2a4-ca0a-45bc-838a-0503ed6ab2a9:1762434610119:9:S:grant select on v_$sesstat to devgym;
+dc519b66-7470-4494-9457-c71c69f4ad1c:1762434610169:4:S:grant select on v_$statname to devgym;
+803b101f-0704-4408-b909-a8436025471c:1762434610212:9:S:grant select on v_$session to devgym;
+caa1103b-5d60-47e2-988d-f8b7734a4e5f:1762434610468:2:S:select user;
+5a5b19f2-49f2-4b04-8d0b-02e728ccc87c:1762434610532:0:S:set autotrace traceonly stat
+1670aaba-409a-42a3-b98a-79e4cafc842e:1762434610568:0:S:set arraysize 100
+742d6863-a0d4-48da-be7f-6538985d6b60:1762434610665:8:S:select level as n\nconnect by level < 1000\n/
+d42a9cc8-22ca-4ab6-b7b0-3477786a81f4:1762434791941:0:S:set autotrace traceonly stat
+3548e15e-5de9-433f-9da0-11e033337d5c:1762434791977:0:S:set arraysize 100
+5ffc4ee1-c72e-4f55-9ea7-8fee2ef8b4fd:1762434792049:0:F:select level as n\nconnect by level < 1000\n/
+30e30486-ef65-49e5-9ddd-b58d8c60e741:1762434792110:0:F:select ora_database_name;
+599780af-0c12-4ad2-9cfe-bd172d1656f3:1762434792272:1:S:select user;
+b13d1c8f-fb81-4355-9899-79b47d06cfdd:1762434792334:6:S:grant select on v_$sesstat to devgym;
+1b49350b-3440-4717-baea-a51d4c00e7aa:1762434792375:6:S:grant select on v_$statname to devgym;
+d33801ed-d643-459f-8de2-3c2a0d99adda:1762434792417:6:S:grant select on v_$session to devgym;
+a3ea9567-ac67-4c79-a45a-b0070e1767a0:1762434792575:1:S:select user;
+961237c5-1a8b-456b-8fbd-009ce07253e9:1762434792646:0:S:set autotrace traceonly stat
+1089e066-5a7b-4874-b844-30e1a044c915:1762434792684:0:S:set arraysize 100
+7fb27274-4c20-4598-9ce7-1c9661d93d29:1762434792757:6:S:select level as n\nconnect by level < 1000\n/
+d114c085-3408-4fe0-9d21-183e9ea31e27:1762434868826:0:S:set autotrace traceonly stat
+5366aab1-8e45-42a7-ae02-c401cb697b54:1762434868863:0:S:set arraysize 100
+599c0647-2be3-4897-a636-8cca899b7830:1762434868934:0:F:select level as n\nconnect by level < 1000\n/
+ff8640e6-236d-48b6-9c43-dabd9b04d002:1762434868995:0:F:select ora_database_name;
+5bcac797-9dd3-4732-a3d4-db24c58bb174:1762434869173:1:S:select user;
+65a847a7-8d95-4a0b-95a4-9e19ce82eb5f:1762434869236:7:S:grant select on v_$sesstat to devgym;
+5fbdf74e-ac77-4ab7-8e7e-04035c336fe0:1762434869280:3:S:grant select on v_$statname to devgym;
+88c4dcb5-f7fa-4651-b957-4c975f3d8241:1762434869320:6:S:grant select on v_$session to devgym;
+a14835e3-a847-4ad4-a2aa-b3f6a61bb305:1762434869485:2:S:select user;
+04589cc4-8711-4777-8ba3-807b09c86822:1762434869547:0:S:set autotrace traceonly stat
+c9133565-bae5-43a3-bbdf-0efec8c19276:1762434869581:0:S:set arraysize 100
+a12988f8-8a87-43ed-8bb2-c7501265b6dd:1762434869650:6:S:select level as n\nconnect by level < 1000\n/
+de33a977-dbd5-4819-a780-b8c07291f871:1762434945228:0:S:set autotrace traceonly stat
+ba88bfbb-cdc8-46e6-830a-d7cd542728d3:1762434945262:0:S:set arraysize 100
+96c8467b-1af6-454c-81b0-64369f22c1f1:1762434945332:0:F:select level as n\nconnect by level < 1000\n/
+311db0e5-ded7-4645-a3b7-f90ff359c7cc:1762434945394:0:F:select ora_database_name;
+8669e2b5-b737-44b1-9ea8-439774247a97:1762434945593:2:S:select user;
+3bcbe8ca-6175-41d5-8139-5ba577f534b3:1762434945657:7:S:grant select on v_$sesstat to devgym;
+ccac2f25-3849-4dd0-b9fe-564ec3a65363:1762434945701:4:S:grant select on v_$statname to devgym;
+b40c4dc2-4b68-46f3-b9ff-dc8763c43104:1762434945741:6:S:grant select on v_$session to devgym;
+b2a64fbc-6afa-4492-ae8e-cd7a0a6aeb47:1762434945911:2:S:select user;
+560f7988-1d70-4e93-aea8-d5f2b17b72ff:1762434945977:0:S:set autotrace traceonly stat
+a3194d08-26af-4e11-99fd-c6e2c0b3a0d1:1762434946012:0:S:set arraysize 100
+51c073d0-c0e7-4028-a027-4be27beee68f:1762434946081:5:S:select level as n\nconnect by level < 1000\n/
+fa9ec011-c742-4041-adb3-806e9a1c4fba:1762435021482:0:S:set autotrace traceonly stat
+1ce925df-1463-4539-9d1e-6b3b1faba25d:1762435021517:0:S:set arraysize 100
+4e780306-0fcc-47d6-aced-9dbb6d0afd9a:1762435021588:0:F:select level as n\nconnect by level < 1000\n/
+ff1ac6d2-76c1-4cc1-ae43-fb7c29ebe449:1762435021649:0:F:select ora_database_name;
+8ff89739-1656-492a-bd9f-958dfbd8cb1a:1762435021809:3:S:select user;
+e75e43e1-5edf-466c-9ac0-077b7a97b808:1762435021874:6:S:grant select on v_$sesstat to devgym;
+944af01f-f52c-46ac-a14a-d3763e5a42c6:1762435021918:3:S:grant select on v_$statname to devgym;
+4f5a530e-2a5e-404a-b4c6-832239993eaf:1762435021956:6:S:grant select on v_$session to devgym;
+2c92d6a6-b8c3-4200-8469-8386b4ad4270:1762435022127:1:S:select user;
+7af51296-0b18-483d-9bf6-745ee65da03a:1762435022188:0:S:set autotrace traceonly stat
+a7bba82d-0c88-4166-bd93-4a5b78c63976:1762435022223:0:S:set arraysize 100
+8f81ff62-34c1-4121-9360-1dec132e3acf:1762435022291:4:S:select level as n\nconnect by level < 1000\n/
+175c75bb-0511-40ef-8bb1-5f7b18dd07fd:1762435098041:0:S:set autotrace traceonly stat
+3df7793e-c287-4a1b-bbd8-c66731ecd361:1762435098078:0:S:set arraysize 100
+2be151a1-b68e-45ad-93cc-be2be311255a:1762435098165:0:F:select level as n\nconnect by level < 1000\n/
+32fb3ac5-61a0-4116-8480-0add5d5a7099:1762435098243:0:F:select ora_database_name;
+9aa028aa-5860-4088-84eb-46f2891c889c:1762435098436:2:S:select user;
+0d8a18a8-c056-42ab-b019-8b651f8ff88c:1762435098512:7:S:grant select on v_$sesstat to devgym;
+b5a4ee13-77f1-45a1-a1bf-22c3b614a5e1:1762435098565:4:S:grant select on v_$statname to devgym;
+22ff7231-4ed7-4d23-90e4-80841b4deec3:1762435098611:6:S:grant select on v_$session to devgym;
+4b7fc506-bc44-4b30-ace2-aeb9534a0989:1762435098824:3:S:select user;
+8d2f10a1-1efc-4ca6-8212-bfdf33554f6c:1762435098931:0:S:set autotrace traceonly stat
+c4bd7044-27ee-4ab8-859f-f978cca537de:1762435098973:0:S:set arraysize 100
+5e3bcec0-5929-42c8-9a95-62ff35ffc8f1:1762435099052:5:S:select level as n\nconnect by level < 1000\n/
+f6eab677-822f-4c14-b82c-546dd34eb60c:1762435176422:0:S:set autotrace traceonly stat
+fa344f75-6485-4da8-bfc4-e342f3944c4b:1762435176462:0:S:set arraysize 100
+98c1ae77-3d37-455a-be24-a67957ba83f7:1762435176547:0:F:select level as n\nconnect by level < 1000\n/
+e9114e99-2251-4640-865c-7b62b2bc8ee4:1762435176630:0:F:select ora_database_name;
+ba163527-c44f-450e-a886-5ad922f4fad9:1762435176829:3:S:select user;
+8ca84ab7-cc54-419a-af3b-7b97f406769b:1762435176921:6:S:grant select on v_$sesstat to devgym;
+db1b2700-4ff6-40ab-9901-d588aef8673d:1762435176973:4:S:grant select on v_$statname to devgym;
+57e93fb0-ed18-414a-9d3b-4269d7a85942:1762435177020:7:S:grant select on v_$session to devgym;
+135cb85a-b5e2-4724-9492-060d7dacfeaf:1762435177233:1:S:select user;
+907749ab-5f12-49dd-bd01-bebaa14ccb47:1762435177313:0:S:set autotrace traceonly stat
+9e75dc3a-c6da-4e18-8fa1-901c277d5d21:1762435177358:0:S:set arraysize 100
+257b2a6b-ff7a-4357-a785-5195f0287c21:1762435177446:5:S:select level as n\nconnect by level < 1000\n/
+4b7cd4e4-90cc-423c-8fe1-e29ffdfd3108:1762435253335:0:S:set autotrace traceonly stat
+1b01f309-2484-4efd-bad1-6ac855968ffc:1762435253372:0:S:set arraysize 100
+7e528765-62b5-4faa-be5a-fe253af7ff95:1762435253465:0:F:select level as n\nconnect by level < 1000\n/
+7e724583-1b0b-4f74-9bcf-5fe237c1e9ae:1762435253544:0:F:select ora_database_name;
+12fc0801-4cec-4016-9cf0-b6bb6940c1e2:1762435253745:2:S:select user;
+c2eb7be5-5a29-4b56-b3a7-aad15ca6d593:1762435253819:7:S:grant select on v_$sesstat to devgym;
+123cf643-d0f8-43c7-a851-05509ba18f57:1762435253867:4:S:grant select on v_$statname to devgym;
+c294c5e1-0e5a-4718-8b6a-d723e51e5437:1762435253914:6:S:grant select on v_$session to devgym;
+3346cbbd-9bc2-4eef-8573-5402172da6c1:1762435254103:1:S:select user;
+46800ee5-c23d-45e3-8e20-2bfdb5483a29:1762435254172:0:S:set autotrace traceonly stat
+77e67595-8d96-4f4e-b603-1b81c3b5455a:1762435254217:0:S:set arraysize 100
+aa25bf87-2a87-4a12-bb60-9a54e56efdde:1762435254299:3:S:select level as n\nconnect by level < 1000\n/
+a79bf7e7-5360-473d-8839-d3f4645a5917:1762435330553:0:S:set autotrace traceonly stat
+4d88dd9b-336e-4372-846b-1d3de1843ae3:1762435330594:0:S:set arraysize 100
+66687583-7786-421e-aa97-97d4aca5a12c:1762435330675:0:F:select level as n\nconnect by level < 1000\n/
+56fee9c7-fb86-4dc6-bc48-c54d2d4b57f6:1762435330758:0:F:select ora_database_name;
+5199668e-0732-4c67-8d0c-bfe9244dd9d4:1762435330951:1:S:select user;
+e0ae4764-0cad-4c31-96fc-8237afc44a9e:1762435331031:6:S:grant select on v_$sesstat to devgym;
+f0f580cb-9f4c-4d7a-9655-8a777d29a47b:1762435331083:4:S:grant select on v_$statname to devgym;
+bc009ccd-ca14-41f0-9073-acef0f1245b5:1762435331131:6:S:grant select on v_$session to devgym;
+40861768-c0ca-4d34-841e-9fb88928e839:1762435331340:2:S:select user;
+b84e7d60-d0ac-4cfd-98ba-6852c8b32d97:1762435331439:0:S:set autotrace traceonly stat
+7f184afb-5a85-4903-afbf-75f631f4b708:1762435331491:0:S:set arraysize 100
+e2bc9bf6-3187-435a-9dba-0df0866c18ff:1762435331582:4:S:select level as n\nconnect by level < 1000\n/
+ddf5fb04-f42b-41c2-bac8-7fe33a7726c5:1762435331756:0:S:set autotrace traceonly stat
+d1cf7715-1489-4234-b603-56e116b8162c:1762435331798:0:S:set arraysize 100
+95a07f36-c672-458d-917d-c60192d72085:1762435331886:3:S:select level as n\nconnect by level < 1000\n/
+8846a599-5e59-4280-b2db-9498d498124c:1762435331986:1:S:select ora_database_name;
+3a144139-9f59-4f92-8694-97417233aebf:1762435332185:1:S:select user;
+1bf2ccae-0e73-4323-b3c8-9ada570f3c6b:1762435332264:6:S:grant select on v_$sesstat to devgym;
+19b28475-0e6a-4002-9ed8-208d8c594115:1762435332320:4:S:grant select on v_$statname to devgym;
+7465042f-fae8-4257-8887-27c41f0030c4:1762435332365:7:S:grant select on v_$session to devgym;
+1589410e-e27c-4ec7-808b-ae76d88be732:1762435332567:1:S:select user;
+b5cc4d75-f0cf-4a20-af22-6bcefbfaec0a:1762435332651:0:S:set autotrace traceonly stat
+65f404fd-1a19-4099-b92f-2b7eba2610f7:1762435332692:0:S:set arraysize 100
+ae3f4071-27f4-4f84-98d4-4e16961535d7:1762435332784:4:S:select level as n\nconnect by level < 1000\n/
+edcbea83-5d64-4a40-97b3-9d1f25dba9ae:1762435332966:0:S:set autotrace traceonly stat
+3bc983d7-07ee-4e2c-ba9a-d88c5948e965:1762435333004:0:S:set arraysize 100
+8b90ee5a-eac3-483d-8fd0-834b68af6a49:1762435333091:4:S:select level as n\nconnect by level < 1000\n/
+b9d6ebc3-ad8e-46ea-a2ae-e2973a6549ea:1762435333194:1:S:select ora_database_name;
+2c0b797c-8c15-44dd-9536-1b2e24ee41d4:1762435333431:2:S:select user;
+6843d2b8-e516-4099-a49e-3330c9fa6402:1762435333511:5:S:grant select on v_$sesstat to devgym;
+973e0e52-ef32-47d4-b57b-bb19baf16087:1762435333560:4:S:grant select on v_$statname to devgym;
+7154e872-45f3-448e-842a-fa30320a272e:1762435333604:5:S:grant select on v_$session to devgym;
+38ea2c8d-9bea-45ed-98c2-5a308f2e8156:1762435333796:1:S:select user;
+3d554d31-249f-49c5-9c80-731cc2a7bb7d:1762435333877:0:S:set autotrace traceonly stat
+ff836a83-c4a7-4bfe-8584-16132781a116:1762435333919:0:S:set arraysize 100
+b9ee75fb-33d3-41be-841e-5b4e40c43b3f:1762435334006:5:S:select level as n\nconnect by level < 1000\n/
+70f61650-ab1d-47a4-9980-745245583629:1762435334188:0:S:set autotrace traceonly stat
+5b912282-ab1d-49fb-a491-e662e97334e3:1762435334229:0:S:set arraysize 100
+30a48282-3bde-49e3-9353-99e1020a3875:1762435334314:4:S:select level as n\nconnect by level < 1000\n/
+3788f7cd-ba59-480c-84c0-8b3db36a2bbe:1762435334421:1:S:select ora_database_name;
+6b71df04-a1b2-4041-9032-1c2a9fd7cecc:1762435334648:1:S:select user;
+0b2bc5d5-64a2-4188-8922-7804b1f2a93f:1762435334729:6:S:grant select on v_$sesstat to devgym;
+92965f2e-2591-4b9a-af5b-456f2d43b689:1762435334782:3:S:grant select on v_$statname to devgym;
+f9e151f4-92ea-4419-b062-d7de953eff18:1762435334834:6:S:grant select on v_$session to devgym;
+6982ee55-89d6-4c28-ab27-3ae25d937efe:1762435335049:1:S:select user;
+2210af62-06f5-4a17-862b-e16035050982:1762435335139:0:S:set autotrace traceonly stat
+c3133bfc-e395-4a81-8f04-4ebb0e8fa104:1762435335179:0:S:set arraysize 100
+143547f8-ab45-4091-9568-a4fe59ea6095:1762435335259:4:S:select level as n\nconnect by level < 1000\n/
+2623343e-de2c-48e2-a817-3fd0b1c6a41a:1762435335448:0:S:set autotrace traceonly stat
+6db00213-ec18-42f8-8083-eccb09b02f08:1762435335493:0:S:set arraysize 100
+65b5a08d-1ea0-4156-a2c3-3ecd00a48b40:1762435335585:4:S:select level as n\nconnect by level < 1000\n/
+ead71836-b3a4-4316-85c6-b3ad7bcf3b27:1762435335689:1:S:select ora_database_name;
+988b1116-f87f-4fa8-beee-4e80c6b11dce:1762435335905:2:S:select user;
+eb0027da-8cb4-42e7-ba53-4ec4644e92cc:1762435336007:6:S:grant select on v_$sesstat to devgym;
+db365c79-dc2e-4cb0-b195-87a5dee5e87e:1762435336078:3:S:grant select on v_$statname to devgym;
+6e5d819d-87f8-4203-96cf-f67910384745:1762435336125:4:S:grant select on v_$session to devgym;
+f1297c58-2de4-4460-b8f8-106edc9bd4e1:1762435336338:2:S:select user;
+da751c2a-c2a5-4124-ba15-06cb5a5e8cce:1762435336417:0:S:set autotrace traceonly stat
+b22a4973-c249-43aa-a1d3-f6c8d4d9f2bf:1762435336457:0:S:set arraysize 100
+f6db4593-4267-4375-9099-cf0ba77bacff:1762435336537:4:S:select level as n\nconnect by level < 1000\n/
+16c84ef5-319b-46e0-bdcb-085b115f2e92:1762435336755:0:S:set autotrace traceonly stat
+5ef47128-b037-4fa6-ba92-c840c84b1001:1762435336801:0:S:set arraysize 100
+36aa56b0-406b-4f89-951f-58474fe26f7c:1762435336888:4:S:select level as n\nconnect by level < 1000\n/
+befc1208-a5e0-4f39-93fb-f522eb29d6b8:1762435336991:1:S:select ora_database_name;
+27ccaa8e-21e7-4040-92cf-22f7b7e94bce:1762435337209:1:S:select user;
+ada2fd22-e254-4be7-9d4e-47b2dc08362a:1762435337296:6:S:grant select on v_$sesstat to devgym;
+85a2b5c4-54a8-41d7-a8a9-1507e64c7b08:1762435337355:3:S:grant select on v_$statname to devgym;
+09e5a314-b465-428a-9e96-ac6ac3982d6e:1762435337404:5:S:grant select on v_$session to devgym;
+bd444105-d355-45c2-aded-d2a70766e41f:1762435337606:1:S:select user;
+cb615d3f-c4b7-44b6-bd46-4727d929d131:1762435337694:0:S:set autotrace traceonly stat
+536503e5-b324-4770-993c-6feb44ed8575:1762435337740:0:S:set arraysize 100
+52c1e2ca-0e18-4b64-929f-2ee25c4d8e34:1762435337834:3:S:select level as n\nconnect by level < 1000\n/
+ec2eafa0-28e5-41d0-807a-7c5571de021a:1762435337984:0:S:set autotrace traceonly stat
+47c6724f-b396-4301-a1f7-23057e16ec3b:1762435338034:0:S:set arraysize 100
+56d7a244-67cf-4f42-b0c5-a98b0f9bd70c:1762435338138:3:S:select level as n\nconnect by level < 1000\n/
+299bb883-413e-42c9-9b52-4d0bc854bb11:1762435338240:1:S:select ora_database_name;
+78cba902-519e-4d04-ba26-f7facd7ef537:1762435338455:2:S:select user;
+24653e75-244c-47e1-80ab-41933f5bf72c:1762435338537:5:S:grant select on v_$sesstat to devgym;
+c8b0db31-dcad-4807-85b0-f4865f6fb45c:1762435338586:4:S:grant select on v_$statname to devgym;
+b6a0c6c5-2cbb-4c7e-9258-4c1366b2a25f:1762435338639:7:S:grant select on v_$session to devgym;
+71fe2dcc-a2c8-4a1f-bfb5-f31f9e0dddff:1762435338854:2:S:select user;
+30c29556-12a1-4c33-93cc-a0ebda954344:1762435338978:0:S:set autotrace traceonly stat
+082a7184-2954-41aa-aac5-5dbab0146da0:1762435339021:0:S:set arraysize 100
+f863c899-bac4-449f-b47c-cab41255d0fe:1762435339111:3:S:select level as n\nconnect by level < 1000\n/
+7f76d570-f82b-4b03-9bcb-6ef092f52ef2:1762435339263:0:S:set autotrace traceonly stat
+d233bda8-8ff5-4d4a-9ae3-a47e23e6ad67:1762435339314:0:S:set arraysize 100
+da49682b-f6dc-4c13-a691-e70634b1a8cb:1762435339412:4:S:select level as n\nconnect by level < 1000\n/
+24332d3c-253c-45a8-97e1-32a2d58bacfc:1762435339514:1:S:select ora_database_name;
+b91e6577-ad18-417b-8e4c-0dc3b2d65e84:1762435339734:2:S:select user;
+b65d6bdd-1163-4508-a921-1a58b67a14c1:1762435339826:7:S:grant select on v_$sesstat to devgym;
+fe98dafd-96a5-4d90-9f63-ee8b3307f56d:1762435339876:4:S:grant select on v_$statname to devgym;
+74d9ed2c-d9f9-4792-8289-bbba22d11b57:1762435339925:5:S:grant select on v_$session to devgym;
+bcb3180f-95f8-44e5-a8db-e9e98d3e7580:1762435340128:2:S:select user;
+e4ef9027-2e83-41fb-9044-56fa68cff8e7:1762435340216:0:S:set autotrace traceonly stat
+f946bb79-afda-4383-9ca4-b053a8cf63a0:1762435340260:0:S:set arraysize 100
+cfddd192-37cc-478b-9ad7-52485807b386:1762435340362:4:S:select level as n\nconnect by level < 1000\n/
+a2bbcd81-7a3f-47e8-8f9e-1aa5e3389099:1762435340514:0:S:set autotrace traceonly stat
+be8063cd-f7e1-43d3-844c-458a7d6209b4:1762435340566:0:S:set arraysize 100
+3328b264-0300-4cc3-bf39-a370e8bb52d4:1762435340684:7:S:select level as n\nconnect by level < 1000\n/
+72dd293b-c50a-4246-913e-b4688b31355e:1762435340809:1:S:select ora_database_name;
+5fac431a-f4d7-4885-b7b3-bab2f6e82f3e:1762435341032:2:S:select user;
+56443f32-74e0-476b-8039-72e17e7b5256:1762435341139:4:S:grant select on v_$sesstat to devgym;
+dc37fe11-5465-4b91-987a-6dc5696024f6:1762435341192:4:S:grant select on v_$statname to devgym;
+5079347b-09f2-4eec-9fd5-4e5645c545da:1762435341241:7:S:grant select on v_$session to devgym;
+f24c8595-77e3-474e-8786-759e67b33d64:1762435341451:2:S:select user;
+0619c400-b24b-4c82-af98-49fd9584b87a:1762435341526:0:S:set autotrace traceonly stat
+e6a70813-8ed0-4093-82ee-df8eaae5ed45:1762435341571:0:S:set arraysize 100
+80a47fe5-2698-4c92-af9f-8a2871564278:1762435341663:3:S:select level as n\nconnect by level < 1000\n/
+543cade3-ef2c-4011-bf7a-05e7a3859e28:1762435341822:0:S:set autotrace traceonly stat
+82349ef2-76f4-4122-a653-72f21b96e40a:1762435341867:0:S:set arraysize 100
+9b93ea4f-d14a-4545-b719-9679d878c2f4:1762435341983:4:S:select level as n\nconnect by level < 1000\n/
+a34cfc88-bb32-45b1-b5ab-68ab41f4fc3d:1762435342095:1:S:select ora_database_name;
+1f0f6e0a-0a57-4976-89c4-666987a15eb1:1762435342331:1:S:select user;
+17053a90-d5e7-4c0e-b913-fdd71996ec16:1762435342410:5:S:grant select on v_$sesstat to devgym;
+b7b4e331-80e9-43c4-9449-06bc26f7464d:1762435342456:3:S:grant select on v_$statname to devgym;
+47f6de89-65ee-430c-8a92-a9e4c50b52b1:1762435342501:5:S:grant select on v_$session to devgym;
+a78163ee-7418-456d-a302-182e6fb264d9:1762435342694:1:S:select user;
+e81e8646-9e73-4284-addd-d04492a73aa4:1762435342771:0:S:set autotrace traceonly stat
+0dc732ad-f118-4ccb-a78c-b2eb07dc8df1:1762435342812:0:S:set arraysize 100
+41869b40-c92e-418d-a129-9d33bd289b32:1762435342900:4:S:select level as n\nconnect by level < 1000\n/
+dd7909b0-9001-4246-af09-b7b74a2d9ee6:1762435652604:0:S:set autotrace traceonly stat
+6a11efe1-e49c-4b26-9e22-1a38e14bf1c5:1762435652647:0:S:set arraysize 100
+c8f49b4d-69f8-4c62-9340-128a9a497b66:1762435652722:4:S:select level as n\nconnect by level < 1000\n/
+21e9183e-eda8-46e4-86f2-ea2f5264e155:1762435652812:1:S:select ora_database_name;
+5cb663ab-7953-4bc4-bdf0-691577283001:1762435653008:1:S:select user;
+5d89b8c8-dfb5-4411-b94e-c32eca92802a:1762435653080:6:S:grant select on v_$sesstat to devgym;
+17e4e1a4-7e26-4fd3-bf5c-927d4cf98c70:1762435653125:5:S:grant select on v_$statname to devgym;
+3c2647e6-6d9a-4dc0-b7a2-fd1dbd75f0e2:1762435653170:6:S:grant select on v_$session to devgym;
+df14a9b0-6e8d-443b-8380-c68f60f6aaa4:1762435653306:2:S:select user;
+fac08365-eefc-436e-9ce9-719c3fca76a1:1762435653374:0:S:set autotrace traceonly stat
+462d38a9-ef80-46cc-8ef2-95a17acbe2f5:1762435653412:0:S:set arraysize 100
+48b4c291-b2ff-404b-b99c-ab01a4a57354:1762435653489:5:S:select level as n\nconnect by level < 1000\n/
+634e192a-7772-4794-a6e6-725c53c8231d:1762435669702:0:S:set autotrace traceonly stat
+31d57bbf-dd97-4437-8f0e-a8802f14b9a6:1762435669741:0:S:set arraysize 100
+e53877a7-1d86-49a4-b8fe-062d82ca90bc:1762435669817:3:S:select level as n\nconnect by level < 1000\n/
+94cb86d8-ac97-4fb3-b6db-e2727770fe6e:1762435669917:1:S:select ora_database_name;
+92669ff3-ebcf-4aaf-90c5-7e30e372cd9f:1762435670115:1:S:select user;
+a9282b4b-5533-47d0-9a89-878f7628b5cf:1762435670187:6:S:grant select on v_$sesstat to devgym;
+c5883af9-fa9a-4a6e-a26c-5e471d0d7540:1762435670232:4:S:grant select on v_$statname to devgym;
+64783eb7-bfef-4b47-b2c0-7147994e9a47:1762435670275:7:S:grant select on v_$session to devgym;
+aacc1b2a-82a4-405a-8a23-0ea67536ba4e:1762435670464:1:S:select user;
+14f1393d-4cd1-463b-8cbc-be49981d25ce:1762435670534:0:S:set autotrace traceonly stat
+073c11d8-5960-4f13-b3d1-faa27e66fd85:1762435670571:0:S:set arraysize 100
+ffc33b7a-3353-472a-8cd7-10b47d4ca9a4:1762435670644:4:S:select level as n\nconnect by level < 1000\n/
+3c4074b5-d10c-4af9-9c56-e66037f946ca:1762435773102:0:S:set autotrace traceonly stat
+ea999197-a273-4899-a28a-33c539c50f84:1762435773140:0:S:set arraysize 100
+07bb40d9-f5d6-4efd-8ef5-1cc7a376a6c2:1762435773218:4:S:select level as n\nconnect by level < 1000\n/
+5bec1d77-7097-4a60-80e0-5f90dd8d533a:1762435773305:1:S:select ora_database_name;
+5cbf65ec-6e3b-4ef3-abcb-309e9e1568d8:1762435773505:1:S:select user;
+e449b107-38c1-4576-81d8-d8c03134b937:1762435773545:6:S:grant db_developer_role to devgym;
+f26c71bd-6b25-49a8-88e2-c6e2ef703727:1762435773590:6:S:grant select on v_$sesstat to devgym;
+d3404a3f-6768-4d46-b21f-8a25f3718250:1762435773635:4:S:grant select on v_$statname to devgym;
+7c41e8b6-e4c3-4ee2-94db-b293cf905e46:1762435773676:7:S:grant select on v_$session to devgym;
+b58b8565-e734-45d6-977f-adfd27d24cda:1762435773854:2:S:select user;
+2bb65dfd-87a6-4e56-8a75-b5e8f9ecfb0c:1762435773924:0:S:set autotrace traceonly stat
+cf8ddd57-8f4d-45d9-995a-2abbea5d8a7c:1762435773962:0:S:set arraysize 100
+37250f70-eceb-411c-966b-fe3c54dc3285:1762435774039:4:S:select level as n\nconnect by level < 1000\n/
