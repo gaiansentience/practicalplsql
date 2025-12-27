@@ -15,3 +15,8 @@ v = encode_sentence_to_vector(s, model, debug=False)
 s = "Modern data centers are becoming primary power consumers in the world because of artificial intelligence."
 v = encode_sentence_to_vector(s, model, debug=False)
 
+s = "Lithium mining has significant environmental impacts, including habitat destruction and water pollution."
+v = encode_sentence_to_vector(s, model, debug=False)
+
+s = "Sustainable resources like solar energy should be evaluated by looking at the entire supply chain and lifecycle of the product."
+v = encode_sentence_to_vector(s, model, debug=True)
