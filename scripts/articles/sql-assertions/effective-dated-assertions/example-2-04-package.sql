@@ -1,0 +1,68 @@
+--adjust the api package to set customer.status_updated when changing status
+create or replace package sales_api
+as
+    procedure add_customer(c in customers.customer_name%type, s in loyalty.status%type);
+    procedure add_order(c in customers.customer_name%type, d in orders.order_discount%type);
+    procedure update_status(c in customers.customer_name%type, s in loyalty.status%type);
+end sales_api;
+/
+
+create or replace package body sales_api
+as
+    subtype t_details is varchar2(4000);
+    procedure print_tx_state(p_details in t_details, p_committed in boolean default true)
+    is
+    begin
+        dbms_output.put_line(p_details 
+            || case 
+                when p_committed then ' COMMITTED'
+                else ' ROLLED BACK ' || sqlerrm
+            end
+            );
+    end print_tx_state;
+
+    procedure add_customer(c in customers.customer_name%type, s in loyalty.status%type)
+    is
+        l_info t_details := 'create customer ' || c || ' with status ' || s;
+    begin
+        insert into customers(customer_name, status)
+        values (c, s);
+        commit;        
+        print_tx_state(l_info);
+    exception
+        when others then
+            rollback;
+            print_tx_state(l_info, false);
+    end add_customer;        
+    
+    procedure add_order(c in customers.customer_name%type, d in orders.order_discount%type)
+    is
+        l_info t_details := 'place order for customer ' || c || ' with ' || (d * 100) || '% discount';
+    begin
+        insert into orders(customer_name, order_discount)
+        values (c, d);
+        commit;        
+        print_tx_state(l_info);
+    exception
+        when others then
+            rollback;
+            print_tx_state(l_info, false);
+    end add_order;
+    
+    procedure update_status(c in customers.customer_name%type, s in loyalty.status%type)
+    is
+        l_info t_details := 'update customer ' || c || ' status to ' || s;
+    begin
+        update customers 
+        set status = s, status_updated = sysdate
+        where customer_name = c;
+        commit;    
+        print_tx_state(l_info);
+    exception
+        when others then
+            rollback;
+            print_tx_state(l_info, false);
+    end update_status;
+
+end sales_api;
+/
