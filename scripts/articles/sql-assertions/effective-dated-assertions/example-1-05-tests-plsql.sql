@@ -27,7 +27,7 @@ end;
 /*
 create customer Prue with status Preferred COMMITTED
 place order for customer Prue with 5% discount COMMITTED
-place order for customer Prue with 0% discount ROLLED BACK ORA-08601: SQL assertion (DEVGYM.LOYALTY_DISCOUNT_APPLIED) violated.
+place order for customer Prue with 0% discount ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
 */
 
 
@@ -44,7 +44,7 @@ end;
 create customer Liza with status Elite COMMITTED
 place order for customer Liza with 10% discount COMMITTED
 place order for customer Liza with 11% discount COMMITTED
-place order for customer Liza with 5% discount ROLLED BACK ORA-08601: SQL assertion (DEVGYM.LOYALTY_DISCOUNT_APPLIED) violated.
+place order for customer Liza with 5% discount ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
 */
 
 
@@ -66,7 +66,7 @@ begin
     sales_api.update_status('Nina', 'Preferred');
 end;
 /
---update customer Nina status to Preferred ROLLED BACK ORA-08601: SQL assertion (DEVGYM.LOYALTY_DISCOUNT_APPLIED) violated.
+--update customer Nina status to Preferred ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
 
 
 --setting the assertion to novalidate before updating status
@@ -77,7 +77,7 @@ begin
 end;
 /
 --Assertion LOYALTY_DISCOUNT_APPLIED altered.
---update customer Nina status to Preferred ROLLED BACK ORA-08601: SQL assertion (DEVGYM.LOYALTY_DISCOUNT_APPLIED) violated.
+--update customer Nina status to Preferred ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
 
 --after disabling the assertion, the status update can happen
 alter assertion loyalty_discount_applied disable novalidate;
@@ -98,7 +98,7 @@ begin
     sales_api.add_order('Nina', 0.05);
 end;
 /
---place order for customer Nina with 1% discount ROLLED BACK ORA-08601: SQL assertion (DEVGYM.LOYALTY_DISCOUNT_APPLIED) violated.
+--place order for customer Nina with 1% discount ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
 --place order for customer Nina with 5% discount COMMITTED
 --place order for customer Nina with 5% discount COMMITTED
 
@@ -140,7 +140,7 @@ end;
 /*
 place order for customer Nina with 10% discount COMMITTED
 place order for customer Nina with 11% discount COMMITTED
-place order for customer Nina with 5% discount ROLLED BACK ORA-08601: SQL assertion (DEVGYM.LOYALTY_DISCOUNT_APPLIED) violated.
+place order for customer Nina with 5% discount ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
 */
 
 prompt Nina's status is updated to elite, and all earlier orders show invalid discounts
@@ -160,5 +160,11 @@ Nina       Elite      10%                        12 11%                Exceeds M
 Prue       Preferred  5%                          3 5%                 Meets Minimum  
 */
 
---because existing data violates the assertion, it still cannot be validated
-alter assertion loyalty_discount_applied enable validate;
+prompt because existing data violates the assertion, it still cannot be validated
+begin
+    execute immediate 'alter assertion loyalty_discount_applied enable validate';
+exception
+    when others then
+        dbms_output.put_line(sqlerrm);
+end;
+/

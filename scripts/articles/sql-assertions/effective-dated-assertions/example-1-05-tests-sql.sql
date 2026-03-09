@@ -96,32 +96,47 @@ Prue       Preferred  5%                          3 5%                 Meets Min
 
 --upgrading Nina to preferred customer status fails
 --all order discounts are validated at new status level
-update customers
-set status = 'Preferred' 
-where customer_name = 'Nina';
+begin
+    update customers
+    set status = 'Preferred' 
+    where customer_name = 'Nina';
 
-rollback;
+exception
+    when others then
+        rollback;
+        dbms_output.put_line(sqlerrm);
+end;
+/
 --update customer Nina status to Preferred ROLLED BACK ORA-08601: SQL assertion (DEVGYM.LOYALTY_DISCOUNT_APPLIED) violated.
 
 
 --setting the assertion to novalidate before updating status
 --the change in status still gets validated against all orders
 alter assertion loyalty_discount_applied enable novalidate;
-update customers
-set status = 'Preferred' 
-where customer_name = 'Nina';
+begin
+    update customers
+    set status = 'Preferred' 
+    where customer_name = 'Nina';
 
-rollback;
+exception
+    when others then
+        rollback;
+        dbms_output.put_line(sqlerrm);
+end;
+/
 --Assertion LOYALTY_DISCOUNT_APPLIED altered.
 --update customer Nina status to Preferred ROLLED BACK ORA-08601: SQL assertion (DEVGYM.LOYALTY_DISCOUNT_APPLIED) violated.
 
 --after disabling the assertion, the status update can happen
 alter assertion loyalty_discount_applied disable novalidate;
-update customers
-set status = 'Preferred' 
-where customer_name = 'Nina';
+begin
+    update customers
+    set status = 'Preferred' 
+    where customer_name = 'Nina';
 
-commit;
+    commit;
+end;
+/
 alter assertion loyalty_discount_applied enable novalidate;
 --Assertion LOYALTY_DISCOUNT_APPLIED altered.
 --update customer Nina status to Preferred COMMITTED
@@ -129,16 +144,24 @@ alter assertion loyalty_discount_applied enable novalidate;
 
 
 --now Nina cant create an order without a 5% discount, assertion is working for new orders only
-insert into orders(customer_name, order_discount)
-values('Nina', 0.01);
+begin
+    insert into orders(customer_name, order_discount)
+    values('Nina', 0.01);
 
-rollback;
+exception
+    when others then
+        rollback;
+        dbms_output.put_line(sqlerrm);
+end;
+/
 
-insert into orders(customer_name, order_discount)
-values('Nina', 0.05), ('Nina', 0.05);
-
-commit;
-
+begin
+    insert into orders(customer_name, order_discount)
+    values('Nina', 0.05), ('Nina', 0.05);
+    
+    commit;
+end;
+/
 --place order for customer Nina with 1% discount ROLLED BACK ORA-08601: SQL assertion (DEVGYM.LOYALTY_DISCOUNT_APPLIED) violated.
 --place order for customer Nina with 5% discount COMMITTED
 --place order for customer Nina with 5% discount COMMITTED
@@ -160,9 +183,13 @@ Prue       Preferred  5%                          3 5%                 Meets Min
 
 prompt the only way to change customer status is to disable the assertion
 alter assertion loyalty_discount_applied disable novalidate;
-update customers
-set status = 'Elite' 
-where customer_name = 'Nina';
+begin
+    update customers
+    set status = 'Elite' 
+    where customer_name = 'Nina';
+    commit;
+end;
+/
 alter assertion loyalty_discount_applied enable novalidate;
 
 --Assertion LOYALTY_DISCOUNT_APPLIED altered.
@@ -171,15 +198,25 @@ alter assertion loyalty_discount_applied enable novalidate;
 
 
 --now Nina cant create an order without a 10% discount, assertion is working for new orders only
-insert into orders(customer_name, order_discount)
-values('Nina', 0.10),('Nina', 0.11);
+begin
+    insert into orders(customer_name, order_discount)
+    values('Nina', 0.10),('Nina', 0.11);
+    
+    commit;
+end;
+/
 
-commit;
+begin
 
-insert into orders(customer_name, order_discount)
-values('Nina', 0.05), ('Nina', 0.05);
+    insert into orders(customer_name, order_discount)
+    values('Nina', 0.05), ('Nina', 0.05);
 
-rollback;
+exception
+    when others then
+        rollback;
+        dbms_output.put_line(sqlerrm);
+end;
+/
 
 /*
 place order for customer Nina with 10% discount COMMITTED
@@ -204,5 +241,11 @@ Nina       Elite      10%                        12 11%                Exceeds M
 Prue       Preferred  5%                          3 5%                 Meets Minimum  
 */
 
---because existing data violates the assertion, it still cannot be validated
-alter assertion loyalty_discount_applied enable validate;
+prompt because existing data violates the assertion, it still cannot be validated
+begin
+    execute immediate 'alter assertion loyalty_discount_applied enable validate';
+exception
+    when others then
+        dbms_output.put_line(sqlerrm);
+end;
+/
