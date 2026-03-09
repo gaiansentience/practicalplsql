@@ -1,0 +1,123 @@
+running example with sql only
+
+Table LOYALTY created.
+
+
+PL/SQL procedure successfully completed.
+
+
+Table CUSTOMERS created.
+
+
+Table ORDERS created.
+
+
+Assertion LOYALTY_DISCOUNT_APPLIED created.
+
+
+View REVIEW_ORDER_DISCOUNTS created.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+
+
+PL/SQL procedure successfully completed.
+
+
+CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID  PLACED              STATUS_UPDATED     
+---------- ---------- ------------------ ---------- ------------------ --------------- ------------------- -------------------
+Liza       Elite      10%                         5 10%                Meets Minimum   2026-03-09 00:31:14 2026-03-09 00:31:14
+Liza       Elite      10%                         6 11%                Exceeds Minimum 2026-03-09 00:31:14 2026-03-09 00:31:14
+Nina       New        0%                          1 0%                 Meets Minimum   2026-03-09 00:31:14 2026-03-09 00:31:14
+Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-09 00:31:14 2026-03-09 00:31:14
+Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-09 00:31:14 2026-03-09 00:31:14
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID  PLACED              STATUS_UPDATED     
+---------- ---------- ------------------ ---------- ------------------ --------------- ------------------- -------------------
+Liza       Elite      10%                         5 10%                Meets Minimum   2026-03-09 00:31:14 2026-03-09 00:31:14
+Liza       Elite      10%                         6 11%                Exceeds Minimum 2026-03-09 00:31:14 2026-03-09 00:31:14
+Nina       Preferred  5%                          1 0%                 Legacy Order    2026-03-09 00:31:14 2026-03-09 00:31:19
+Nina       Preferred  5%                          2 5%                 Legacy Order    2026-03-09 00:31:14 2026-03-09 00:31:19
+Nina       Preferred  5%                          9 5%                 Meets Minimum   2026-03-09 00:31:19 2026-03-09 00:31:19
+Nina       Preferred  5%                         10 5%                 Meets Minimum   2026-03-09 00:31:19 2026-03-09 00:31:19
+Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-09 00:31:14 2026-03-09 00:31:14
+
+7 rows selected. 
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+
+
+PL/SQL procedure successfully completed.
+
+Nina's status is updated to elite, and all earlier orders show as Legacy Orders that are no longer eligible to be checked by the assertion
+
+CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID  PLACED              STATUS_UPDATED     
+---------- ---------- ------------------ ---------- ------------------ --------------- ------------------- -------------------
+Liza       Elite      10%                         5 10%                Meets Minimum   2026-03-09 00:31:14 2026-03-09 00:31:14
+Liza       Elite      10%                         6 11%                Exceeds Minimum 2026-03-09 00:31:14 2026-03-09 00:31:14
+Nina       Elite      10%                         1 0%                 Legacy Order    2026-03-09 00:31:14 2026-03-09 00:31:24
+Nina       Elite      10%                         2 5%                 Legacy Order    2026-03-09 00:31:14 2026-03-09 00:31:24
+Nina       Elite      10%                         9 5%                 Legacy Order    2026-03-09 00:31:19 2026-03-09 00:31:24
+Nina       Elite      10%                        10 5%                 Legacy Order    2026-03-09 00:31:19 2026-03-09 00:31:24
+Nina       Elite      10%                        11 10%                Meets Minimum   2026-03-09 00:31:24 2026-03-09 00:31:24
+Nina       Elite      10%                        12 11%                Exceeds Minimum 2026-03-09 00:31:24 2026-03-09 00:31:24
+Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-09 00:31:14 2026-03-09 00:31:14
+
+9 rows selected. 
+
+drop all objects
+
+View REVIEW_ORDER_DISCOUNTS dropped.
+
+
+Package SALES_API dropped.
+
+
+Assertion LOYALTY_DISCOUNT_APPLIED dropped.
+
+
+Table ORDERS dropped.
+
+
+Table CUSTOMERS dropped.
+
+
+Table LOYALTY dropped.
+
