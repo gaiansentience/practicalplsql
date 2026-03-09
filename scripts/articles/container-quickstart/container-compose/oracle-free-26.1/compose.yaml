@@ -1,0 +1,20 @@
+  services:
+    # name of the Docker Compose service
+    db:
+      # Docker hub image
+      image: gvenzl/oracle-free:23.26.1-slim
+      # make container restart on host reboot
+      restart: unless-stopped
+      # forward container port to localhost
+      ports: 
+        - "1521:1521"
+      # set environment variables in the container
+      environment:
+        ORACLE_PASSWORD: oracle
+        APP_USER: devgym
+        APP_USER_PASSWORD: oracle
+      # mount init-scripts to initialize schema   
+      volumes:
+        - ./initdb.d/setup:/container-entrypoint-initdb.d
+        - ./initdb.d/startup:/container-entrypoint-startdb.d
+        - /home/oracle/container-data:/home/oracle/ext-data

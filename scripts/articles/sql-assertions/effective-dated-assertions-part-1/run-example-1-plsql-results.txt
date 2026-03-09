@@ -1,0 +1,161 @@
+running example with plsql api
+
+Table LOYALTY created.
+
+insert the discount minimum for each loyalty status
+
+PL/SQL procedure successfully completed.
+
+
+Table CUSTOMERS created.
+
+
+Table ORDERS created.
+
+
+Assertion LOYALTY_DISCOUNT_APPLIED created.
+
+
+View REVIEW_ORDER_DISCOUNTS created.
+
+
+Package SALES_API compiled
+
+
+Package Body SALES_API compiled
+
+create customer Nina with status New COMMITTED
+place order for customer Nina with 0% discount COMMITTED
+place order for customer Nina with 5% discount COMMITTED
+
+
+PL/SQL procedure successfully completed.
+
+create customer Prue with status Preferred COMMITTED
+place order for customer Prue with 5% discount COMMITTED
+place order for customer Prue with 0% discount ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+
+
+PL/SQL procedure successfully completed.
+
+create customer Liza with status Elite COMMITTED
+place order for customer Liza with 10% discount COMMITTED
+place order for customer Liza with 11% discount COMMITTED
+place order for customer Liza with 5% discount ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+
+
+PL/SQL procedure successfully completed.
+
+
+CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID 
+---------- ---------- ------------------ ---------- ------------------ ---------------
+Liza       Elite      10%                         5 10%                Meets Minimum  
+Liza       Elite      10%                         6 11%                Exceeds Minimum
+Nina       New        0%                          1 0%                 Meets Minimum  
+Nina       New        0%                          2 5%                 Exceeds Minimum
+Prue       Preferred  5%                          3 5%                 Meets Minimum  
+
+update customer Nina status to Preferred ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+
+
+PL/SQL procedure successfully completed.
+
+
+Assertion LOYALTY_DISCOUNT_APPLIED altered.
+
+update customer Nina status to Preferred ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+
+
+PL/SQL procedure successfully completed.
+
+
+Assertion LOYALTY_DISCOUNT_APPLIED altered.
+
+update customer Nina status to Preferred COMMITTED
+
+
+PL/SQL procedure successfully completed.
+
+
+Assertion LOYALTY_DISCOUNT_APPLIED altered.
+
+place order for customer Nina with 1% discount ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+place order for customer Nina with 5% discount COMMITTED
+place order for customer Nina with 5% discount COMMITTED
+
+
+PL/SQL procedure successfully completed.
+
+
+CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID 
+---------- ---------- ------------------ ---------- ------------------ ---------------
+Liza       Elite      10%                         5 10%                Meets Minimum  
+Liza       Elite      10%                         6 11%                Exceeds Minimum
+Nina       Preferred  5%                          1 0%                 Insufficient   
+Nina       Preferred  5%                          2 5%                 Meets Minimum  
+Nina       Preferred  5%                          9 5%                 Meets Minimum  
+Nina       Preferred  5%                         10 5%                 Meets Minimum  
+Prue       Preferred  5%                          3 5%                 Meets Minimum  
+
+7 rows selected. 
+
+the only way to change customer status is to disable the assertion
+
+Assertion LOYALTY_DISCOUNT_APPLIED altered.
+
+update customer Nina status to Elite COMMITTED
+
+
+PL/SQL procedure successfully completed.
+
+
+Assertion LOYALTY_DISCOUNT_APPLIED altered.
+
+place order for customer Nina with 10% discount COMMITTED
+place order for customer Nina with 11% discount COMMITTED
+place order for customer Nina with 5% discount ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+
+
+PL/SQL procedure successfully completed.
+
+Nina's status is updated to elite, and all earlier orders show invalid discounts
+
+CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID 
+---------- ---------- ------------------ ---------- ------------------ ---------------
+Liza       Elite      10%                         5 10%                Meets Minimum  
+Liza       Elite      10%                         6 11%                Exceeds Minimum
+Nina       Elite      10%                         1 0%                 Insufficient   
+Nina       Elite      10%                         2 5%                 Insufficient   
+Nina       Elite      10%                         9 5%                 Insufficient   
+Nina       Elite      10%                        10 5%                 Insufficient   
+Nina       Elite      10%                        11 10%                Meets Minimum  
+Nina       Elite      10%                        12 11%                Exceeds Minimum
+Prue       Preferred  5%                          3 5%                 Meets Minimum  
+
+9 rows selected. 
+
+because existing data violates the assertion, it still cannot be validated
+ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+
+
+PL/SQL procedure successfully completed.
+
+drop all objects
+
+View REVIEW_ORDER_DISCOUNTS dropped.
+
+
+Package SALES_API dropped.
+
+
+Assertion LOYALTY_DISCOUNT_APPLIED dropped.
+
+
+Table ORDERS dropped.
+
+
+Table CUSTOMERS dropped.
+
+
+Table LOYALTY dropped.
+
