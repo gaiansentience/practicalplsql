@@ -1,0 +1,201 @@
+running example with sql only
+
+Table LOYALTY_STATUS_CODES created.
+
+
+Table LOYALTY created.
+
+insert the discount minimum for each loyalty status
+
+PL/SQL procedure successfully completed.
+
+
+Table CUSTOMERS created.
+
+
+Table CUSTOMER_LOYALTY_PERIODS created.
+
+
+Table ORDERS created.
+
+
+Assertion LOYALTY_DISCOUNT_APPLIED created.
+
+
+Assertion CUSTOMER_LOYALTY_PERIODS_FK_LOYALTY created.
+
+
+View REVIEW_ORDER_DISCOUNTS created.
+
+#Create customer Nina, status New
+#Place valid orders: Nina, New, [0, 0.05]
+#Create customer Prue, status Preferred
+#Place valid order: Prue, Preferred, 0.05
+#Create customer Liza, Elite
+#Place valid orders: Liza, Elite, [0.10,0.11]
+
+
+PL/SQL procedure successfully completed.
+
+#Place invalid order: Prue, Preferred, 0
+ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+
+
+PL/SQL procedure successfully completed.
+
+#Place invalid order: Liza, Elite, 0.05
+ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+
+
+PL/SQL procedure successfully completed.
+
+all valid orders have discount minimum that matches customer status
+
+CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID  PLACED              EFFECTIVE           EXPIRES             STATUS_EFFECTIVE    STATUS_EXPIRES     
+---------- ---------- ------------------ ---------- ------------------ --------------- ------------------- ------------------- ------------------- ------------------- -------------------
+Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-10 00:05:33 2026-03-10 00:05:33                     2026-03-10 00:05:33                    
+Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-10 00:05:33 2026-03-10 00:05:33                     2026-03-10 00:05:33                    
+Nina       New        0%                          1 0%                 Meets Minimum   2026-03-10 00:05:33 2026-03-10 00:05:33                     2026-03-10 00:05:33                    
+Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-10 00:05:33 2026-03-10 00:05:33                     2026-03-10 00:05:33                    
+Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-10 00:05:33 2026-03-10 00:05:33                     2026-03-10 00:05:33                    
+
+
+PL/SQL procedure successfully completed.
+
+#Upgrade Nina to Preferred status
+#Place valid orders: Nina, Preferred, [0.05,0.05]
+
+
+PL/SQL procedure successfully completed.
+
+#Place invalid order: Nina, Preferred, 0.01
+ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+
+
+PL/SQL procedure successfully completed.
+
+Nina's original orders still satisfy the assertion based on the status that was effective (New)
+Nina's new orders after status was upgraded to Preferred also satisfy the assertion
+
+CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID  PLACED              EFFECTIVE           EXPIRES             STATUS_EFFECTIVE    STATUS_EXPIRES     
+---------- ---------- ------------------ ---------- ------------------ --------------- ------------------- ------------------- ------------------- ------------------- -------------------
+Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-10 00:05:33 2026-03-10 00:05:33                     2026-03-10 00:05:33                    
+Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-10 00:05:33 2026-03-10 00:05:33                     2026-03-10 00:05:33                    
+Nina       New        0%                          1 0%                 Meets Minimum   2026-03-10 00:05:33 2026-03-10 00:05:33 2026-03-10 00:05:38 2026-03-10 00:05:33                    
+Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-10 00:05:33 2026-03-10 00:05:33 2026-03-10 00:05:38 2026-03-10 00:05:33                    
+Nina       Preferred  5%                          8 5%                 Meets Minimum   2026-03-10 00:05:38 2026-03-10 00:05:38                     2026-03-10 00:05:33                    
+Nina       Preferred  5%                          9 5%                 Meets Minimum   2026-03-10 00:05:38 2026-03-10 00:05:38                     2026-03-10 00:05:33                    
+Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-10 00:05:33 2026-03-10 00:05:33                     2026-03-10 00:05:33                    
+
+7 rows selected. 
+
+
+PL/SQL procedure successfully completed.
+
+#Upgrade Nina to Elite status
+#Place valid orders: Nina, Elite, [0.10,0.11]
+
+
+PL/SQL procedure successfully completed.
+
+#Place invalid order: Nina, Elite, 0.05
+ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+
+
+PL/SQL procedure successfully completed.
+
+Nina's status is updated to Elite, all earlier orders show valid discounts for the status that was effective when the orders were placed
+
+CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID  PLACED              EFFECTIVE           EXPIRES             STATUS_EFFECTIVE    STATUS_EXPIRES     
+---------- ---------- ------------------ ---------- ------------------ --------------- ------------------- ------------------- ------------------- ------------------- -------------------
+Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-10 00:05:33 2026-03-10 00:05:33                     2026-03-10 00:05:33                    
+Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-10 00:05:33 2026-03-10 00:05:33                     2026-03-10 00:05:33                    
+Nina       New        0%                          1 0%                 Meets Minimum   2026-03-10 00:05:33 2026-03-10 00:05:33 2026-03-10 00:05:38 2026-03-10 00:05:33                    
+Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-10 00:05:33 2026-03-10 00:05:33 2026-03-10 00:05:38 2026-03-10 00:05:33                    
+Nina       Preferred  5%                          8 5%                 Meets Minimum   2026-03-10 00:05:38 2026-03-10 00:05:38 2026-03-10 00:05:43 2026-03-10 00:05:33                    
+Nina       Preferred  5%                          9 5%                 Meets Minimum   2026-03-10 00:05:38 2026-03-10 00:05:38 2026-03-10 00:05:43 2026-03-10 00:05:33                    
+Nina       Elite      10%                        11 10%                Meets Minimum   2026-03-10 00:05:43 2026-03-10 00:05:43                     2026-03-10 00:05:33                    
+Nina       Elite      10%                        12 11%                Exceeds Minimum 2026-03-10 00:05:43 2026-03-10 00:05:43                     2026-03-10 00:05:33                    
+Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-10 00:05:33 2026-03-10 00:05:33                     2026-03-10 00:05:33                    
+
+9 rows selected. 
+
+
+PL/SQL procedure successfully completed.
+
+#Change Preferred to 0.625 minimum discount
+#Change Elite to 0.1125 minimum discount
+
+
+PL/SQL procedure successfully completed.
+
+#Place valid orders: Prue, Preferred [0.07, 0.065]
+
+begin
+*
+ERROR at line 1:
+ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+ORA-06512: at line 4
+
+https://docs.oracle.com/error-help/db/ora-08601/
+
+
+More Details :
+https://docs.oracle.com/error-help/db/ora-08601/
+https://docs.oracle.com/error-help/db/ora-06512/
+#Place invalid order: Prue, Preferred, 0.05
+ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+
+
+PL/SQL procedure successfully completed.
+
+#Place invalid order: Nina, Elite, 0.10
+ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+
+
+PL/SQL procedure successfully completed.
+
+after the change in minimum discounts for Preferred and Elite, all orders are validated correctly and show valid for the discount requirements in effect
+
+CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID  PLACED              EFFECTIVE           EXPIRES             STATUS_EFFECTIVE    STATUS_EXPIRES     
+---------- ---------- ------------------ ---------- ------------------ --------------- ------------------- ------------------- ------------------- ------------------- -------------------
+Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-10 00:05:33 2026-03-10 00:05:33                     2026-03-10 00:05:33 2026-03-10 00:05:48
+Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-10 00:05:33 2026-03-10 00:05:33                     2026-03-10 00:05:33 2026-03-10 00:05:48
+Nina       New        0%                          1 0%                 Meets Minimum   2026-03-10 00:05:33 2026-03-10 00:05:33 2026-03-10 00:05:38 2026-03-10 00:05:33                    
+Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-10 00:05:33 2026-03-10 00:05:33 2026-03-10 00:05:38 2026-03-10 00:05:33                    
+Nina       Preferred  5%                          8 5%                 Meets Minimum   2026-03-10 00:05:38 2026-03-10 00:05:38 2026-03-10 00:05:43 2026-03-10 00:05:33 2026-03-10 00:05:48
+Nina       Preferred  5%                          9 5%                 Meets Minimum   2026-03-10 00:05:38 2026-03-10 00:05:38 2026-03-10 00:05:43 2026-03-10 00:05:33 2026-03-10 00:05:48
+Nina       Elite      10%                        11 10%                Meets Minimum   2026-03-10 00:05:43 2026-03-10 00:05:43                     2026-03-10 00:05:33 2026-03-10 00:05:48
+Nina       Elite      10%                        12 11%                Exceeds Minimum 2026-03-10 00:05:43 2026-03-10 00:05:43                     2026-03-10 00:05:33 2026-03-10 00:05:48
+Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-10 00:05:33 2026-03-10 00:05:33                     2026-03-10 00:05:33 2026-03-10 00:05:48
+
+9 rows selected. 
+
+drop all objects
+
+View REVIEW_ORDER_DISCOUNTS dropped.
+
+
+Package SALES_API dropped.
+
+
+Assertion CUSTOMER_LOYALTY_PERIODS_FK_LOYALTY dropped.
+
+
+Assertion LOYALTY_DISCOUNT_APPLIED dropped.
+
+
+Table ORDERS dropped.
+
+
+Table CUSTOMER_LOYALTY_PERIODS dropped.
+
+
+Table CUSTOMERS dropped.
+
+
+Table LOYALTY dropped.
+
+
+Table LOYALTY_STATUS_CODES dropped.
+

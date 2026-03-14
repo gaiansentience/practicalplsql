@@ -1,0 +1,137 @@
+running example with sql only
+
+Table LOYALTY created.
+
+
+PL/SQL procedure successfully completed.
+
+
+Table CUSTOMERS created.
+
+
+Table CUSTOMER_LOYALTY_PERIODS created.
+
+
+Table ORDERS created.
+
+
+Assertion LOYALTY_DISCOUNT_APPLIED created.
+
+
+View REVIEW_ORDER_DISCOUNTS created.
+
+#Create customer Nina, status New
+#Place valid orders: Nina, New, [0, 0.05]
+#Create customer Prue, status Preferred
+#Place valid order: Prue, Preferred, 0.05
+#Create customer Liza, Elite
+#Place valid orders: Liza, Elite, [0.10,0.11]
+
+
+PL/SQL procedure successfully completed.
+
+#Place invalid order: Prue, Preferred, 0
+ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+
+
+PL/SQL procedure successfully completed.
+
+#Place invalid order: Liza, Elite, 0.05
+ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+
+
+PL/SQL procedure successfully completed.
+
+all valid orders have discount minimum that matches customer status
+
+CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID  PLACED              EFFECTIVE           EXPIRES            
+---------- ---------- ------------------ ---------- ------------------ --------------- ------------------- ------------------- -------------------
+Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-10 00:17:06 2026-03-10 00:17:06                    
+Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-10 00:17:06 2026-03-10 00:17:06                    
+Nina       New        0%                          1 0%                 Meets Minimum   2026-03-10 00:17:06 2026-03-10 00:17:06                    
+Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-10 00:17:06 2026-03-10 00:17:06                    
+Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-10 00:17:06 2026-03-10 00:17:06                    
+
+
+PL/SQL procedure successfully completed.
+
+#Upgrade Nina to Preferred status
+#Place valid orders: Nina, Preferred, [0.05,0.05]
+
+
+PL/SQL procedure successfully completed.
+
+#Place invalid order: Nina, Preferred, 0.01
+ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+
+
+PL/SQL procedure successfully completed.
+
+Nina's original orders still satisfy the assertion based on the status that was effective (New)
+Nina's new orders after status was upgraded to Preferred also satisfy the assertion
+
+CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID  PLACED              EFFECTIVE           EXPIRES            
+---------- ---------- ------------------ ---------- ------------------ --------------- ------------------- ------------------- -------------------
+Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-10 00:17:06 2026-03-10 00:17:06                    
+Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-10 00:17:06 2026-03-10 00:17:06                    
+Nina       New        0%                          1 0%                 Meets Minimum   2026-03-10 00:17:06 2026-03-10 00:17:06 2026-03-10 00:17:11
+Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-10 00:17:06 2026-03-10 00:17:06 2026-03-10 00:17:11
+Nina       Preferred  5%                          8 5%                 Meets Minimum   2026-03-10 00:17:11 2026-03-10 00:17:11                    
+Nina       Preferred  5%                          9 5%                 Meets Minimum   2026-03-10 00:17:11 2026-03-10 00:17:11                    
+Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-10 00:17:06 2026-03-10 00:17:06                    
+
+7 rows selected. 
+
+
+PL/SQL procedure successfully completed.
+
+#Upgrade Nina to Elite status
+#Place valid orders: Nina, Elite, [0.10,0.11]
+
+
+PL/SQL procedure successfully completed.
+
+#Place invalid order: Nina, Elite, 0.05
+ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+
+
+PL/SQL procedure successfully completed.
+
+Nina's status is updated to Elite, all earlier orders show valid discounts for the status that was effective when the orders were placed
+
+CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID  PLACED              EFFECTIVE           EXPIRES            
+---------- ---------- ------------------ ---------- ------------------ --------------- ------------------- ------------------- -------------------
+Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-10 00:17:06 2026-03-10 00:17:06                    
+Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-10 00:17:06 2026-03-10 00:17:06                    
+Nina       New        0%                          1 0%                 Meets Minimum   2026-03-10 00:17:06 2026-03-10 00:17:06 2026-03-10 00:17:11
+Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-10 00:17:06 2026-03-10 00:17:06 2026-03-10 00:17:11
+Nina       Preferred  5%                          8 5%                 Meets Minimum   2026-03-10 00:17:11 2026-03-10 00:17:11 2026-03-10 00:17:16
+Nina       Preferred  5%                          9 5%                 Meets Minimum   2026-03-10 00:17:11 2026-03-10 00:17:11 2026-03-10 00:17:16
+Nina       Elite      10%                        11 10%                Meets Minimum   2026-03-10 00:17:16 2026-03-10 00:17:16                    
+Nina       Elite      10%                        12 11%                Exceeds Minimum 2026-03-10 00:17:16 2026-03-10 00:17:16                    
+Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-10 00:17:06 2026-03-10 00:17:06                    
+
+9 rows selected. 
+
+drop all objects
+
+View REVIEW_ORDER_DISCOUNTS dropped.
+
+
+Package SALES_API dropped.
+
+
+Assertion LOYALTY_DISCOUNT_APPLIED dropped.
+
+
+Table ORDERS dropped.
+
+
+Table CUSTOMER_LOYALTY_PERIODS dropped.
+
+
+Table CUSTOMERS dropped.
+
+
+Table LOYALTY dropped.
+
