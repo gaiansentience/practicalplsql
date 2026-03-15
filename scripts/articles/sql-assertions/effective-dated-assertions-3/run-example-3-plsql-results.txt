@@ -41,9 +41,11 @@ create customer Liza with status Elite COMMITTED
 place order for customer Liza with 10% discount COMMITTED
 place order for customer Liza with 11% discount COMMITTED
 #Place invalid order: Prue, Preferred, 0
-place order for customer Prue with 0% discount ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+place order for customer Prue with 0% discount
+    ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
 #Place invalid order: Liza, Elite, 0.05
-place order for customer Liza with 5% discount ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+place order for customer Liza with 5% discount
+    ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
 
 
 PL/SQL procedure successfully completed.
@@ -52,11 +54,11 @@ all valid orders have discount minimum that matches customer status
 
 CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID  PLACED              EFFECTIVE           EXPIRES            
 ---------- ---------- ------------------ ---------- ------------------ --------------- ------------------- ------------------- -------------------
-Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-14 19:15:59 2026-03-14 19:15:59                    
-Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-14 19:15:59 2026-03-14 19:15:59                    
-Nina       New        0%                          1 0%                 Meets Minimum   2026-03-14 19:15:59 2026-03-14 19:15:59                    
-Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-14 19:15:59 2026-03-14 19:15:59                    
-Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-14 19:15:59 2026-03-14 19:15:59                    
+Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-15 13:40:38 2026-03-15 13:40:38                    
+Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-15 13:40:38 2026-03-15 13:40:38                    
+Nina       New        0%                          1 0%                 Meets Minimum   2026-03-15 13:40:38 2026-03-15 13:40:38                    
+Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-15 13:40:38 2026-03-15 13:40:38                    
+Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-15 13:40:38 2026-03-15 13:40:38                    
 
 
 PL/SQL procedure successfully completed.
@@ -68,7 +70,8 @@ update customer Nina status to Preferred COMMITTED
 place order for customer Nina with 5% discount COMMITTED
 place order for customer Nina with 5% discount COMMITTED
 #Place invalid order: Nina, Preferred, 0.01
-place order for customer Nina with 1% discount ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+place order for customer Nina with 1% discount
+    ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
 
 
 PL/SQL procedure successfully completed.
@@ -78,13 +81,13 @@ Nina's new orders after status was upgraded to Preferred also satisfy the assert
 
 CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID  PLACED              EFFECTIVE           EXPIRES            
 ---------- ---------- ------------------ ---------- ------------------ --------------- ------------------- ------------------- -------------------
-Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-14 19:15:59 2026-03-14 19:15:59                    
-Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-14 19:15:59 2026-03-14 19:15:59                    
-Nina       New        0%                          1 0%                 Meets Minimum   2026-03-14 19:15:59 2026-03-14 19:15:59 2026-03-14 19:16:04
-Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-14 19:15:59 2026-03-14 19:15:59 2026-03-14 19:16:04
-Nina       Preferred  5%                          8 5%                 Meets Minimum   2026-03-14 19:16:04 2026-03-14 19:16:04                    
-Nina       Preferred  5%                          9 5%                 Meets Minimum   2026-03-14 19:16:04 2026-03-14 19:16:04                    
-Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-14 19:15:59 2026-03-14 19:15:59                    
+Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-15 13:40:38 2026-03-15 13:40:38                    
+Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-15 13:40:38 2026-03-15 13:40:38                    
+Nina       New        0%                          1 0%                 Meets Minimum   2026-03-15 13:40:38 2026-03-15 13:40:38 2026-03-15 13:40:43
+Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-15 13:40:38 2026-03-15 13:40:38 2026-03-15 13:40:43
+Nina       Preferred  5%                          8 5%                 Meets Minimum   2026-03-15 13:40:43 2026-03-15 13:40:43                    
+Nina       Preferred  5%                          9 5%                 Meets Minimum   2026-03-15 13:40:43 2026-03-15 13:40:43                    
+Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-15 13:40:38 2026-03-15 13:40:38                    
 
 7 rows selected. 
 
@@ -97,7 +100,8 @@ update customer Nina status to Elite COMMITTED
 place order for customer Nina with 10% discount COMMITTED
 place order for customer Nina with 11% discount COMMITTED
 #Place invalid order: Nina, Elite, 0.05
-place order for customer Nina with 5% discount ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+place order for customer Nina with 5% discount
+    ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
 
 
 PL/SQL procedure successfully completed.
@@ -106,15 +110,15 @@ Nina's status is updated to Elite, all earlier orders show valid discounts for t
 
 CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID  PLACED              EFFECTIVE           EXPIRES            
 ---------- ---------- ------------------ ---------- ------------------ --------------- ------------------- ------------------- -------------------
-Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-14 19:15:59 2026-03-14 19:15:59                    
-Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-14 19:15:59 2026-03-14 19:15:59                    
-Nina       New        0%                          1 0%                 Meets Minimum   2026-03-14 19:15:59 2026-03-14 19:15:59 2026-03-14 19:16:04
-Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-14 19:15:59 2026-03-14 19:15:59 2026-03-14 19:16:04
-Nina       Preferred  5%                          8 5%                 Meets Minimum   2026-03-14 19:16:04 2026-03-14 19:16:04 2026-03-14 19:16:09
-Nina       Preferred  5%                          9 5%                 Meets Minimum   2026-03-14 19:16:04 2026-03-14 19:16:04 2026-03-14 19:16:09
-Nina       Elite      10%                        11 10%                Meets Minimum   2026-03-14 19:16:09 2026-03-14 19:16:09                    
-Nina       Elite      10%                        12 11%                Exceeds Minimum 2026-03-14 19:16:09 2026-03-14 19:16:09                    
-Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-14 19:15:59 2026-03-14 19:15:59                    
+Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-15 13:40:38 2026-03-15 13:40:38                    
+Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-15 13:40:38 2026-03-15 13:40:38                    
+Nina       New        0%                          1 0%                 Meets Minimum   2026-03-15 13:40:38 2026-03-15 13:40:38 2026-03-15 13:40:43
+Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-15 13:40:38 2026-03-15 13:40:38 2026-03-15 13:40:43
+Nina       Preferred  5%                          8 5%                 Meets Minimum   2026-03-15 13:40:43 2026-03-15 13:40:43 2026-03-15 13:40:48
+Nina       Preferred  5%                          9 5%                 Meets Minimum   2026-03-15 13:40:43 2026-03-15 13:40:43 2026-03-15 13:40:48
+Nina       Elite      10%                        11 10%                Meets Minimum   2026-03-15 13:40:48 2026-03-15 13:40:48                    
+Nina       Elite      10%                        12 11%                Exceeds Minimum 2026-03-15 13:40:48 2026-03-15 13:40:48                    
+Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-15 13:40:38 2026-03-15 13:40:38                    
 
 9 rows selected. 
 

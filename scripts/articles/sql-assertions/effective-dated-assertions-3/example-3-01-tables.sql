@@ -1,17 +1,15 @@
 create table if not exists loyalty(
     status varchar2(10) 
         constraint loyalty_pk primary key,
-    discount_minimum number(5,4) default 0 not null
+    discount_min number(5,4) default 0 not null
 )
 /
 
 --insert the discount minimum for each loyalty status
 begin
-    insert into loyalty(status, discount_minimum)
+    insert into loyalty(status, discount_min)
     values
-        ('New', 0),
-        ('Preferred', .05),
-        ('Elite', 0.10);
+        ('New', 0), ('Preferred', .05), ('Elite', 0.10);
     
     commit;
 end;
@@ -40,7 +38,8 @@ create table if not exists customer_loyalty(
 /
 
 create table if not exists orders(
-    order_id integer generated always as identity primary key,
+    order_id integer generated always as identity 
+        constraint orders_pk primary key,
     customer_name varchar2(10)
         constraint orders_fk_customers
         references customers(customer_name) not null,
