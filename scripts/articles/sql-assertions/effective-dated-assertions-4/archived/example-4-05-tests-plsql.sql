@@ -40,7 +40,7 @@ exec dbms_session.sleep(5);
 prompt upgrading Nina to preferred customer status creates a new effective status period
 begin
     dbms_output.put_line('#Upgrade Nina to Preferred status');
-    sales_api.update_status('Nina', 'Preferred');
+    sales_api.update_customer_loyalty('Nina', 'Preferred');
     
     dbms_output.put_line('#Place valid orders: Nina, Preferred, [0.05,0.05]');
     sales_api.add_order('Nina', 0.05);
@@ -59,7 +59,7 @@ select * from review_order_discounts
 exec dbms_session.sleep(5);
 begin
     dbms_output.put_line('#Upgrade Nina to Elite status');
-    sales_api.update_status('Nina', 'Elite');
+    sales_api.update_customer_loyalty('Nina', 'Elite');
     
     dbms_output.put_line('#Place valid orders: Nina, Elite, [0.10,0.11]');
     sales_api.add_order('Nina', 0.10);
@@ -78,10 +78,10 @@ select * from review_order_discounts
 exec dbms_session.sleep(5);
 begin
     dbms_output.put_line('#Change Preferred to 0.0625 minimum discount');
-    sales_api.update_status_discount('Preferred', 0.0625);
+    sales_api.update_loyalty_discount('Preferred', 0.0625);
     
     dbms_output.put_line('#Change Elite to 0.1125 minimum discount');        
-    sales_api.update_status_discount('Elite', 0.1125);
+    sales_api.update_loyalty_discount('Elite', 0.1125);
 end;
 /
 

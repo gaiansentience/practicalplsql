@@ -2,8 +2,8 @@ create or replace package sales_api
 as
     procedure add_customer(c in customers.customer_name%type, s in loyalty.status%type);
     procedure add_order(c in customers.customer_name%type, d in orders.discount%type);
-    procedure update_status(c in customers.customer_name%type, s in loyalty.status%type);
-    procedure update_status_discount(s in loyalty.status%type, d in loyalty_discounts.discount_min%type);
+    procedure update_customer_loyalty(c in customers.customer_name%type, s in loyalty.status%type);
+    procedure update_loyalty_discount(s in loyalty.status%type, d in loyalty_discounts.discount_min%type);
 end sales_api;
 /
 
@@ -53,7 +53,7 @@ as
             print_tx_state(l_info, false);
     end add_order;
     
-    procedure update_status(c in customers.customer_name%type, s in loyalty.status%type)
+    procedure update_customer_loyalty(c in customers.customer_name%type, s in loyalty.status%type)
     is
         l_info t_details := 'update customer ' || c || ' status to ' || s;
         l_date date := sysdate;
@@ -69,9 +69,9 @@ as
         when others then
             rollback;
             print_tx_state(l_info, false);
-    end update_status;
+    end update_customer_loyalty;
 
-    procedure update_status_discount(s in loyalty.status%type, d in loyalty_discounts.discount_min%type)
+    procedure update_loyalty_discount(s in loyalty.status%type, d in loyalty_discounts.discount_min%type)
     is
         l_info t_details := 'update status ' || s || ' discount minimum to ' || (100 * d) || '%';
         l_date date := sysdate;
@@ -87,7 +87,7 @@ as
         when others then
             rollback;
             print_tx_state(l_info, false);
-    end update_status_discount;
+    end update_loyalty_discount;
 
 end sales_api;
 /
