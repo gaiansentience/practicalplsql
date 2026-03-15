@@ -1,6 +1,10 @@
-column loyalty_discount format a18;
-column order_discount format a18;
-set pagesize 100
+column customer format a10
+column status format a10
+column discount format a8
+column status_min format a10
+column status_max format a10
+set pagesize 25
+alter session set nls_date_format = 'yyyy-mm-dd hh24:mi:ss';
 set serveroutput on;
 
 begin
@@ -77,11 +81,11 @@ select * from review_order_discounts
 
 exec dbms_session.sleep(5);
 begin
-    dbms_output.put_line('#Change Preferred to 0.0625 minimum discount');
-    sales_api.update_loyalty_discount('Preferred', 0.0625);
+    dbms_output.put_line('#Change Preferred discount to 6.25% min, 16.25% max');
+    sales_api.update_loyalty_discounts('Preferred', 0.0625, 0.1625);
     
-    dbms_output.put_line('#Change Elite to 0.1125 minimum discount');        
-    sales_api.update_loyalty_discount('Elite', 0.1125);
+    dbms_output.put_line('#Change Elite discount to 11.25% min 21.25% max');        
+    sales_api.update_loyalty_discounts('Elite', 0.1125, 0.2125);
 end;
 /
 
