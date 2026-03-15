@@ -136,19 +136,19 @@ declare
     l_date date := sysdate;
 begin
     dbms_output.put_line('#Change Preferred to 0.0625 minimum discount');
-    update loyalty
+    update loyalty_discounts
     set expires = l_date
     where status = 'Preferred' and expires is null;
     
-    insert into loyalty (status, discount_min, effective)
+    insert into loyalty_discounts (status, discount_min, effective)
     values ('Preferred', 0.0625, l_date);
 
     dbms_output.put_line('#Change Elite to 0.1125 minimum discount');    
-    update loyalty
+    update loyalty_discounts
     set expires = l_date
     where status = 'Elite' and expires is null;
     
-    insert into loyalty (status, discount_min, effective)
+    insert into loyalty_discounts (status, discount_min, effective)
     values ('Elite', 0.1125, l_date);
 
     commit;

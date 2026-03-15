@@ -15,7 +15,7 @@ select
 from 
     customers c 
     join customer_loyalty p on c.customer_name = p.customer_name
-    join loyalty s on p.status = s.status 
+    join loyalty_discounts s on p.status = s.status 
     join orders o on c.customer_name = o.customer_name 
 where
     o.placed >= p.effective and (p.expires is null or o.placed < p.expires)
