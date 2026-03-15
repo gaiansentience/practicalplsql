@@ -14,7 +14,7 @@ select
     , s.expires as status_expires
 from 
     customers c 
-    join customer_loyalty_periods p on c.customer_name = p.customer_name
+    join customer_loyalty p on c.customer_name = p.customer_name
     join loyalty s on p.status = s.status 
     join orders o on c.customer_name = o.customer_name 
 where

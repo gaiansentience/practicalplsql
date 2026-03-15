@@ -28,7 +28,7 @@ as
     begin
         insert into customers(customer_name)
         values (c);
-        insert into customer_loyalty_periods(customer_name, status)
+        insert into customer_loyalty(customer_name, status)
         values (c, s);
 
         commit;        
@@ -58,10 +58,10 @@ as
         l_info t_details := 'update customer ' || c || ' status to ' || s;
         l_date date := sysdate;
     begin
-        update customer_loyalty_periods
+        update customer_loyalty
         set expires = l_date
         where customer_name = c and expires is null;
-        insert into customer_loyalty_periods(customer_name, status, effective)
+        insert into customer_loyalty(customer_name, status, effective)
         values (c, s, l_date);
         commit;    
         print_tx_state(l_info);
