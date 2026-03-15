@@ -5,7 +5,7 @@ create assertion if not exists loyalty_discount_applied check (
         from 
             orders o, 
             customer_loyalty c, 
-            loyalty s
+            loyalty_discounts s
         where 
             o.customer_name = c.customer_name 
             and c.status = s.status
@@ -20,13 +20,13 @@ create assertion if not exists loyalty_discount_applied check (
 --adding effective date to loyalty table as part of pk made status alone invalid for fk
 --fk also cannot be constrained via band join
 --need to create assertion to represent the foreign key between customer_loyalty and loyalty table
-create assertion if not exists customer_loyalty_fk_loyalty check (
+create assertion if not exists customer_loyalty_fk_loyalty_discounts check (
     not exists (
         select 'a customer loyalty period'
         from customer_loyalty a
         where not exists (
             select 'an effective loyalty status exists'
-            from loyalty s
+            from loyalty_discounts s
             where 
                 s.status = a.status
                 and a.effective >= s.effective and (s.expires is null or a.effective < s.expires)

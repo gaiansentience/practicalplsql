@@ -77,7 +77,7 @@ select * from review_order_discounts
 
 exec dbms_session.sleep(5);
 begin
-    dbms_output.put_line('#Change Preferred to 0.625 minimum discount');
+    dbms_output.put_line('#Change Preferred to 0.0625 minimum discount');
     sales_api.update_status_discount('Preferred', 0.0625);
     
     dbms_output.put_line('#Change Elite to 0.1125 minimum discount');        
