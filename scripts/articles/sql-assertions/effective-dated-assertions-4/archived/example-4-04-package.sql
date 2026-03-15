@@ -1,7 +1,7 @@
 create or replace package sales_api
 as
     procedure add_customer(c in customers.customer_name%type, s in loyalty.status%type);
-    procedure add_order(c in customers.customer_name%type, d in orders.order_discount%type);
+    procedure add_order(c in customers.customer_name%type, d in orders.discount%type);
     procedure update_status(c in customers.customer_name%type, s in loyalty.status%type);
     procedure update_status_discount(s in loyalty.status%type, d in loyalty.discount_minimum%type);
 end sales_api;
@@ -39,11 +39,11 @@ as
             print_tx_state(l_info, false);
     end add_customer;        
     
-    procedure add_order(c in customers.customer_name%type, d in orders.order_discount%type)
+    procedure add_order(c in customers.customer_name%type, d in orders.discount%type)
     is
         l_info t_details := 'place order for customer ' || c || ' with ' || (d * 100) || '% discount';
     begin
-        insert into orders(customer_name, order_discount)
+        insert into orders(customer_name, discount)
         values (c, d);
         commit;        
         print_tx_state(l_info);

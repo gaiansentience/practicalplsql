@@ -6,19 +6,9 @@ Table LOYALTY_STATUS_CODES created.
 Table LOYALTY created.
 
 insert the discount minimum for each loyalty status
-    insert into loyalty(status, discount_minimum)
-                                *
-ERROR at line 5:
-ORA-06550: line 5, column 33:
-PL/SQL: ORA-00904: "DISCOUNT_MINIMUM": invalid identifier
-ORA-06550: line 5, column 5:
-PL/SQL: SQL Statement ignored
 
-https://docs.oracle.com/error-help/db/ora-06550/
+PL/SQL procedure successfully completed.
 
-
-More Details :
-https://docs.oracle.com/error-help/db/ora-06550/
 
 Table CUSTOMERS created.
 
@@ -29,365 +19,155 @@ Table CUSTOMER_LOYALTY_PERIODS created.
 Table ORDERS created.
 
 
-Error starting at line : 2 File @ Z:\git\practicalplsql\scripts\articles\sql-assertions\effective-dated-assertions-4\example-4-02-assertion.sql
-In command -
-create assertion if not exists loyalty_discount_applied check (
-    not exists (
-        select 'order discount invalid for effective customer loyalty status effective'
-        from 
-            orders o, 
-            customer_loyalty_periods c, 
-            loyalty s
-        where 
-            o.customer_name = c.customer_name 
-            and c.status = s.status
-            and o.order_discount < s.discount_minimum
-            and o.placed >= c.effective and (c.expires is null or o.placed < c.expires)
-            and o.placed >= s.effective and (s.expires is null or o.placed < s.expires)
-    )
-)
-Error report -
-ORA-00904: "S"."EXPIRES": invalid identifier
+Assertion LOYALTY_DISCOUNT_APPLIED created.
 
-https://docs.oracle.com/error-help/db/ora-00904/00904. 00000 -  "%s: invalid identifier"
-*Cause:    The identifier or column name entered was invalid.
-*Action:   Ensure the following
 
-Error starting at line : 23 File @ Z:\git\practicalplsql\scripts\articles\sql-assertions\effective-dated-assertions-4\example-4-02-assertion.sql
-In command -
-create assertion if not exists customer_loyalty_periods_fk_loyalty check (
-    not exists (
-        select 'a customer loyalty period'
-        from customer_loyalty_periods a
-        where not exists (
-            select 'an effective loyalty status exists'
-            from loyalty s
-            where 
-                s.status = a.status
-                and a.effective >= s.effective and (s.expires is null or a.effective < s.expires)
-        )
-    )
-)
-Error report -
-ORA-00904: "S"."EXPIRES": invalid identifier
+Assertion CUSTOMER_LOYALTY_PERIODS_FK_LOYALTY created.
 
-https://docs.oracle.com/error-help/db/ora-00904/00904. 00000 -  "%s: invalid identifier"
-*Cause:    The identifier or column name entered was invalid.
-*Action:   Ensure the following
 
-Error starting at line : 22 File @ Z:\git\practicalplsql\scripts\articles\sql-assertions\effective-dated-assertions-4\example-4-03-view.sql
-In command -
-create or replace view review_order_discounts as
-select 
-    c.customer_name, p.status, (100 * s.discount_minimum) || '%' as loyalty_discount
-    , o.order_id, (100 * o.order_discount) || '%' as order_discount
-    , case 
-        when o.order_discount < s.discount_minimum then 'Insufficient' 
-        when o.order_discount = s.discount_minimum then 'Meets Minimum' 
-        else 'Exceeds Minimum' 
-    end as discount_valid
-    , o.placed
-    , p.effective
-    , p.expires
-    , s.effective as status_effective
-    , s.expires as status_expires
-from 
-    customers c 
-    join customer_loyalty_periods p on c.customer_name = p.customer_name
-    join loyalty s on p.status = s.status 
-    join orders o on c.customer_name = o.customer_name 
-where
-    o.placed >= p.effective and (p.expires is null or o.placed < p.expires)
-    and o.placed >= s.effective and (s.expires is null or o.placed < s.expires)
-order by c.customer_name, o.order_id
-Error report -
-ORA-00904: "S"."EXPIRES": invalid identifier
+View REVIEW_ORDER_DISCOUNTS created.
 
-https://docs.oracle.com/error-help/db/ora-00904/00904. 00000 -  "%s: invalid identifier"
-*Cause:    The identifier or column name entered was invalid.
-*Action:   Ensure the following
 
 Package SALES_API compiled
 
-LINE/COL  ERROR
---------- -------------------------------------------------------------
-0/0       PL/SQL: Compilation unit analysis terminated
-6/77      PLS-00302: component 'DISCOUNT_MINIMUM' must be declared
-Errors: check compiler log
 
 Package Body SALES_API compiled
 
-LINE/COL  ERROR
---------- -------------------------------------------------------------
-0/0       PL/SQL: Compilation unit analysis terminated
-1/14      PLS-00905: object PRACTICALPLSQL.SALES_API is invalid
-1/14      PLS-00304: cannot compile body of 'SALES_API' without its specification
-Errors: check compiler log
-    sales_api.add_customer('Nina', 'New');
-    *
-ERROR at line 3:
-ORA-06550: line 3, column 5:
-PLS-00905: object PRACTICALPLSQL.SALES_API is invalid
-ORA-06550: line 3, column 5:
-PL/SQL: Statement ignored
-ORA-06550: line 6, column 5:
-PLS-00905: object PRACTICALPLSQL.SALES_API is invalid
-ORA-06550: line 6, column 5:
-PL/SQL: Statement ignored
-ORA-06550: line 7, column 5:
-PLS-00905: object PRACTICALPLSQL.SALES_API is invalid
-ORA-06550: line 7, column 5:
-PL/SQL: Statement ignored
-ORA-06550: line 10, column 5:
-PLS-00905: object PRACTICALPLSQL.SALES_API is invalid
-ORA-06550: line 10, column 5:
-PL/SQL: Statement ignored
-ORA-06550: line 13, column 5:
-PLS-00905: object PRACTICALPLSQL.SALES_API is invalid
-ORA-06550: line 13, column 5:
-PL/SQL: Statement ignored
-ORA-06550: line 16, column 5:
-PLS-00905: object PRACTICALPLSQL.SALES_API is invalid
-ORA-06550: line 16, column 5:
-PL/SQL: Statement ignored
-ORA-06550: line 19, column 5:
-PLS-00905: object PRACTICALPLSQL.SALES_API is invalid
-ORA-06550: line 19, column 5:
-PL/SQL: Statement ignored
-ORA-06550: line 20, column 5:
-PLS-00905: object PRACTICALPLSQL.SALES_API is invalid
-ORA-06550: line 20, column 5:
-PL/SQL: Statement ignored
-ORA-06550: line 23, column 5:
-PLS-00905: object PRACTICALPLSQL.SALES_API is invalid
-ORA-06550: line 23, column 5:
-PL/SQL: Statement ignored
-ORA-06550: line 26, column 5:
-PLS-00905: object PRACTICALPLSQL.SALES_API is invalid
-ORA-06550: line 26, column 5:
-PL/SQL: Statement ignored
-
-https://docs.oracle.com/error-help/db/ora-06550/
+#Create customer Nina, status New
+create customer Nina with status New COMMITTED
+#Place valid orders: Nina, New, [0, 0.05]
+place order for customer Nina with 0% discount COMMITTED
+place order for customer Nina with 5% discount COMMITTED
+#Create customer Prue, status Preferred
+create customer Prue with status Preferred COMMITTED
+#Place valid order: Prue, Preferred, 0.05
+place order for customer Prue with 5% discount COMMITTED
+#Create customer Liza, Elite
+create customer Liza with status Elite COMMITTED
+#Place valid orders: Liza, Elite, [0.10,0.11]
+place order for customer Liza with 10% discount COMMITTED
+place order for customer Liza with 11% discount COMMITTED
+#Place invalid order: Prue, Preferred, 0
+place order for customer Prue with 0% discount ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+#Place invalid order: Liza, Elite, 0.05
+place order for customer Liza with 5% discount ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
 
 
-More Details :
-https://docs.oracle.com/error-help/db/ora-06550/
-https://docs.oracle.com/error-help/db/pls-00905/
+PL/SQL procedure successfully completed.
+
 all valid orders have discount minimum that matches customer status
 
-Error starting at line : 36 File @ file:/Z:/git/practicalplsql/scripts/articles/sql-assertions/effective-dated-assertions-4/example-4-05-tests-plsql.sql
-In command -
-select * from review_order_discounts
+CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID  PLACED              EFFECTIVE           EXPIRES             STATUS_EFFECTIVE    STATUS_EXPIRES     
+---------- ---------- ------------------ ---------- ------------------ --------------- ------------------- ------------------- ------------------- ------------------- -------------------
+Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-15 12:33:09 2026-03-15 12:33:09                     2026-03-15 12:33:09                    
+Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-15 12:33:09 2026-03-15 12:33:09                     2026-03-15 12:33:09                    
+Nina       New        0%                          1 0%                 Meets Minimum   2026-03-15 12:33:09 2026-03-15 12:33:09                     2026-03-15 12:33:09                    
+Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-15 12:33:09 2026-03-15 12:33:09                     2026-03-15 12:33:09                    
+Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-15 12:33:09 2026-03-15 12:33:09                     2026-03-15 12:33:09                    
 
-Error at Command Line : 36 Column : 15 File @ file:/Z:/git/practicalplsql/scripts/articles/sql-assertions/effective-dated-assertions-4/example-4-05-tests-plsql.sql
-Error report -
-SQL Error: ORA-00942: table or view "PRACTICALPLSQL"."REVIEW_ORDER_DISCOUNTS" does not exist
-
-https://docs.oracle.com/error-help/db/ora-00942/00942. 00000 -  "table or view%s does not exist"
-*Cause:    The specified table or view did not exist, or a synonym
-           pointed to a table or view that did not exist.
-           To find existing user tables and views, query the
-           ALL_TABLES and ALL_VIEWS data dictionary views. Certain
-           privileges may be required to access the table. If an
-           application returned this message, then the table that the
-           application tried to access did not exist in the database, or
-           the application did not have access to it.
-*Action:   Check each of the following
-           - The spelling of the table or view name is correct.
-           - The referenced table or view name does exist.
-           - The synonym points to an existing table or view.
-
-More Details :
-https://docs.oracle.com/error-help/db/ora-00942/
 
 PL/SQL procedure successfully completed.
 
 upgrading Nina to preferred customer status creates a new effective status period
-    sales_api.update_status('Nina', 'Preferred');
-    *
-ERROR at line 3:
-ORA-06550: line 3, column 5:
-PLS-00905: object PRACTICALPLSQL.SALES_API is invalid
-ORA-06550: line 3, column 5:
-PL/SQL: Statement ignored
-ORA-06550: line 6, column 5:
-PLS-00905: object PRACTICALPLSQL.SALES_API is invalid
-ORA-06550: line 6, column 5:
-PL/SQL: Statement ignored
-ORA-06550: line 7, column 5:
-PLS-00905: object PRACTICALPLSQL.SALES_API is invalid
-ORA-06550: line 7, column 5:
-PL/SQL: Statement ignored
-ORA-06550: line 10, column 5:
-PLS-00905: object PRACTICALPLSQL.SALES_API is invalid
-ORA-06550: line 10, column 5:
-PL/SQL: Statement ignored
-
-https://docs.oracle.com/error-help/db/ora-06550/
+#Upgrade Nina to Preferred status
+update customer Nina status to Preferred COMMITTED
+#Place valid orders: Nina, Preferred, [0.05,0.05]
+place order for customer Nina with 5% discount COMMITTED
+place order for customer Nina with 5% discount COMMITTED
+#Place invalid order: Nina, Preferred, 0.01
+place order for customer Nina with 1% discount ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
 
 
-More Details :
-https://docs.oracle.com/error-help/db/ora-06550/
-https://docs.oracle.com/error-help/db/pls-00905/
+PL/SQL procedure successfully completed.
+
 Nina's original orders still satisfy the assertion based on the status that was effective (New)
 Nina's new orders after status was upgraded to Preferred also satisfy the assertion
 
-Error starting at line : 56 File @ file:/Z:/git/practicalplsql/scripts/articles/sql-assertions/effective-dated-assertions-4/example-4-05-tests-plsql.sql
-In command -
-select * from review_order_discounts
+CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID  PLACED              EFFECTIVE           EXPIRES             STATUS_EFFECTIVE    STATUS_EXPIRES     
+---------- ---------- ------------------ ---------- ------------------ --------------- ------------------- ------------------- ------------------- ------------------- -------------------
+Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-15 12:33:09 2026-03-15 12:33:09                     2026-03-15 12:33:09                    
+Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-15 12:33:09 2026-03-15 12:33:09                     2026-03-15 12:33:09                    
+Nina       New        0%                          1 0%                 Meets Minimum   2026-03-15 12:33:09 2026-03-15 12:33:09 2026-03-15 12:33:15 2026-03-15 12:33:09                    
+Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-15 12:33:09 2026-03-15 12:33:09 2026-03-15 12:33:15 2026-03-15 12:33:09                    
+Nina       Preferred  5%                          8 5%                 Meets Minimum   2026-03-15 12:33:15 2026-03-15 12:33:15                     2026-03-15 12:33:09                    
+Nina       Preferred  5%                          9 5%                 Meets Minimum   2026-03-15 12:33:15 2026-03-15 12:33:15                     2026-03-15 12:33:09                    
+Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-15 12:33:09 2026-03-15 12:33:09                     2026-03-15 12:33:09                    
 
-Error at Command Line : 56 Column : 15 File @ file:/Z:/git/practicalplsql/scripts/articles/sql-assertions/effective-dated-assertions-4/example-4-05-tests-plsql.sql
-Error report -
-SQL Error: ORA-00942: table or view "PRACTICALPLSQL"."REVIEW_ORDER_DISCOUNTS" does not exist
+7 rows selected. 
 
-https://docs.oracle.com/error-help/db/ora-00942/00942. 00000 -  "table or view%s does not exist"
-*Cause:    The specified table or view did not exist, or a synonym
-           pointed to a table or view that did not exist.
-           To find existing user tables and views, query the
-           ALL_TABLES and ALL_VIEWS data dictionary views. Certain
-           privileges may be required to access the table. If an
-           application returned this message, then the table that the
-           application tried to access did not exist in the database, or
-           the application did not have access to it.
-*Action:   Check each of the following
-           - The spelling of the table or view name is correct.
-           - The referenced table or view name does exist.
-           - The synonym points to an existing table or view.
-
-More Details :
-https://docs.oracle.com/error-help/db/ora-00942/
 
 PL/SQL procedure successfully completed.
 
-    sales_api.update_status('Nina', 'Elite');
-    *
-ERROR at line 3:
-ORA-06550: line 3, column 5:
-PLS-00905: object PRACTICALPLSQL.SALES_API is invalid
-ORA-06550: line 3, column 5:
-PL/SQL: Statement ignored
-ORA-06550: line 6, column 5:
-PLS-00905: object PRACTICALPLSQL.SALES_API is invalid
-ORA-06550: line 6, column 5:
-PL/SQL: Statement ignored
-ORA-06550: line 7, column 5:
-PLS-00905: object PRACTICALPLSQL.SALES_API is invalid
-ORA-06550: line 7, column 5:
-PL/SQL: Statement ignored
-ORA-06550: line 10, column 5:
-PLS-00905: object PRACTICALPLSQL.SALES_API is invalid
-ORA-06550: line 10, column 5:
-PL/SQL: Statement ignored
-
-https://docs.oracle.com/error-help/db/ora-06550/
+#Upgrade Nina to Elite status
+update customer Nina status to Elite COMMITTED
+#Place valid orders: Nina, Elite, [0.10,0.11]
+place order for customer Nina with 10% discount COMMITTED
+place order for customer Nina with 11% discount COMMITTED
+#Place invalid order: Nina, Elite, 0.05
+place order for customer Nina with 5% discount ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
 
 
-More Details :
-https://docs.oracle.com/error-help/db/ora-06550/
-https://docs.oracle.com/error-help/db/pls-00905/
+PL/SQL procedure successfully completed.
+
 Nina's status is updated to Elite, all earlier orders show valid discounts for the status that was effective when the orders were placed
 
-Error starting at line : 74 File @ file:/Z:/git/practicalplsql/scripts/articles/sql-assertions/effective-dated-assertions-4/example-4-05-tests-plsql.sql
-In command -
-select * from review_order_discounts
+CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID  PLACED              EFFECTIVE           EXPIRES             STATUS_EFFECTIVE    STATUS_EXPIRES     
+---------- ---------- ------------------ ---------- ------------------ --------------- ------------------- ------------------- ------------------- ------------------- -------------------
+Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-15 12:33:09 2026-03-15 12:33:09                     2026-03-15 12:33:09                    
+Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-15 12:33:09 2026-03-15 12:33:09                     2026-03-15 12:33:09                    
+Nina       New        0%                          1 0%                 Meets Minimum   2026-03-15 12:33:09 2026-03-15 12:33:09 2026-03-15 12:33:15 2026-03-15 12:33:09                    
+Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-15 12:33:09 2026-03-15 12:33:09 2026-03-15 12:33:15 2026-03-15 12:33:09                    
+Nina       Preferred  5%                          8 5%                 Meets Minimum   2026-03-15 12:33:15 2026-03-15 12:33:15 2026-03-15 12:33:20 2026-03-15 12:33:09                    
+Nina       Preferred  5%                          9 5%                 Meets Minimum   2026-03-15 12:33:15 2026-03-15 12:33:15 2026-03-15 12:33:20 2026-03-15 12:33:09                    
+Nina       Elite      10%                        11 10%                Meets Minimum   2026-03-15 12:33:20 2026-03-15 12:33:20                     2026-03-15 12:33:09                    
+Nina       Elite      10%                        12 11%                Exceeds Minimum 2026-03-15 12:33:20 2026-03-15 12:33:20                     2026-03-15 12:33:09                    
+Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-15 12:33:09 2026-03-15 12:33:09                     2026-03-15 12:33:09                    
 
-Error at Command Line : 74 Column : 15 File @ file:/Z:/git/practicalplsql/scripts/articles/sql-assertions/effective-dated-assertions-4/example-4-05-tests-plsql.sql
-Error report -
-SQL Error: ORA-00942: table or view "PRACTICALPLSQL"."REVIEW_ORDER_DISCOUNTS" does not exist
+9 rows selected. 
 
-https://docs.oracle.com/error-help/db/ora-00942/00942. 00000 -  "table or view%s does not exist"
-*Cause:    The specified table or view did not exist, or a synonym
-           pointed to a table or view that did not exist.
-           To find existing user tables and views, query the
-           ALL_TABLES and ALL_VIEWS data dictionary views. Certain
-           privileges may be required to access the table. If an
-           application returned this message, then the table that the
-           application tried to access did not exist in the database, or
-           the application did not have access to it.
-*Action:   Check each of the following
-           - The spelling of the table or view name is correct.
-           - The referenced table or view name does exist.
-           - The synonym points to an existing table or view.
-
-More Details :
-https://docs.oracle.com/error-help/db/ora-00942/
 
 PL/SQL procedure successfully completed.
 
-    sales_api.update_status_discount('Preferred', 0.0625);
-    *
-ERROR at line 3:
-ORA-06550: line 3, column 5:
-PLS-00905: object PRACTICALPLSQL.SALES_API is invalid
-ORA-06550: line 3, column 5:
-PL/SQL: Statement ignored
-ORA-06550: line 6, column 5:
-PLS-00905: object PRACTICALPLSQL.SALES_API is invalid
-ORA-06550: line 6, column 5:
-PL/SQL: Statement ignored
-
-https://docs.oracle.com/error-help/db/ora-06550/
+#Change Preferred to 0.625 minimum discount
+update status Preferred discount minimum to 6.25% COMMITTED
+#Change Elite to 0.1125 minimum discount
+update status Elite discount minimum to 11.25% COMMITTED
 
 
-More Details :
-https://docs.oracle.com/error-help/db/ora-06550/
-https://docs.oracle.com/error-help/db/pls-00905/
-    sales_api.add_order('Prue', 0.07);
-    *
-ERROR at line 4:
-ORA-06550: line 4, column 5:
-PLS-00905: object PRACTICALPLSQL.SALES_API is invalid
-ORA-06550: line 4, column 5:
-PL/SQL: Statement ignored
-ORA-06550: line 5, column 5:
-PLS-00905: object PRACTICALPLSQL.SALES_API is invalid
-ORA-06550: line 5, column 5:
-PL/SQL: Statement ignored
-ORA-06550: line 8, column 5:
-PLS-00905: object PRACTICALPLSQL.SALES_API is invalid
-ORA-06550: line 8, column 5:
-PL/SQL: Statement ignored
-ORA-06550: line 11, column 5:
-PLS-00905: object PRACTICALPLSQL.SALES_API is invalid
-ORA-06550: line 11, column 5:
-PL/SQL: Statement ignored
-ORA-06550: line 14, column 5:
-PLS-00905: object PRACTICALPLSQL.SALES_API is invalid
-ORA-06550: line 14, column 5:
-PL/SQL: Statement ignored
+PL/SQL procedure successfully completed.
 
-https://docs.oracle.com/error-help/db/ora-06550/
+#Place valid orders: Prue, Preferred [0.07, 0.065]
+place order for customer Prue with 7% discount COMMITTED
+place order for customer Prue with 6.5% discount COMMITTED
+#Place valid order: Nina, Elite, 0.12
+place order for customer Nina with 12% discount COMMITTED
+#Place invalid order: Prue, Preferred, 0.05
+place order for customer Prue with 5% discount ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+#Place invalid order: Nina, Elite, 0.10
+place order for customer Nina with 10% discount ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
 
 
-More Details :
-https://docs.oracle.com/error-help/db/ora-06550/
-https://docs.oracle.com/error-help/db/pls-00905/
+PL/SQL procedure successfully completed.
+
 after the change in minimum discounts for Preferred and Elite, all orders are validated correctly and show valid for the discount requirements in effect
 
-Error starting at line : 107 File @ file:/Z:/git/practicalplsql/scripts/articles/sql-assertions/effective-dated-assertions-4/example-4-05-tests-plsql.sql
-In command -
-select * from review_order_discounts
+CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID  PLACED              EFFECTIVE           EXPIRES             STATUS_EFFECTIVE    STATUS_EXPIRES     
+---------- ---------- ------------------ ---------- ------------------ --------------- ------------------- ------------------- ------------------- ------------------- -------------------
+Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-15 12:33:09 2026-03-15 12:33:09                     2026-03-15 12:33:09 2026-03-15 12:33:25
+Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-15 12:33:09 2026-03-15 12:33:09                     2026-03-15 12:33:09 2026-03-15 12:33:25
+Nina       New        0%                          1 0%                 Meets Minimum   2026-03-15 12:33:09 2026-03-15 12:33:09 2026-03-15 12:33:15 2026-03-15 12:33:09                    
+Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-15 12:33:09 2026-03-15 12:33:09 2026-03-15 12:33:15 2026-03-15 12:33:09                    
+Nina       Preferred  5%                          8 5%                 Meets Minimum   2026-03-15 12:33:15 2026-03-15 12:33:15 2026-03-15 12:33:20 2026-03-15 12:33:09 2026-03-15 12:33:25
+Nina       Preferred  5%                          9 5%                 Meets Minimum   2026-03-15 12:33:15 2026-03-15 12:33:15 2026-03-15 12:33:20 2026-03-15 12:33:09 2026-03-15 12:33:25
+Nina       Elite      10%                        11 10%                Meets Minimum   2026-03-15 12:33:20 2026-03-15 12:33:20                     2026-03-15 12:33:09 2026-03-15 12:33:25
+Nina       Elite      10%                        12 11%                Exceeds Minimum 2026-03-15 12:33:20 2026-03-15 12:33:20                     2026-03-15 12:33:09 2026-03-15 12:33:25
+Nina       Elite      11.25%                     16 12%                Exceeds Minimum 2026-03-15 12:33:25 2026-03-15 12:33:20                     2026-03-15 12:33:25                    
+Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-15 12:33:09 2026-03-15 12:33:09                     2026-03-15 12:33:09 2026-03-15 12:33:25
+Prue       Preferred  6.25%                      14 7%                 Exceeds Minimum 2026-03-15 12:33:25 2026-03-15 12:33:09                     2026-03-15 12:33:25                    
+Prue       Preferred  6.25%                      15 6.5%               Exceeds Minimum 2026-03-15 12:33:25 2026-03-15 12:33:09                     2026-03-15 12:33:25                    
 
-Error at Command Line : 107 Column : 15 File @ file:/Z:/git/practicalplsql/scripts/articles/sql-assertions/effective-dated-assertions-4/example-4-05-tests-plsql.sql
-Error report -
-SQL Error: ORA-00942: table or view "PRACTICALPLSQL"."REVIEW_ORDER_DISCOUNTS" does not exist
+12 rows selected. 
 
-https://docs.oracle.com/error-help/db/ora-00942/00942. 00000 -  "table or view%s does not exist"
-*Cause:    The specified table or view did not exist, or a synonym
-           pointed to a table or view that did not exist.
-           To find existing user tables and views, query the
-           ALL_TABLES and ALL_VIEWS data dictionary views. Certain
-           privileges may be required to access the table. If an
-           application returned this message, then the table that the
-           application tried to access did not exist in the database, or
-           the application did not have access to it.
-*Action:   Check each of the following
-           - The spelling of the table or view name is correct.
-           - The referenced table or view name does exist.
-           - The synonym points to an existing table or view.
-
-More Details :
-https://docs.oracle.com/error-help/db/ora-00942/
 drop all objects
 
 View REVIEW_ORDER_DISCOUNTS dropped.
