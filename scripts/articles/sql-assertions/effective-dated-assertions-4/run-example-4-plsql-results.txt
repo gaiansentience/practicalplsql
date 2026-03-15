@@ -59,11 +59,11 @@ all valid orders have discount minimum that matches customer status
 
 CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID  PLACED              EFFECTIVE           EXPIRES             STATUS_EFFECTIVE    STATUS_EXPIRES     
 ---------- ---------- ------------------ ---------- ------------------ --------------- ------------------- ------------------- ------------------- ------------------- -------------------
-Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-15 12:52:50 2026-03-15 12:52:50                     2026-03-15 12:52:50                    
-Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-15 12:52:50 2026-03-15 12:52:50                     2026-03-15 12:52:50                    
-Nina       New        0%                          1 0%                 Meets Minimum   2026-03-15 12:52:50 2026-03-15 12:52:50                     2026-03-15 12:52:50                    
-Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-15 12:52:50 2026-03-15 12:52:50                     2026-03-15 12:52:50                    
-Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-15 12:52:50 2026-03-15 12:52:50                     2026-03-15 12:52:50                    
+Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-15 12:58:07 2026-03-15 12:58:07                     2026-03-15 12:58:06                    
+Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-15 12:58:07 2026-03-15 12:58:07                     2026-03-15 12:58:06                    
+Nina       New        0%                          1 0%                 Meets Minimum   2026-03-15 12:58:07 2026-03-15 12:58:06                     2026-03-15 12:58:06                    
+Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-15 12:58:07 2026-03-15 12:58:06                     2026-03-15 12:58:06                    
+Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-15 12:58:07 2026-03-15 12:58:07                     2026-03-15 12:58:06                    
 
 
 PL/SQL procedure successfully completed.
@@ -85,13 +85,13 @@ Nina's new orders after status was upgraded to Preferred also satisfy the assert
 
 CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID  PLACED              EFFECTIVE           EXPIRES             STATUS_EFFECTIVE    STATUS_EXPIRES     
 ---------- ---------- ------------------ ---------- ------------------ --------------- ------------------- ------------------- ------------------- ------------------- -------------------
-Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-15 12:52:50 2026-03-15 12:52:50                     2026-03-15 12:52:50                    
-Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-15 12:52:50 2026-03-15 12:52:50                     2026-03-15 12:52:50                    
-Nina       New        0%                          1 0%                 Meets Minimum   2026-03-15 12:52:50 2026-03-15 12:52:50 2026-03-15 12:52:55 2026-03-15 12:52:50                    
-Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-15 12:52:50 2026-03-15 12:52:50 2026-03-15 12:52:55 2026-03-15 12:52:50                    
-Nina       Preferred  5%                          8 5%                 Meets Minimum   2026-03-15 12:52:55 2026-03-15 12:52:55                     2026-03-15 12:52:50                    
-Nina       Preferred  5%                          9 5%                 Meets Minimum   2026-03-15 12:52:55 2026-03-15 12:52:55                     2026-03-15 12:52:50                    
-Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-15 12:52:50 2026-03-15 12:52:50                     2026-03-15 12:52:50                    
+Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-15 12:58:07 2026-03-15 12:58:07                     2026-03-15 12:58:06                    
+Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-15 12:58:07 2026-03-15 12:58:07                     2026-03-15 12:58:06                    
+Nina       New        0%                          1 0%                 Meets Minimum   2026-03-15 12:58:07 2026-03-15 12:58:06 2026-03-15 12:58:12 2026-03-15 12:58:06                    
+Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-15 12:58:07 2026-03-15 12:58:06 2026-03-15 12:58:12 2026-03-15 12:58:06                    
+Nina       Preferred  5%                          8 5%                 Meets Minimum   2026-03-15 12:58:12 2026-03-15 12:58:12                     2026-03-15 12:58:06                    
+Nina       Preferred  5%                          9 5%                 Meets Minimum   2026-03-15 12:58:12 2026-03-15 12:58:12                     2026-03-15 12:58:06                    
+Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-15 12:58:07 2026-03-15 12:58:07                     2026-03-15 12:58:06                    
 
 7 rows selected. 
 
@@ -113,22 +113,22 @@ Nina's status is updated to Elite, all earlier orders show valid discounts for t
 
 CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID  PLACED              EFFECTIVE           EXPIRES             STATUS_EFFECTIVE    STATUS_EXPIRES     
 ---------- ---------- ------------------ ---------- ------------------ --------------- ------------------- ------------------- ------------------- ------------------- -------------------
-Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-15 12:52:50 2026-03-15 12:52:50                     2026-03-15 12:52:50                    
-Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-15 12:52:50 2026-03-15 12:52:50                     2026-03-15 12:52:50                    
-Nina       New        0%                          1 0%                 Meets Minimum   2026-03-15 12:52:50 2026-03-15 12:52:50 2026-03-15 12:52:55 2026-03-15 12:52:50                    
-Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-15 12:52:50 2026-03-15 12:52:50 2026-03-15 12:52:55 2026-03-15 12:52:50                    
-Nina       Preferred  5%                          8 5%                 Meets Minimum   2026-03-15 12:52:55 2026-03-15 12:52:55 2026-03-15 12:53:00 2026-03-15 12:52:50                    
-Nina       Preferred  5%                          9 5%                 Meets Minimum   2026-03-15 12:52:55 2026-03-15 12:52:55 2026-03-15 12:53:00 2026-03-15 12:52:50                    
-Nina       Elite      10%                        11 10%                Meets Minimum   2026-03-15 12:53:00 2026-03-15 12:53:00                     2026-03-15 12:52:50                    
-Nina       Elite      10%                        12 11%                Exceeds Minimum 2026-03-15 12:53:00 2026-03-15 12:53:00                     2026-03-15 12:52:50                    
-Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-15 12:52:50 2026-03-15 12:52:50                     2026-03-15 12:52:50                    
+Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-15 12:58:07 2026-03-15 12:58:07                     2026-03-15 12:58:06                    
+Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-15 12:58:07 2026-03-15 12:58:07                     2026-03-15 12:58:06                    
+Nina       New        0%                          1 0%                 Meets Minimum   2026-03-15 12:58:07 2026-03-15 12:58:06 2026-03-15 12:58:12 2026-03-15 12:58:06                    
+Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-15 12:58:07 2026-03-15 12:58:06 2026-03-15 12:58:12 2026-03-15 12:58:06                    
+Nina       Preferred  5%                          8 5%                 Meets Minimum   2026-03-15 12:58:12 2026-03-15 12:58:12 2026-03-15 12:58:17 2026-03-15 12:58:06                    
+Nina       Preferred  5%                          9 5%                 Meets Minimum   2026-03-15 12:58:12 2026-03-15 12:58:12 2026-03-15 12:58:17 2026-03-15 12:58:06                    
+Nina       Elite      10%                        11 10%                Meets Minimum   2026-03-15 12:58:17 2026-03-15 12:58:17                     2026-03-15 12:58:06                    
+Nina       Elite      10%                        12 11%                Exceeds Minimum 2026-03-15 12:58:17 2026-03-15 12:58:17                     2026-03-15 12:58:06                    
+Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-15 12:58:07 2026-03-15 12:58:07                     2026-03-15 12:58:06                    
 
 9 rows selected. 
 
 
 PL/SQL procedure successfully completed.
 
-#Change Preferred to 0.625 minimum discount
+#Change Preferred to 0.0625 minimum discount
 update status Preferred discount minimum to 6.25% COMMITTED
 #Change Elite to 0.1125 minimum discount
 update status Elite discount minimum to 11.25% COMMITTED
@@ -153,18 +153,18 @@ after the change in minimum discounts for Preferred and Elite, all orders are va
 
 CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID  PLACED              EFFECTIVE           EXPIRES             STATUS_EFFECTIVE    STATUS_EXPIRES     
 ---------- ---------- ------------------ ---------- ------------------ --------------- ------------------- ------------------- ------------------- ------------------- -------------------
-Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-15 12:52:50 2026-03-15 12:52:50                     2026-03-15 12:52:50 2026-03-15 12:53:05
-Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-15 12:52:50 2026-03-15 12:52:50                     2026-03-15 12:52:50 2026-03-15 12:53:05
-Nina       New        0%                          1 0%                 Meets Minimum   2026-03-15 12:52:50 2026-03-15 12:52:50 2026-03-15 12:52:55 2026-03-15 12:52:50                    
-Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-15 12:52:50 2026-03-15 12:52:50 2026-03-15 12:52:55 2026-03-15 12:52:50                    
-Nina       Preferred  5%                          8 5%                 Meets Minimum   2026-03-15 12:52:55 2026-03-15 12:52:55 2026-03-15 12:53:00 2026-03-15 12:52:50 2026-03-15 12:53:05
-Nina       Preferred  5%                          9 5%                 Meets Minimum   2026-03-15 12:52:55 2026-03-15 12:52:55 2026-03-15 12:53:00 2026-03-15 12:52:50 2026-03-15 12:53:05
-Nina       Elite      10%                        11 10%                Meets Minimum   2026-03-15 12:53:00 2026-03-15 12:53:00                     2026-03-15 12:52:50 2026-03-15 12:53:05
-Nina       Elite      10%                        12 11%                Exceeds Minimum 2026-03-15 12:53:00 2026-03-15 12:53:00                     2026-03-15 12:52:50 2026-03-15 12:53:05
-Nina       Elite      11.25%                     16 12%                Exceeds Minimum 2026-03-15 12:53:05 2026-03-15 12:53:00                     2026-03-15 12:53:05                    
-Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-15 12:52:50 2026-03-15 12:52:50                     2026-03-15 12:52:50 2026-03-15 12:53:05
-Prue       Preferred  6.25%                      14 7%                 Exceeds Minimum 2026-03-15 12:53:05 2026-03-15 12:52:50                     2026-03-15 12:53:05                    
-Prue       Preferred  6.25%                      15 6.5%               Exceeds Minimum 2026-03-15 12:53:05 2026-03-15 12:52:50                     2026-03-15 12:53:05                    
+Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-15 12:58:07 2026-03-15 12:58:07                     2026-03-15 12:58:06 2026-03-15 12:58:22
+Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-15 12:58:07 2026-03-15 12:58:07                     2026-03-15 12:58:06 2026-03-15 12:58:22
+Nina       New        0%                          1 0%                 Meets Minimum   2026-03-15 12:58:07 2026-03-15 12:58:06 2026-03-15 12:58:12 2026-03-15 12:58:06                    
+Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-15 12:58:07 2026-03-15 12:58:06 2026-03-15 12:58:12 2026-03-15 12:58:06                    
+Nina       Preferred  5%                          8 5%                 Meets Minimum   2026-03-15 12:58:12 2026-03-15 12:58:12 2026-03-15 12:58:17 2026-03-15 12:58:06 2026-03-15 12:58:22
+Nina       Preferred  5%                          9 5%                 Meets Minimum   2026-03-15 12:58:12 2026-03-15 12:58:12 2026-03-15 12:58:17 2026-03-15 12:58:06 2026-03-15 12:58:22
+Nina       Elite      10%                        11 10%                Meets Minimum   2026-03-15 12:58:17 2026-03-15 12:58:17                     2026-03-15 12:58:06 2026-03-15 12:58:22
+Nina       Elite      10%                        12 11%                Exceeds Minimum 2026-03-15 12:58:17 2026-03-15 12:58:17                     2026-03-15 12:58:06 2026-03-15 12:58:22
+Nina       Elite      11.25%                     16 12%                Exceeds Minimum 2026-03-15 12:58:22 2026-03-15 12:58:17                     2026-03-15 12:58:22                    
+Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-15 12:58:07 2026-03-15 12:58:07                     2026-03-15 12:58:06 2026-03-15 12:58:22
+Prue       Preferred  6.25%                      14 7%                 Exceeds Minimum 2026-03-15 12:58:22 2026-03-15 12:58:07                     2026-03-15 12:58:22                    
+Prue       Preferred  6.25%                      15 6.5%               Exceeds Minimum 2026-03-15 12:58:22 2026-03-15 12:58:07                     2026-03-15 12:58:22                    
 
 12 rows selected. 
 
