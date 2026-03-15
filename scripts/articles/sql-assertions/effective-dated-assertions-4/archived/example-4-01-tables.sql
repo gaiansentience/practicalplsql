@@ -9,7 +9,7 @@ create table if not exists loyalty(
         constraint loyalty_fk_loyalty_status_codes
         references loyalty_status_codes(status)
         not null, 
-    discount_minimum number(5,4) default 0 not null,
+    discount_min number(5,4) default 0 not null,
     effective date default sysdate not null,
     expires date,
     constraint loyalty_ck_dates 
@@ -25,7 +25,7 @@ begin
     insert into loyalty_status_codes(status)
     values('New'), ('Preferred'), ('Elite');
     
-    insert into loyalty(status, discount_minimum)
+    insert into loyalty(status, discount_min)
     values
         ('New', 0),
         ('Preferred', .05),
