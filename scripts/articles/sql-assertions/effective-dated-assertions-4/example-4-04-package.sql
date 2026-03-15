@@ -3,7 +3,7 @@ as
     procedure add_customer(c in customers.customer_name%type, s in loyalty.status%type);
     procedure add_order(c in customers.customer_name%type, d in orders.discount%type);
     procedure update_status(c in customers.customer_name%type, s in loyalty.status%type);
-    procedure update_status_discount(s in loyalty.status%type, d in loyalty.discount_minimum%type);
+    procedure update_status_discount(s in loyalty.status%type, d in loyalty.discount_min%type);
 end sales_api;
 /
 
@@ -71,7 +71,7 @@ as
             print_tx_state(l_info, false);
     end update_status;
 
-    procedure update_status_discount(s in loyalty.status%type, d in loyalty.discount_minimum%type)
+    procedure update_status_discount(s in loyalty.status%type, d in loyalty.discount_min%type)
     is
         l_info t_details := 'update status ' || s || ' discount minimum to ' || (100 * d) || '%';
         l_date date := sysdate;
@@ -79,7 +79,7 @@ as
         update loyalty
         set expires = l_date
         where status = s and expires is null;
-        insert into loyalty(status, discount_minimum, effective)
+        insert into loyalty(status, discount_min, effective)
         values (s, d, l_date);
         commit;    
         print_tx_state(l_info);

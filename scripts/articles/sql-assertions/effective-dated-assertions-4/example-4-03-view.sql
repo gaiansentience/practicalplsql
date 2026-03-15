@@ -1,10 +1,10 @@
 create or replace view review_order_discounts as
 select 
-    c.customer_name, p.status, (100 * s.discount_minimum) || '%' as loyalty_discount
+    c.customer_name, p.status, (100 * s.discount_min) || '%' as loyalty_discount
     , o.order_id, (100 * o.discount) || '%' as order_discount
     , case 
-        when o.discount < s.discount_minimum then 'Insufficient' 
-        when o.discount = s.discount_minimum then 'Meets Minimum' 
+        when o.discount < s.discount_min then 'Insufficient' 
+        when o.discount = s.discount_min then 'Meets Minimum' 
         else 'Exceeds Minimum' 
     end as discount_valid
     , o.placed
