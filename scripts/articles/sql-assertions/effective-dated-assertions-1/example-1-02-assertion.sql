@@ -12,4 +12,3 @@ create assertion if not exists loyalty_discount_applied check (
     )
 )
 /
-

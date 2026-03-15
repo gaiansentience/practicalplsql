@@ -8,13 +8,11 @@ create table if not exists loyalty(
 prompt insert the discount minimum for each loyalty status
 begin
     insert into loyalty(status, discount_min)
-    values
-        ('New', 0), ('Preferred', .05), ('Elite', 0.10);
-    
+    values ('New', 0), ('Preferred', .05), ('Elite', 0.10);
+
     commit;
 end;
 /
-
 
 create table if not exists customers(
     customer_name varchar2(10) 
