@@ -1,5 +1,7 @@
-column loyalty_discount format a18;
-column discount format a18;
+--example-1-05-tests-sql.sql
+
+column loyalty_discount format a18
+column order_discount format a18
 set pagesize 100
 
 set serveroutput on;
@@ -126,17 +128,20 @@ select * from review_order_discounts
 /
 
 prompt the only way to change customer status is to disable the assertion
-alter assertion loyalty_discount_applied disable novalidate;
 begin
+    dbms_output.put_line('disable the assertion');
+    execute immediate 'alter assertion loyalty_discount_applied disable novalidate';
+    
     dbms_output.put_line('#Upgrade Nina to Elite status with assertion disabled');
     update customers
     set status = 'Elite' 
     where customer_name = 'Nina';
     commit;
+    
+    dbms_output.put_line('enable the assertion after upgrading customer status');
+    execute immediate 'alter assertion loyalty_discount_applied enable novalidate';    
 end;
 /
-prompt enable the assertion after the status update in novalidate state
-alter assertion loyalty_discount_applied enable novalidate;
 
 begin
    dbms_output.put_line('#Place valid orders: Nina, Elite, [0.10,0.11]');
@@ -170,4 +175,91 @@ exception
     when others then
         dbms_output.put_line(sqlerrm);
 end;
+/
+
+--------------------------------------------
+prompt changing loyalty discounts cannot be done with assertion enabled, existing data violates the assertion
+begin
+    dbms_output.put_line('#Change Preferred to 0.0625 minimum discount');
+    update loyalty set discount_min = 0.0625
+    where status = 'Preferred';
+exception
+    when others then
+        rollback;
+        dbms_output.put_line(sqlerrm);
+end;
+/
+
+begin
+    dbms_output.put_line('#Change Elite to 0.1125 minimum discount');        
+    update loyalty set discount_min = 0.1125
+    where status = 'Elite';
+exception
+    when others then
+        rollback;
+        dbms_output.put_line(sqlerrm);
+end;
+/
+
+prompt to change the discount minimums, the assertion must be disabled
+prompt after updating the discounts, the assertion can be enabled in novalidate state
+begin
+    dbms_output.put_line('disable the assertion to change loyalty discount minimum');
+    execute immediate 'alter assertion loyalty_discount_applied disable novalidate';
+    
+    dbms_output.put_line('#Change Preferred to 0.0625 minimum discount');
+    update loyalty set discount_min = 0.0625
+    where status = 'Preferred';
+    
+    dbms_output.put_line('#Change Elite to 0.1125 minimum discount');        
+    update loyalty set discount_min = 0.1125
+    where status = 'Elite';
+    
+    commit;
+
+    dbms_output.put_line('enable the assertion');
+    execute immediate 'alter assertion loyalty_discount_applied enable novalidate';
+end;
+/
+
+
+begin
+
+    dbms_output.put_line('#Place valid orders: Prue, Preferred [0.07, 0.065]');
+    insert into orders(customer_name, discount)
+    values('Prue', 0.07), ('Prue', 0.065);
+
+    dbms_output.put_line('#Place valid order: Nina, Elite, 0.12');
+    insert into orders(customer_name, discount)
+    values('Nina', 0.12);
+
+    commit;
+end;
+/
+
+begin
+    dbms_output.put_line('#Place invalid order: Prue, Preferred, 0.05');
+    insert into orders(customer_name, discount)
+    values('Prue', 0.05);
+exception
+    when others then
+        rollback;
+        dbms_output.put_line(sqlerrm);
+end;
+/
+
+
+begin
+    dbms_output.put_line('#Place invalid order: Nina, Elite, 0.10');      
+    insert into orders(customer_name, discount)
+    values('Nina', 0.10);
+exception
+    when others then
+        rollback;
+        dbms_output.put_line(sqlerrm);
+end;
+/
+
+prompt while new orders will be validated by the assertion, not all existing orders meet the revised minimum discount requirements
+select * from review_order_discounts
 /

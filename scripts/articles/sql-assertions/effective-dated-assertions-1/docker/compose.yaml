@@ -17,4 +17,3 @@
       volumes:
         - ./initdb.d/setup:/container-entrypoint-initdb.d
         - ./initdb.d/startup:/container-entrypoint-startdb.d
-        - /home/oracle/container-data:/home/oracle/ext-data

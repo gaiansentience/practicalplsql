@@ -1,5 +1,6 @@
-column loyalty_discount format a18;
-column order_discount format a18;
+column loyalty_discount format a18
+column order_discount format a18
+set pagesize 100
 
 set serveroutput on;
 
@@ -113,4 +114,51 @@ exception
     when others then
         dbms_output.put_line(sqlerrm);
 end;
+/
+
+prompt changing loyalty discounts cannot be done with assertion enabled, existing data violates the assertion
+begin
+    dbms_output.put_line('#Change Preferred to 0.0625 minimum discount');
+    sales_api.update_loyalty_discount('Preferred', 0.0625);
+    
+    dbms_output.put_line('#Change Elite to 0.1125 minimum discount');        
+    sales_api.update_loyalty_discount('Elite', 0.1125);
+end;
+/
+
+prompt to change the discount minimums, the assertion must be disabled
+alter assertion loyalty_discount_applied disable novalidate;
+begin
+    dbms_output.put_line('#Change Preferred to 0.0625 minimum discount');
+    sales_api.update_loyalty_discount('Preferred', 0.0625);
+    
+    dbms_output.put_line('#Change Elite to 0.1125 minimum discount');        
+    sales_api.update_loyalty_discount('Elite', 0.1125);
+end;
+/
+
+prompt after updating the discounts, the assertion can be enabled in novalidate state
+alter assertion loyalty_discount_applied enable novalidate;
+
+
+begin
+
+    dbms_output.put_line('#Place valid orders: Prue, Preferred [0.07, 0.065]');
+    sales_api.add_order('Prue', 0.07);
+    sales_api.add_order('Prue', 0.065);
+
+    dbms_output.put_line('#Place valid order: Nina, Elite, 0.12');
+    sales_api.add_order('Nina', 0.12);     
+    
+    dbms_output.put_line('#Place invalid order: Prue, Preferred, 0.05');
+    sales_api.add_order('Prue', 0.05);
+
+    dbms_output.put_line('#Place invalid order: Nina, Elite, 0.10');
+    sales_api.add_order('Nina', 0.10); 
+      
+end;
+/
+
+prompt while new orders will be validated by the assertion, not all existing orders meet the revised minimum discount requirements
+select * from review_order_discounts
 /

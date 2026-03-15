@@ -11,6 +11,10 @@ as
     procedure update_customer_loyalty(
         p_customer_name in customers.customer_name%type, 
         p_status in loyalty.status%type);
+        
+    procedure update_loyalty_discount(
+        p_status in loyalty.status%type,
+        p_discount_min in loyalty.discount_min%type);
 
 end sales_api;
 /
@@ -85,6 +89,25 @@ as
             rollback;
             print_tx_state(l_info, false);
     end update_customer_loyalty;
+
+    procedure update_loyalty_discount(
+        p_status in loyalty.status%type,
+        p_discount_min in loyalty.discount_min%type)
+    is
+        l_info t_details := 'update status ' || p_status
+            || ' to discount minimum ' || (p_discount_min * 100) || '%';
+    begin
+        update loyalty
+        set discount_min = p_discount_min
+        where status = p_status;
+        
+        commit;
+        print_tx_state(l_info);
+    exception
+        when others then
+            rollback;
+            print_tx_state(l_info, false);
+    end update_loyalty_discount;
 
 end sales_api;
 /

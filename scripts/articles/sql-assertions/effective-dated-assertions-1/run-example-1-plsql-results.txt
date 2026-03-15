@@ -165,6 +165,67 @@ ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
 
 PL/SQL procedure successfully completed.
 
+changing loyalty discounts cannot be done with assertion enabled, existing data violates the assertion
+#Change Preferred to 0.0625 minimum discount
+update status Preferred to discount minimum 6.25%
+    ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+#Change Elite to 0.1125 minimum discount
+update status Elite to discount minimum 11.25%
+    ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+
+
+PL/SQL procedure successfully completed.
+
+to change the discount minimums, the assertion must be disabled
+
+Assertion LOYALTY_DISCOUNT_APPLIED altered.
+
+#Change Preferred to 0.0625 minimum discount
+update status Preferred to discount minimum 6.25% COMMITTED
+#Change Elite to 0.1125 minimum discount
+update status Elite to discount minimum 11.25% COMMITTED
+
+
+PL/SQL procedure successfully completed.
+
+after updating the discounts, the assertion can be enabled in novalidate state
+
+Assertion LOYALTY_DISCOUNT_APPLIED altered.
+
+#Place valid orders: Prue, Preferred [0.07, 0.065]
+place order for customer Prue with 7% discount COMMITTED
+place order for customer Prue with 6.5% discount COMMITTED
+#Place valid order: Nina, Elite, 0.12
+place order for customer Nina with 12% discount COMMITTED
+#Place invalid order: Prue, Preferred, 0.05
+place order for customer Prue with 5% discount
+    ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+#Place invalid order: Nina, Elite, 0.10
+place order for customer Nina with 10% discount
+    ROLLED BACK ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+
+
+PL/SQL procedure successfully completed.
+
+while new orders will be validated by the assertion, not all existing orders meet the revised minimum discount requirements
+
+CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID 
+---------- ---------- ------------------ ---------- ------------------ ---------------
+Liza       Elite      11.25%                      4 10%                Insufficient   
+Liza       Elite      11.25%                      5 11%                Insufficient   
+Nina       Elite      11.25%                      1 0%                 Insufficient   
+Nina       Elite      11.25%                      2 5%                 Insufficient   
+Nina       Elite      11.25%                      8 5%                 Insufficient   
+Nina       Elite      11.25%                      9 5%                 Insufficient   
+Nina       Elite      11.25%                     11 10%                Insufficient   
+Nina       Elite      11.25%                     12 11%                Insufficient   
+Nina       Elite      11.25%                     16 12%                Exceeds Minimum
+Prue       Preferred  6.25%                       3 5%                 Insufficient   
+Prue       Preferred  6.25%                      14 7%                 Exceeds Minimum
+Prue       Preferred  6.25%                      15 6.5%               Exceeds Minimum
+
+12 rows selected. 
+
 drop all objects
 
 View REVIEW_ORDER_DISCOUNTS dropped.

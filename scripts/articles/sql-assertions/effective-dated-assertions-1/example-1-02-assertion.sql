@@ -1,3 +1,5 @@
+--example-1-02-assertion.sql
+
 create assertion if not exists loyalty_discount_applied check (
     not exists (
         select 'order discount invalid for customer loyalty status'

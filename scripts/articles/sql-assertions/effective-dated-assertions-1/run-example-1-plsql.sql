@@ -1,3 +1,5 @@
+--run-example-1-plsql.sql
+
 spool run-example-1-plsql-results.txt
 
 prompt running example with plsql api

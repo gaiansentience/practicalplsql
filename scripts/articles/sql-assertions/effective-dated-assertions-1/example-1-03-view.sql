@@ -1,3 +1,5 @@
+--example-1-03-view.sql
+
 create or replace view review_order_discounts as
 select 
     c.customer_name

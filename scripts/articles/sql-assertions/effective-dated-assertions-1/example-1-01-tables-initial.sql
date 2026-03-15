@@ -1,4 +1,4 @@
---example-1-01-tables.sql
+--example-1-01-tables-initial.sql
 
 create table if not exists loyalty(
     status varchar2(10) 
@@ -16,12 +16,13 @@ begin
 end;
 /
 
+prompt note: customers.status is nullable
 create table if not exists customers(
     customer_name varchar2(10) 
         constraint customers_pk primary key,
     status varchar2(10) default 'New' 
         constraint customers_fk_loyalty 
-        references loyalty(status) not null    
+        references loyalty(status)  
 )
 /
 
