@@ -6,8 +6,4 @@ alter user practicalplsql quota unlimited on users;
 
 grant connect, db_developer_role to practicalplsql;
 
-grant create domain to practicalplsql;
-
 grant create assertion to practicalplsql;
-
-grant create mining model to practicalplsql;
