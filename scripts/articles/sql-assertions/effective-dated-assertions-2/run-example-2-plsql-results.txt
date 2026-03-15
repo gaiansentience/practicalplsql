@@ -49,11 +49,11 @@ all valid orders have discount minimum that matches customer status
 
 CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID  PLACED              STATUS_UPDATED     
 ---------- ---------- ------------------ ---------- ------------------ --------------- ------------------- -------------------
-Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-10 00:35:02 2026-03-10 00:35:02
-Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-10 00:35:02 2026-03-10 00:35:02
-Nina       New        0%                          1 0%                 Meets Minimum   2026-03-10 00:35:02 2026-03-10 00:35:02
-Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-10 00:35:02 2026-03-10 00:35:02
-Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-10 00:35:02 2026-03-10 00:35:02
+Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-14 19:09:24 2026-03-14 19:09:24
+Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-14 19:09:24 2026-03-14 19:09:24
+Nina       New        0%                          1 0%                 Meets Minimum   2026-03-14 19:09:24 2026-03-14 19:09:24
+Nina       New        0%                          2 5%                 Exceeds Minimum 2026-03-14 19:09:24 2026-03-14 19:09:24
+Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-14 19:09:24 2026-03-14 19:09:24
 
 
 PL/SQL procedure successfully completed.
@@ -75,13 +75,13 @@ Nina's new orders after status was upgraded to Preferred satisfy the assertion
 
 CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID  PLACED              STATUS_UPDATED     
 ---------- ---------- ------------------ ---------- ------------------ --------------- ------------------- -------------------
-Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-10 00:35:02 2026-03-10 00:35:02
-Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-10 00:35:02 2026-03-10 00:35:02
-Nina       Preferred  5%                          1 0%                 Legacy Order    2026-03-10 00:35:02 2026-03-10 00:35:08
-Nina       Preferred  5%                          2 5%                 Legacy Order    2026-03-10 00:35:02 2026-03-10 00:35:08
-Nina       Preferred  5%                          8 5%                 Meets Minimum   2026-03-10 00:35:08 2026-03-10 00:35:08
-Nina       Preferred  5%                          9 5%                 Meets Minimum   2026-03-10 00:35:08 2026-03-10 00:35:08
-Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-10 00:35:02 2026-03-10 00:35:02
+Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-14 19:09:24 2026-03-14 19:09:24
+Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-14 19:09:24 2026-03-14 19:09:24
+Nina       Preferred  5%                          1 0%                 Legacy Order    2026-03-14 19:09:24 2026-03-14 19:09:29
+Nina       Preferred  5%                          2 5%                 Legacy Order    2026-03-14 19:09:24 2026-03-14 19:09:29
+Nina       Preferred  5%                          8 5%                 Meets Minimum   2026-03-14 19:09:29 2026-03-14 19:09:29
+Nina       Preferred  5%                          9 5%                 Meets Minimum   2026-03-14 19:09:29 2026-03-14 19:09:29
+Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-14 19:09:24 2026-03-14 19:09:24
 
 7 rows selected. 
 
@@ -103,15 +103,15 @@ Nina's status is updated to elite, and all earlier orders show as Legacy Orders 
 
 CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID  PLACED              STATUS_UPDATED     
 ---------- ---------- ------------------ ---------- ------------------ --------------- ------------------- -------------------
-Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-10 00:35:02 2026-03-10 00:35:02
-Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-10 00:35:02 2026-03-10 00:35:02
-Nina       Elite      10%                         1 0%                 Legacy Order    2026-03-10 00:35:02 2026-03-10 00:35:13
-Nina       Elite      10%                         2 5%                 Legacy Order    2026-03-10 00:35:02 2026-03-10 00:35:13
-Nina       Elite      10%                         8 5%                 Legacy Order    2026-03-10 00:35:08 2026-03-10 00:35:13
-Nina       Elite      10%                         9 5%                 Legacy Order    2026-03-10 00:35:08 2026-03-10 00:35:13
-Nina       Elite      10%                        11 10%                Meets Minimum   2026-03-10 00:35:13 2026-03-10 00:35:13
-Nina       Elite      10%                        12 11%                Exceeds Minimum 2026-03-10 00:35:13 2026-03-10 00:35:13
-Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-10 00:35:02 2026-03-10 00:35:02
+Liza       Elite      10%                         4 10%                Meets Minimum   2026-03-14 19:09:24 2026-03-14 19:09:24
+Liza       Elite      10%                         5 11%                Exceeds Minimum 2026-03-14 19:09:24 2026-03-14 19:09:24
+Nina       Elite      10%                         1 0%                 Legacy Order    2026-03-14 19:09:24 2026-03-14 19:09:34
+Nina       Elite      10%                         2 5%                 Legacy Order    2026-03-14 19:09:24 2026-03-14 19:09:34
+Nina       Elite      10%                         8 5%                 Legacy Order    2026-03-14 19:09:29 2026-03-14 19:09:34
+Nina       Elite      10%                         9 5%                 Legacy Order    2026-03-14 19:09:29 2026-03-14 19:09:34
+Nina       Elite      10%                        11 10%                Meets Minimum   2026-03-14 19:09:34 2026-03-14 19:09:34
+Nina       Elite      10%                        12 11%                Exceeds Minimum 2026-03-14 19:09:34 2026-03-14 19:09:34
+Prue       Preferred  5%                          3 5%                 Meets Minimum   2026-03-14 19:09:24 2026-03-14 19:09:24
 
 9 rows selected. 
 

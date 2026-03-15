@@ -6,7 +6,7 @@ as
         
     procedure add_order(
         p_customer_name in customers.customer_name%type,
-        p_discount in orders.order_discount%type);
+        p_discount in orders.discount%type);
         
     procedure update_status(
         p_customer_name in customers.customer_name%type, 
@@ -50,11 +50,11 @@ as
     
     procedure add_order(
         p_customer_name in customers.customer_name%type,
-        p_discount in orders.order_discount%type)
+        p_discount in orders.discount%type)
     is
         l_info t_details := 'place order for customer ' || p_customer_name || ' with ' || (p_discount * 100) || '% discount';
     begin
-        insert into orders(customer_name, order_discount)
+        insert into orders(customer_name, discount)
         values (p_customer_name, p_discount);
         commit;        
         print_tx_state(l_info);

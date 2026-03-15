@@ -1,8 +1,9 @@
 create or replace package sales_api
 as
     procedure add_customer(c in customers.customer_name%type, s in loyalty.status%type);
-    procedure add_order(c in customers.customer_name%type, d in orders.discount%type);
+    procedure add_order(c in customers.customer_name%type, d in orders.order_discount%type);
     procedure update_status(c in customers.customer_name%type, s in loyalty.status%type);
+    procedure update_status_discount(s in loyalty.status%type, d in loyalty.discount_minimum%type);
 end sales_api;
 /
 
@@ -27,7 +28,7 @@ as
     begin
         insert into customers(customer_name)
         values (c);
-        insert into customer_loyalty(customer_name, status)
+        insert into customer_loyalty_periods(customer_name, status)
         values (c, s);
 
         commit;        
@@ -38,11 +39,11 @@ as
             print_tx_state(l_info, false);
     end add_customer;        
     
-    procedure add_order(c in customers.customer_name%type, d in orders.discount%type)
+    procedure add_order(c in customers.customer_name%type, d in orders.order_discount%type)
     is
         l_info t_details := 'place order for customer ' || c || ' with ' || (d * 100) || '% discount';
     begin
-        insert into orders(customer_name, discount)
+        insert into orders(customer_name, order_discount)
         values (c, d);
         commit;        
         print_tx_state(l_info);
@@ -57,10 +58,10 @@ as
         l_info t_details := 'update customer ' || c || ' status to ' || s;
         l_date date := sysdate;
     begin
-        update customer_loyalty
+        update customer_loyalty_periods
         set expires = l_date
         where customer_name = c and expires is null;
-        insert into customer_loyalty(customer_name, status, effective)
+        insert into customer_loyalty_periods(customer_name, status, effective)
         values (c, s, l_date);
         commit;    
         print_tx_state(l_info);
@@ -69,6 +70,24 @@ as
             rollback;
             print_tx_state(l_info, false);
     end update_status;
+
+    procedure update_status_discount(s in loyalty.status%type, d in loyalty.discount_minimum%type)
+    is
+        l_info t_details := 'update status ' || s || ' discount minimum to ' || (100 * d) || '%';
+        l_date date := sysdate;
+    begin
+        update loyalty
+        set expires = l_date
+        where status = s and expires is null;
+        insert into loyalty(status, discount_minimum, effective)
+        values (s, d, l_date);
+        commit;    
+        print_tx_state(l_info);
+    exception
+        when others then
+            rollback;
+            print_tx_state(l_info, false);
+    end update_status_discount;
 
 end sales_api;
 /

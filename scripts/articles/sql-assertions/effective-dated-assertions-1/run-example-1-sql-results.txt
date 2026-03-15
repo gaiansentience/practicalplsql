@@ -42,13 +42,13 @@ PL/SQL procedure successfully completed.
 
 all valid orders have discount minimum that matches customer status
 
-CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID 
----------- ---------- ------------------ ---------- ------------------ ---------------
-Liza       Elite      10%                         4 10%                Meets Minimum  
-Liza       Elite      10%                         5 11%                Exceeds Minimum
-Nina       New        0%                          1 0%                 Meets Minimum  
-Nina       New        0%                          2 5%                 Exceeds Minimum
-Prue       Preferred  5%                          3 5%                 Meets Minimum  
+CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT                            DISCOUNT_VALID 
+---------- ---------- ------------------ ---------- ----------------------------------------- ---------------
+Liza       Elite      10%                         4 10%                                       Meets Minimum  
+Liza       Elite      10%                         5 11%                                       Exceeds Minimum
+Nina       New        0%                          1 0%                                        Meets Minimum  
+Nina       New        0%                          2 5%                                        Exceeds Minimum
+Prue       Preferred  5%                          3 5%                                        Meets Minimum  
 
 upgrading Nina to preferred customer status fails because all order discounts are validated at the new status level
 #Upgrade Nina to Preferred status with assertion enabled
@@ -95,15 +95,15 @@ PL/SQL procedure successfully completed.
 Ninas original orders before the status update cannot be validated by the assertion
 Ninas new orders are validated by the assertion
 
-CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID 
----------- ---------- ------------------ ---------- ------------------ ---------------
-Liza       Elite      10%                         4 10%                Meets Minimum  
-Liza       Elite      10%                         5 11%                Exceeds Minimum
-Nina       Preferred  5%                          1 0%                 Insufficient   
-Nina       Preferred  5%                          2 5%                 Meets Minimum  
-Nina       Preferred  5%                          8 5%                 Meets Minimum  
-Nina       Preferred  5%                          9 5%                 Meets Minimum  
-Prue       Preferred  5%                          3 5%                 Meets Minimum  
+CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT                            DISCOUNT_VALID 
+---------- ---------- ------------------ ---------- ----------------------------------------- ---------------
+Liza       Elite      10%                         4 10%                                       Meets Minimum  
+Liza       Elite      10%                         5 11%                                       Exceeds Minimum
+Nina       Preferred  5%                          1 0%                                        Insufficient   
+Nina       Preferred  5%                          2 5%                                        Meets Minimum  
+Nina       Preferred  5%                          8 5%                                        Meets Minimum  
+Nina       Preferred  5%                          9 5%                                        Meets Minimum  
+Prue       Preferred  5%                          3 5%                                        Meets Minimum  
 
 7 rows selected. 
 
@@ -133,17 +133,17 @@ PL/SQL procedure successfully completed.
 
 Nina's status is updated to elite, and all earlier orders show invalid discounts that cannot be validated by the assertion
 
-CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT     DISCOUNT_VALID 
----------- ---------- ------------------ ---------- ------------------ ---------------
-Liza       Elite      10%                         4 10%                Meets Minimum  
-Liza       Elite      10%                         5 11%                Exceeds Minimum
-Nina       Elite      10%                         1 0%                 Insufficient   
-Nina       Elite      10%                         2 5%                 Insufficient   
-Nina       Elite      10%                         8 5%                 Insufficient   
-Nina       Elite      10%                         9 5%                 Insufficient   
-Nina       Elite      10%                        11 10%                Meets Minimum  
-Nina       Elite      10%                        12 11%                Exceeds Minimum
-Prue       Preferred  5%                          3 5%                 Meets Minimum  
+CUSTOMER_N STATUS     LOYALTY_DISCOUNT     ORDER_ID ORDER_DISCOUNT                            DISCOUNT_VALID 
+---------- ---------- ------------------ ---------- ----------------------------------------- ---------------
+Liza       Elite      10%                         4 10%                                       Meets Minimum  
+Liza       Elite      10%                         5 11%                                       Exceeds Minimum
+Nina       Elite      10%                         1 0%                                        Insufficient   
+Nina       Elite      10%                         2 5%                                        Insufficient   
+Nina       Elite      10%                         8 5%                                        Insufficient   
+Nina       Elite      10%                         9 5%                                        Insufficient   
+Nina       Elite      10%                        11 10%                                       Meets Minimum  
+Nina       Elite      10%                        12 11%                                       Exceeds Minimum
+Prue       Preferred  5%                          3 5%                                        Meets Minimum  
 
 9 rows selected. 
 
