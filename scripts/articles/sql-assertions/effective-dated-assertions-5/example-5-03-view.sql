@@ -23,7 +23,7 @@ from
     join orders o on c.customer_id = o.customer_id     
     join customer_loyalty p on c.customer_id = p.customer_id
     join loyalty_discounts s on p.status_id = s.status_id 
-    join loyalty_status l on s.status_id = l.status_id
+    join loyalty l on s.status_id = l.status_id
 where
     o.placed >= p.effective and (p.expires is null or o.placed < p.expires)
     and o.placed >= s.effective and (s.expires is null or o.placed < s.expires)

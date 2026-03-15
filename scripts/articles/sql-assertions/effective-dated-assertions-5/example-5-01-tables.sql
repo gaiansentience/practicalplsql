@@ -1,16 +1,16 @@
-create table if not exists loyalty_status(
+create table if not exists loyalty(
     status_id integer default 0
-        constraint loyalty_status_pk primary key,
+        constraint loyalty_pk primary key,
     status varchar2(20)  not null
-        constraint loyalty_status_u_status unique
+        constraint loyalty_u_status unique
 )
 /
 --todo: add effective dates for status codes also???
 
 create table if not exists loyalty_discounts(
     status_id integer
-        constraint loyalty_discounts_fk_loyalty_status
-            references loyalty_status(status_id) not null,
+        constraint loyalty_discounts_fk_loyalty
+            references loyalty(status_id) not null,
     discount_min number(5,4) default 0 not null,
     discount_max number(5,4) default 0 not null,
     effective date default sysdate not null,
@@ -28,7 +28,7 @@ create table if not exists loyalty_discounts(
 
 prompt insert the discount minimum/maximum for each loyalty status
 begin
-    insert into loyalty_status(status_id, status)
+    insert into loyalty(status_id, status)
     values(0, 'New'), (1, 'Preferred'), (2, 'Elite'), (3, 'Cosmic');
     
     insert into loyalty_discounts(status_id, discount_min, discount_max)
@@ -55,8 +55,8 @@ create table if not exists customer_loyalty(
         constraint customer_loyalty_fk_customers
             references customers(customer_id) not null,
     status_id integer default 0 
-        constraint customer_loyalty_fk_loyalty_status
-            references loyalty_status (status_id) not null,
+        constraint customer_loyalty_fk_loyalty
+            references loyalty (status_id) not null,
     effective date default sysdate not null,
     expires date,
     constraint customer_loyalty_ck_effective_lt_expires

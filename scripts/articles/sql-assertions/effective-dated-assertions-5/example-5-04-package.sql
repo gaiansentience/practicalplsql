@@ -2,7 +2,7 @@ create or replace package sales_api
 as
     procedure add_customer(
         p_customer_name in customers.customer_name%type, 
-        p_status in loyalty_status.status%type);
+        p_status in loyalty.status%type);
         
     procedure add_order(
         p_customer_name in customers.customer_name%type, 
@@ -10,10 +10,10 @@ as
         
     procedure update_customer_loyalty(
         p_customer_name in customers.customer_name%type, 
-        p_status in loyalty_status.status%type);
+        p_status in loyalty.status%type);
         
     procedure update_loyalty_discount(
-        p_status in loyalty_status.status%type, 
+        p_status in loyalty.status%type, 
         p_discount_min in loyalty_discounts.discount_min%type default 0, 
         p_discount_max in loyalty_discounts.discount_max%type default 0);
 end sales_api;
@@ -48,25 +48,25 @@ as
     end get_customer_id;
     
     function get_loyalty_status_id(
-        p_status in loyalty_status.status%type
-    ) return loyalty_status.status_id%type
+        p_status in loyalty.status%type
+    ) return loyalty.status_id%type
     is
-        l_status_id loyalty_status.status_id%type;
+        l_status_id loyalty.status_id%type;
     begin
         select status_id into l_status_id
-        from loyalty_status
+        from loyalty
         where status = p_status;
         return l_status_id;
     end get_loyalty_status_id;
 
     procedure add_customer(
         p_customer_name in customers.customer_name%type, 
-        p_status in loyalty_status.status%type)
+        p_status in loyalty.status%type)
     is
         l_info t_details := 'create customer ' || p_customer_name 
             || ' with status ' || p_status;
         l_customer_id customers.customer_id%type;
-        l_status_id loyalty_status.status_id%type := get_loyalty_status_id(p_status);
+        l_status_id loyalty.status_id%type := get_loyalty_status_id(p_status);
     begin
         insert into customers(customer_name)
         values (p_customer_name)
@@ -104,13 +104,13 @@ as
     
     procedure update_customer_loyalty(
         p_customer_name in customers.customer_name%type, 
-        p_status in loyalty_status.status%type)
+        p_status in loyalty.status%type)
     is
         l_info t_details := 'update customer ' || p_customer_name 
             || ' to status ' || p_status;
         l_date date := sysdate;
         l_customer_id customers.customer_id%type := get_customer_id(p_customer_name);
-        l_status_id loyalty_status.status_id%type := get_loyalty_status_id(p_status);
+        l_status_id loyalty.status_id%type := get_loyalty_status_id(p_status);
     begin
         update customer_loyalty
         set expires = l_date
@@ -128,7 +128,7 @@ as
     end update_customer_loyalty;
 
     procedure update_loyalty_discount(
-        p_status in loyalty_status.status%type, 
+        p_status in loyalty.status%type, 
         p_discount_min in loyalty_discounts.discount_min%type default 0, 
         p_discount_max in loyalty_discounts.discount_max%type default 0)
     is
@@ -136,7 +136,7 @@ as
             || ' min discount ' || (100 * p_discount_min) || '%'
             || ', max discount ' || (100 * p_discount_max) || '%';
         l_date date := sysdate;
-        l_status_id loyalty_status.status_id%type := get_loyalty_status_id(p_status);
+        l_status_id loyalty.status_id%type := get_loyalty_status_id(p_status);
     begin
         update loyalty_discounts
         set expires = l_date

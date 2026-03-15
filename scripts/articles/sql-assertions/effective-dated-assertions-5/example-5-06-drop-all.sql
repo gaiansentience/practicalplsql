@@ -7,5 +7,5 @@ drop table if exists orders purge;
 drop table if exists customer_loyalty purge;
 drop table if exists customers purge;
 drop table if exists loyalty_discounts purge;
-drop table if exists loyalty_status purge;
+drop table if exists loyalty purge;
 
