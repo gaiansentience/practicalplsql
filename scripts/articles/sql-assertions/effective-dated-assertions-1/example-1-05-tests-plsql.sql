@@ -40,7 +40,7 @@ select * from review_order_discounts
 prompt upgrading Nina to preferred customer status fails because all order discounts are validated at the new status level
 begin
     dbms_output.put_line('#Upgrade Nina to Preferred status with assertion enabled');
-    sales_api.update_status('Nina', 'Preferred');
+    sales_api.update_customer_loyalty('Nina', 'Preferred');
 end;
 /
 
@@ -49,7 +49,7 @@ prompt the change in status still gets validated against all orders
 alter assertion loyalty_discount_applied enable novalidate;
 begin
     dbms_output.put_line('#Upgrade Nina to Preferred status with assertion enabled novalidate');
-    sales_api.update_status('Nina', 'Preferred');
+    sales_api.update_customer_loyalty('Nina', 'Preferred');
 end;
 /
 
@@ -57,7 +57,7 @@ prompt disable the assertion to update the status
 alter assertion loyalty_discount_applied disable novalidate;
 begin
     dbms_output.put_line('#Upgrade Nina to Preferred status with assertion disabled');
-    sales_api.update_status('Nina', 'Preferred');
+    sales_api.update_customer_loyalty('Nina', 'Preferred');
 end;
 /
 prompt after updating the status, the assertion can only be enabled in novalidate state
@@ -84,7 +84,7 @@ prompt the only way to change customer status is to disable the assertion
 alter assertion loyalty_discount_applied disable novalidate;
 begin
     dbms_output.put_line('#Upgrade Nina to Elite status with assertion disabled');
-    sales_api.update_status('Nina', 'Elite');
+    sales_api.update_customer_loyalty('Nina', 'Elite');
 end;
 /
 prompt enable the assertion after the status update in novalidate state
