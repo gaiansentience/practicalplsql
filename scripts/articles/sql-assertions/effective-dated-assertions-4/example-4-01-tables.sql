@@ -64,7 +64,7 @@ create table if not exists orders(
     customer_name varchar2(10)
         constraint orders_fk_customers
         references customers(customer_name) not null,
-    order_discount number(5,4) default 0 not null,
+    discount number(5,4) default 0 not null,
     placed date default sysdate not null
 )
 /

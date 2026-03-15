@@ -9,7 +9,7 @@ create assertion if not exists loyalty_discount_applied check (
         where 
             o.customer_name = c.customer_name 
             and c.status = s.status
-            and o.order_discount < s.discount_minimum
+            and o.discount < s.discount_minimum
             and o.placed >= c.effective and (c.expires is null or o.placed < c.expires)
             and o.placed >= s.effective and (s.expires is null or o.placed < s.expires)
     )

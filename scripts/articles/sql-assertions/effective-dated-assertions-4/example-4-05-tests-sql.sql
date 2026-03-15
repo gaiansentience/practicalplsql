@@ -1,5 +1,5 @@
 column loyalty_discount format a18;
-column order_discount format a18;
+column discount format a18;
 set pagesize 100
 
 set serveroutput on;
@@ -10,7 +10,7 @@ begin
     insert into customer_loyalty_periods (customer_name, status) values ('Nina', 'New');
 
     dbms_output.put_line('#Place valid orders: Nina, New, [0, 0.05]');    
-    insert into orders(customer_name, order_discount)
+    insert into orders(customer_name, discount)
     values('Nina', 0), ('Nina', 0.05);
 
     dbms_output.put_line('#Create customer Prue, status Preferred');
@@ -18,7 +18,7 @@ begin
     insert into customer_loyalty_periods (customer_name, status) values ('Prue', 'Preferred');
     
     dbms_output.put_line('#Place valid order: Prue, Preferred, 0.05');
-    insert into orders(customer_name, order_discount)
+    insert into orders(customer_name, discount)
     values('Prue', 0.05);
     
     dbms_output.put_line('#Create customer Liza, Elite');
@@ -26,7 +26,7 @@ begin
     insert into customer_loyalty_periods(customer_name, status) values('Liza', 'Elite');
     
     dbms_output.put_line('#Place valid orders: Liza, Elite, [0.10,0.11]');
-    insert into orders(customer_name, order_discount)
+    insert into orders(customer_name, discount)
     values('Liza', 0.10),('Liza', 0.11);
     
     commit;
@@ -35,7 +35,7 @@ end;
 
 begin
     dbms_output.put_line('#Place invalid order: Prue, Preferred, 0');
-    insert into orders(customer_name, order_discount)
+    insert into orders(customer_name, discount)
     values('Prue', 0);
 exception
     when others then
@@ -46,7 +46,7 @@ end;
 
 begin
     dbms_output.put_line('#Place invalid order: Liza, Elite, 0.05');
-    insert into orders(customer_name, order_discount)
+    insert into orders(customer_name, discount)
     values('Liza', 0.05);
 exception
     when others then
@@ -73,7 +73,7 @@ begin
     values('Nina', 'Preferred', l_date);
 
     dbms_output.put_line('#Place valid orders: Nina, Preferred, [0.05,0.05]');
-    insert into orders(customer_name, order_discount)
+    insert into orders(customer_name, discount)
     values('Nina', 0.05),('Nina', 0.05);
     
     commit;
@@ -82,7 +82,7 @@ end;
 
 begin
     dbms_output.put_line('#Place invalid order: Nina, Preferred, 0.01');
-    insert into orders(customer_name, order_discount)
+    insert into orders(customer_name, discount)
     values('Nina', 0.01);
 exception
     when others then
@@ -109,7 +109,7 @@ begin
     values('Nina', 'Elite', l_date);
 
     dbms_output.put_line('#Place valid orders: Nina, Elite, [0.10,0.11]');
-    insert into orders(customer_name, order_discount)
+    insert into orders(customer_name, discount)
     values('Nina', 0.10),('Nina', 0.11);
     
     commit;
@@ -118,7 +118,7 @@ end;
 
 begin
     dbms_output.put_line('#Place invalid order: Nina, Elite, 0.05');
-    insert into orders(customer_name, order_discount)
+    insert into orders(customer_name, discount)
     values('Nina', 0.05);
 exception
     when others then
@@ -158,11 +158,11 @@ end;
 begin
 
     dbms_output.put_line('#Place valid orders: Prue, Preferred [0.07, 0.065]');
-    insert into orders(customer_name, order_discount)
+    insert into orders(customer_name, discount)
     values ('Prue', 0.07),('Prue', 0.065);
 
     dbms_output.put_line('#Place valid order: Nina, Elite, 0.12');
-    insert into orders(customer_name, order_discount)
+    insert into orders(customer_name, discount)
     values ('Nina', 0.12);
     
     commit;
@@ -172,7 +172,7 @@ end;
 
 begin
     dbms_output.put_line('#Place invalid order: Prue, Preferred, 0.05');
-    insert into orders(customer_name, order_discount)
+    insert into orders(customer_name, discount)
     values('Prue', 0.05);
 
 exception
@@ -183,7 +183,7 @@ end;
 /
 begin
     dbms_output.put_line('#Place invalid order: Nina, Elite, 0.10');
-    insert into orders(customer_name, order_discount)
+    insert into orders(customer_name, discount)
     values('Nina', 0.10);
 
 exception
