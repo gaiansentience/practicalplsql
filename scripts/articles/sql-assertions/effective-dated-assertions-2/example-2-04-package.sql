@@ -1,9 +1,17 @@
 --adjust the api package to set customer.status_updated when changing status
 create or replace package sales_api
 as
-    procedure add_customer(c in customers.customer_name%type, s in loyalty.status%type);
-    procedure add_order(c in customers.customer_name%type, d in orders.discount%type);
-    procedure update_status(c in customers.customer_name%type, s in loyalty.status%type);
+    procedure add_customer(
+        p_customer_name in customers.customer_name%type, 
+        p_status in loyalty.status%type);
+        
+    procedure add_order(
+        p_customer_name in customers.customer_name%type, 
+        p_discount in orders.discount%type);
+        
+    procedure update_customer_loyalty(
+        p_customer_name in customers.customer_name%type, 
+        p_status in loyalty.status%type);
 end sales_api;
 /
 
@@ -16,17 +24,21 @@ as
         dbms_output.put_line(p_details 
             || case 
                 when p_committed then ' COMMITTED'
-                else ' ROLLED BACK ' || sqlerrm
+                else chr(10) || '    ROLLED BACK ' || sqlerrm
             end
             );
     end print_tx_state;
 
-    procedure add_customer(c in customers.customer_name%type, s in loyalty.status%type)
+    procedure add_customer(
+        p_customer_name in customers.customer_name%type, 
+        p_status in loyalty.status%type)
     is
-        l_info t_details := 'create customer ' || c || ' with status ' || s;
+        l_info t_details := 'create customer ' || p_customer_name 
+            || ' with status ' || p_status;
     begin
         insert into customers(customer_name, status)
-        values (c, s);
+        values (p_customer_name, p_status);
+        
         commit;        
         print_tx_state(l_info);
     exception
@@ -35,12 +47,16 @@ as
             print_tx_state(l_info, false);
     end add_customer;        
     
-    procedure add_order(c in customers.customer_name%type, d in orders.discount%type)
+    procedure add_order(
+        p_customer_name in customers.customer_name%type, 
+        p_discount in orders.discount%type)
     is
-        l_info t_details := 'place order for customer ' || c || ' with ' || (d * 100) || '% discount';
+        l_info t_details := 'place order for customer ' || p_customer_name 
+            || ' with ' || (p_discount * 100) || '% discount';
     begin
         insert into orders(customer_name, discount)
-        values (c, d);
+        values (p_customer_name, p_discount);
+        
         commit;        
         print_tx_state(l_info);
     exception
@@ -49,20 +65,24 @@ as
             print_tx_state(l_info, false);
     end add_order;
     
-    procedure update_status(c in customers.customer_name%type, s in loyalty.status%type)
+    procedure update_customer_loyalty(
+        p_customer_name in customers.customer_name%type, 
+        p_status in loyalty.status%type)
     is
-        l_info t_details := 'update customer ' || c || ' status to ' || s;
+        l_info t_details := 'update customer ' || p_customer_name 
+            || ' status to ' || p_status;
     begin
         update customers 
-        set status = s, status_updated = sysdate
-        where customer_name = c;
+        set status = p_status, status_updated = sysdate
+        where customer_name = p_customer_name;
+        
         commit;    
         print_tx_state(l_info);
     exception
         when others then
             rollback;
             print_tx_state(l_info, false);
-    end update_status;
+    end update_customer_loyalty;
 
 end sales_api;
 /
