@@ -9,9 +9,9 @@ select
     , (100 * s.discount_max) || '%' as status_max
     , case 
         when o.discount < s.discount_min then 'Insufficient' 
-        when o.discount = s.discount_min then 'Minimum %' 
+        when o.discount = s.discount_min then 'Minimum' 
         when o.discount < s.discount_max then 'Valid'
-        when o.discount = s.discount_max then 'Maximum %'
+        when o.discount = s.discount_max then 'Maximum'
         else 'Excessive' 
     end as order_status
     , p.effective status_effective

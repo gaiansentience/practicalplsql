@@ -1,12 +1,21 @@
 create or replace package sales_api
 as
-    subtype t_customer_name is customers.customer_name%type;
-    subtype t_loyalty_status is loyalty_status.status%type;
-    subtype t_discount is number(5,4);
-    procedure add_customer(c in t_customer_name, s in t_loyalty_status);
-    procedure add_order(c in t_customer_name, d in t_discount default 0);
-    procedure update_customer_loyalty(c in t_customer_name, s in t_loyalty_status);
-    procedure update_loyalty_discounts(s in t_loyalty_status, d_min in t_discount default 0, d_max in t_discount default 0);
+    procedure add_customer(
+        p_customer_name in customers.customer_name%type, 
+        p_status in loyalty_status.status%type);
+        
+    procedure add_order(
+        p_customer_name in customers.customer_name%type, 
+        p_discount in orders.discount%type default 0);
+        
+    procedure update_customer_loyalty(
+        p_customer_name in customers.customer_name%type, 
+        p_status in loyalty_status.status%type);
+        
+    procedure update_loyalty_discount(
+        p_status in loyalty_status.status%type, 
+        p_discount_min in loyalty_discounts.discount_min%type default 0, 
+        p_discount_max in loyalty_discounts.discount_max%type default 0);
 end sales_api;
 /
 
@@ -14,8 +23,6 @@ end sales_api;
 create or replace package body sales_api
 as
     subtype t_details is varchar2(4000);
-    subtype t_loyalty_status_id is loyalty_status.status_id%type;
-    subtype t_customer_id is customers.customer_id%type;
     
     procedure print_tx_state(p_details in t_details, p_committed in boolean default true)
     is
@@ -23,61 +30,50 @@ as
         dbms_output.put_line(p_details 
             || case 
                 when p_committed then ' COMMITTED'
-                else ' ROLLED BACK ' || sqlerrm
+                else chr(10) || '    ROLLED BACK ' || sqlerrm
             end
             );
     end print_tx_state;
-    
-    function format_discount(d in t_discount default 0) return varchar2
+        
+    function get_customer_id(
+        p_customer_name in customers.customer_name%type
+    ) return customers.customer_id%type
     is
+        l_customer_id customers.customer_id%type;
     begin
-        return (100 * d) || '% discount';
-    end format_discount;
-    
-    function format_customer_name(c in t_customer_name) return varchar2
-    is
-    begin
-        return 'customer ' || c;
-    end format_customer_name;
-    
-    function format_loyalty_status(s in t_loyalty_status) return varchar2
-    is
-    begin
-        return 'status ' || s;
-    end format_loyalty_status;
-    
-    function get_customer_id(c in t_customer_name) return t_customer_id
-    is
-        l_id t_customer_id;
-    begin
-        select customer_id into l_id
+        select customer_id into l_customer_id
         from customers 
-        where customer_name = c;
-        return l_id;
+        where customer_name = p_customer_name;
+        return l_customer_id;
     end get_customer_id;
     
-    function get_loyalty_status_id(s in t_loyalty_status) return t_loyalty_status_id
+    function get_loyalty_status_id(
+        p_status in loyalty_status.status%type
+    ) return loyalty_status.status_id%type
     is
-        l_id t_loyalty_status_id;
+        l_status_id loyalty_status.status_id%type;
     begin
-        select status_id into l_id
+        select status_id into l_status_id
         from loyalty_status
-        where status = s;
-        return l_id;
+        where status = p_status;
+        return l_status_id;
     end get_loyalty_status_id;
 
-    procedure add_customer(c in t_customer_name, s in t_loyalty_status)
+    procedure add_customer(
+        p_customer_name in customers.customer_name%type, 
+        p_status in loyalty_status.status%type)
     is
-        l_info t_details := 'create ' || format_customer_name(c) || ' with ' || format_loyalty_status(s);
-        c_id t_customer_id;
-        s_id t_loyalty_status_id := get_loyalty_status_id(s);
+        l_info t_details := 'create customer ' || p_customer_name 
+            || ' with status ' || p_status;
+        l_customer_id customers.customer_id%type;
+        l_status_id loyalty_status.status_id%type := get_loyalty_status_id(p_status);
     begin
         insert into customers(customer_name)
-        values (c)
-        returning customer_id into c_id;
+        values (p_customer_name)
+        returning customer_id into l_customer_id;
         
         insert into customer_loyalty(customer_id, status_id)
-        values (c_id, s_id);
+        values (l_customer_id, l_status_id);
 
         commit;        
         print_tx_state(l_info);
@@ -87,13 +83,17 @@ as
             print_tx_state(l_info, false);
     end add_customer;        
     
-    procedure add_order(c in t_customer_name, d in t_discount default 0)
+    procedure add_order(
+        p_customer_name in customers.customer_name%type, 
+        p_discount in orders.discount%type default 0)
     is
-        l_info t_details := 'place order for ' || format_customer_name(c) || ' with ' || format_discount(d);
-        c_id t_customer_id := get_customer_id(c);
+        l_info t_details := 'place order for customer ' || p_customer_name 
+            || ' with ' || (100 * p_discount) || '% discount';
+        l_customer_id customers.customer_id%type := get_customer_id(p_customer_name);
     begin
         insert into orders(customer_id, discount)
-        values (c_id, d);
+        values (l_customer_id, p_discount);
+        
         commit;        
         print_tx_state(l_info);
     exception
@@ -102,19 +102,23 @@ as
             print_tx_state(l_info, false);
     end add_order;
     
-    procedure update_customer_loyalty(c in t_customer_name, s in t_loyalty_status)
+    procedure update_customer_loyalty(
+        p_customer_name in customers.customer_name%type, 
+        p_status in loyalty_status.status%type)
     is
-        l_info t_details := 'update ' || format_customer_name(c) || ' to ' || format_loyalty_status(s);
+        l_info t_details := 'update customer ' || p_customer_name 
+            || ' to status ' || p_status;
         l_date date := sysdate;
-        c_id t_customer_id := get_customer_id(c);
-        s_id t_loyalty_status_id := get_loyalty_status_id(s);
+        l_customer_id customers.customer_id%type := get_customer_id(p_customer_name);
+        l_status_id loyalty_status.status_id%type := get_loyalty_status_id(p_status);
     begin
         update customer_loyalty
         set expires = l_date
-        where customer_id = c_id and expires is null;
+        where customer_id = l_customer_id and expires is null;
         
         insert into customer_loyalty(customer_id, status_id, effective)
-        values (c_id, s_id, l_date);
+        values (l_customer_id, l_status_id, l_date);
+        
         commit;    
         print_tx_state(l_info);
     exception
@@ -123,18 +127,23 @@ as
             print_tx_state(l_info, false);
     end update_customer_loyalty;
 
-    procedure update_loyalty_discounts(s in t_loyalty_status, d_min in t_discount default 0, d_max in t_discount default 0)
+    procedure update_loyalty_discount(
+        p_status in loyalty_status.status%type, 
+        p_discount_min in loyalty_discounts.discount_min%type default 0, 
+        p_discount_max in loyalty_discounts.discount_max%type default 0)
     is
-        l_info t_details := 'update ' || format_loyalty_status(s) || ' min ' || format_discount(d_min) || ' max ' || format_discount(d_max);
+        l_info t_details := 'update status ' || p_status 
+            || ' min discount ' || (100 * p_discount_min) || '%'
+            || ', max discount ' || (100 * p_discount_max) || '%';
         l_date date := sysdate;
-        s_id t_loyalty_status_id := get_loyalty_status_id(s);
+        l_status_id loyalty_status.status_id%type := get_loyalty_status_id(p_status);
     begin
         update loyalty_discounts
         set expires = l_date
-        where status_id = s_id and expires is null;
+        where status_id = l_status_id and expires is null;
         
         insert into loyalty_discounts(status_id, discount_min, discount_max, effective)
-        values (s_id, d_min, d_max, l_date);
+        values (l_status_id, p_discount_min, p_discount_max, l_date);
         
         commit;    
         print_tx_state(l_info);
@@ -142,7 +151,7 @@ as
         when others then
             rollback;
             print_tx_state(l_info, false);
-    end update_loyalty_discounts;
+    end update_loyalty_discount;
 
 end sales_api;
 /

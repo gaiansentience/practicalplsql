@@ -82,10 +82,10 @@ select * from review_order_discounts
 exec dbms_session.sleep(5);
 begin
     dbms_output.put_line('#Change Preferred discount to 6.25% min, 16.25% max');
-    sales_api.update_loyalty_discounts('Preferred', 0.0625, 0.1625);
+    sales_api.update_loyalty_discount('Preferred', 0.0625, 0.1625);
     
     dbms_output.put_line('#Change Elite discount to 11.25% min 21.25% max');        
-    sales_api.update_loyalty_discounts('Elite', 0.1125, 0.2125);
+    sales_api.update_loyalty_discount('Elite', 0.1125, 0.2125);
 end;
 /
 
