@@ -7,7 +7,7 @@ set serveroutput on;
 begin
     dbms_output.put_line('#Create customer Nina, status New');
     insert into customers (customer_name) values ('Nina');
-    insert into customer_loyalty_periods (customer_name, status) values ('Nina', 'New');
+    insert into customer_loyalty (customer_name, status) values ('Nina', 'New');
 
     dbms_output.put_line('#Place valid orders: Nina, New, [0, 0.05]');    
     insert into orders(customer_name, discount)
@@ -15,7 +15,7 @@ begin
 
     dbms_output.put_line('#Create customer Prue, status Preferred');
     insert into customers (customer_name) values ('Prue');
-    insert into customer_loyalty_periods (customer_name, status) values ('Prue', 'Preferred');
+    insert into customer_loyalty (customer_name, status) values ('Prue', 'Preferred');
     
     dbms_output.put_line('#Place valid order: Prue, Preferred, 0.05');
     insert into orders(customer_name, discount)
@@ -23,7 +23,7 @@ begin
     
     dbms_output.put_line('#Create customer Liza, Elite');
     insert into customers(customer_name) values ('Liza');
-    insert into customer_loyalty_periods(customer_name, status) values('Liza', 'Elite');
+    insert into customer_loyalty(customer_name, status) values('Liza', 'Elite');
     
     dbms_output.put_line('#Place valid orders: Liza, Elite, [0.10,0.11]');
     insert into orders(customer_name, discount)
@@ -65,11 +65,11 @@ declare
     l_date date := sysdate;
 begin
     dbms_output.put_line('#Upgrade Nina to Preferred status');
-    update customer_loyalty_periods
+    update customer_loyalty
     set expires = l_date 
     where customer_name = 'Nina' and expires is null;
 
-    insert into customer_loyalty_periods(customer_name, status, effective)
+    insert into customer_loyalty(customer_name, status, effective)
     values('Nina', 'Preferred', l_date);
 
     dbms_output.put_line('#Place valid orders: Nina, Preferred, [0.05,0.05]');
@@ -101,11 +101,11 @@ declare
     l_date date := sysdate;
 begin
     dbms_output.put_line('#Upgrade Nina to Elite status');
-    update customer_loyalty_periods
+    update customer_loyalty
     set expires = l_date 
     where customer_name = 'Nina' and expires is null;
 
-    insert into customer_loyalty_periods(customer_name, status, effective)
+    insert into customer_loyalty(customer_name, status, effective)
     values('Nina', 'Elite', l_date);
 
     dbms_output.put_line('#Place valid orders: Nina, Elite, [0.10,0.11]');

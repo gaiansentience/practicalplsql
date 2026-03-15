@@ -41,20 +41,20 @@ create table if not exists customers(
 )
 /
 
-create table if not exists customer_loyalty_periods(
+create table if not exists customer_loyalty(
     customer_name varchar2(10)
-        constraint customer_loyalty_periods_fk_customers
+        constraint customer_loyalty_fk_customers
         references customers(customer_name)
         not null,
     status varchar2(10) default 'New' 
-        constraint customer_loyalty_periods_fk_loyalty_status_codes
+        constraint customer_loyalty_fk_loyalty_status_codes
         references loyalty_status_codes (status)
         not null,
     effective date default sysdate not null,
     expires date,
-    constraint customer_loyalty_periods_ck_dates 
+    constraint customer_loyalty_ck_dates 
         check (effective < expires),
-    constraint customer_loyalty_periods_pk 
+    constraint customer_loyalty_pk 
         primary key (customer_name, effective)
 )
 /
