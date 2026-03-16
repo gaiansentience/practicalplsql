@@ -3,8 +3,7 @@
 create table if not exists loyalty(
     status varchar2(10) 
         constraint loyalty_pk primary key,
-    discount_min number(5,4) default 0 not null,
-    discount_updated date default sysdate not null
+    discount_min number(5,4) default 0 not null
 )
 /
 
