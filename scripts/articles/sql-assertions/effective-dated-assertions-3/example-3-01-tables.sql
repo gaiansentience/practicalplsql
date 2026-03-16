@@ -1,7 +1,9 @@
+--apply legacy style solution to loyalty table
 create table if not exists loyalty(
     status varchar2(10) 
         constraint loyalty_pk primary key,
-    discount_min number(5,4) default 0 not null
+    discount_min number(5,4) default 0 not null,
+    discount_updated date default sysdate not null
 )
 /
 
@@ -21,6 +23,8 @@ create table if not exists customers(
 )
 /
 
+--make customer loyalty a slowly changing dimension
+--use a unique constraint on a virtual column to enforce a single active row
 create table if not exists customer_loyalty(
     customer_name varchar2(10)
         constraint customer_loyalty_fk_customers
@@ -33,7 +37,9 @@ create table if not exists customer_loyalty(
     constraint customer_loyalty_ck_dates 
         check (effective < expires),
     constraint customer_loyalty_pk 
-        primary key (customer_name, effective)
+        primary key (customer_name, effective),
+    active#row as (nvl2(expires, null, customer_name)) virtual,
+    constraint customer_loyalty_u_active#row unique (active#row) deferrable initially deferred
 )
 /
 

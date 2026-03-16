@@ -129,3 +129,38 @@ end;
 prompt Nina's status is updated to Elite, all earlier orders show valid discounts for the status that was effective when the orders were placed
 select * from review_order_discounts
 /
+
+--TODO: Implement these tests with SQL
+prompt changing loyalty discounts can be done with assertion enabled, existing data that violates the assertion is ignored
+exec dbms_session.sleep(5);
+begin
+    dbms_output.put_line('#Change Preferred to 0.0625 minimum discount');
+    sales_api.update_loyalty_discount('Preferred', 0.0625);
+    
+    dbms_output.put_line('#Change Elite to 0.1125 minimum discount');        
+    sales_api.update_loyalty_discount('Elite', 0.1125);
+    
+end;
+/
+
+begin
+
+    dbms_output.put_line('#Place valid orders: Prue, Preferred [0.07, 0.065]');
+    sales_api.add_order('Prue', 0.07);
+    sales_api.add_order('Prue', 0.065);
+
+    dbms_output.put_line('#Place valid order: Nina, Elite, 0.12');
+    sales_api.add_order('Nina', 0.12);     
+    
+    dbms_output.put_line('#Place invalid order: Prue, Preferred, 0.05');
+    sales_api.add_order('Prue', 0.05);
+
+    dbms_output.put_line('#Place invalid order: Nina, Elite, 0.10');
+    sales_api.add_order('Nina', 0.10); 
+      
+end;
+/
+
+prompt while new orders will be validated by the assertion, existing orders that would not meet the assertion are ignored (shown as Legacy Order)
+select * from review_order_discounts
+/

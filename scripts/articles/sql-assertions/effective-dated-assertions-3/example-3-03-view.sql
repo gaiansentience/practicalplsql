@@ -4,6 +4,7 @@ select
     , o.order_id
     , (100 * o.discount) || '%' as order_discount
     , case 
+        when s.discount_updated > o.placed then 'Legacy Order'
         when o.discount < s.discount_min then 'Insufficient' 
         when o.discount = s.discount_min then 'Meets Minimum' 
         else 'Exceeds Minimum' 
@@ -11,6 +12,7 @@ select
     , o.placed
     , p.effective
     , p.expires
+    , s.discount_updated
 from 
     customers c 
     join customer_loyalty p on c.customer_name = p.customer_name
