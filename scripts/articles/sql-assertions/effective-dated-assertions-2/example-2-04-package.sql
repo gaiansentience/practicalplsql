@@ -96,7 +96,7 @@ as
             || ' to discount minimum ' || (p_discount_min * 100) || '%';
     begin
         update loyalty
-        set discount_min = p_discount_min
+        set discount_min = p_discount_min, discount_updated = sysdate
         where status = p_status;
         
         commit;

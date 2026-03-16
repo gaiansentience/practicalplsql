@@ -75,42 +75,15 @@ prompt Nina's status is updated to elite, and all earlier orders show as Legacy 
 select * from review_order_discounts
 /
 
-prompt changing loyalty discounts cannot be done with assertion enabled, existing data violates the assertion
+prompt changing loyalty discounts can be done with assertion enabled, existing data that violates the assertion is ignored
+exec dbms_session.sleep(5);
 begin
     dbms_output.put_line('#Change Preferred to 0.0625 minimum discount');
     sales_api.update_loyalty_discount('Preferred', 0.0625);
     
     dbms_output.put_line('#Change Elite to 0.1125 minimum discount');        
     sales_api.update_loyalty_discount('Elite', 0.1125);
-end;
-/
-
-prompt set the assertion to enable novalidate and see if loyalty discounts can be updated
-prompt this fails because existing orders are validated with the new discount minimum
-alter assertion loyalty_discount_applied enable novalidate;
-begin
-    dbms_output.put_line('#Change Preferred to 0.0625 minimum discount');
-    sales_api.update_loyalty_discount('Preferred', 0.0625);
     
-    dbms_output.put_line('#Change Elite to 0.1125 minimum discount');        
-    sales_api.update_loyalty_discount('Elite', 0.1125);
-end;
-/
-
-
-prompt to change the discount minimums, the assertion must be disabled
-prompt after updating the discounts, the assertion can be only enabled in novalidate state
-begin
-    dbms_output.put_line('disable the assertion to update discount minimums');
-    execute immediate 'alter assertion loyalty_discount_applied disable novalidate';
-    dbms_output.put_line('#Change Preferred to 0.0625 minimum discount');
-    sales_api.update_loyalty_discount('Preferred', 0.0625);
-    
-    dbms_output.put_line('#Change Elite to 0.1125 minimum discount');        
-    sales_api.update_loyalty_discount('Elite', 0.1125);
-    
-    dbms_output.put_line('enable the assertion in novalidate state');
-    execute immediate 'alter assertion loyalty_discount_applied enable novalidate';
 end;
 /
 
@@ -132,7 +105,7 @@ begin
 end;
 /
 
-prompt while new orders will be validated by the assertion, not all existing orders meet the revised minimum discount requirements
+prompt while new orders will be validated by the assertion, existing orders that would not meet the assertion are ignored (shown as Legacy Order)
 select * from review_order_discounts
 /
 
