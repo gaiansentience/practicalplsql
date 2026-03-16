@@ -10,7 +10,6 @@ create assertion if not exists loyalty_discount_applied check (
             o.customer_name = c.customer_name and c.status = s.status
             and o.discount < s.discount_min
             and o.placed >= c.status_updated
-            and o.placed >= s.discount_updated
     )
 )
 /

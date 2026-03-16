@@ -6,49 +6,30 @@ set serveroutput on;
 
 begin
     dbms_output.put_line('#Create customer Nina, status New');
-    insert into customers (customer_name, status) values ('Nina', 'New');
+    sales_api.add_customer('Nina', 'New');
 
     dbms_output.put_line('#Place valid orders: Nina, New, [0, 0.05]');    
-    insert into orders(customer_name, discount)
-    values('Nina', 0), ('Nina', 0.05);
+    sales_api.add_order('Nina', 0);
+    sales_api.add_order('Nina', 0.05);
 
     dbms_output.put_line('#Create customer Prue, status Preferred');
-    insert into customers (customer_name, status) values ('Prue', 'Preferred');
+    sales_api.add_customer('Prue', 'Preferred');
     
     dbms_output.put_line('#Place valid order: Prue, Preferred, 0.05');
-    insert into orders(customer_name, discount)
-    values('Prue', 0.05);
-    
+    sales_api.add_order('Prue', 0.05);
+
     dbms_output.put_line('#Create customer Liza, Elite');
-    insert into customers(customer_name, status) values('Liza', 'Elite');
+    sales_api.add_customer('Liza', 'Elite');
     
     dbms_output.put_line('#Place valid orders: Liza, Elite, [0.10,0.11]');
-    insert into orders(customer_name, discount)
-    values('Liza', 0.10),('Liza', 0.11);
-    
-    commit;
-end;
-/
-
-begin
+    sales_api.add_order('Liza', 0.10);
+    sales_api.add_order('Liza', 0.11);
+        
     dbms_output.put_line('#Place invalid order: Prue, Preferred, 0');
-    insert into orders(customer_name, discount)
-    values('Prue', 0);
-exception
-    when others then
-        rollback;
-        dbms_output.put_line(sqlerrm);
-end;
-/
-
-begin
-    dbms_output.put_line('#Place invalid order: Liza, Elite, 0.05');
-    insert into orders(customer_name, discount)
-    values('Liza', 0.05);
-exception
-    when others then
-        rollback;
-        dbms_output.put_line(sqlerrm);
+    sales_api.add_order('Prue', 0);
+    
+    dbms_output.put_line('#Place invalid order: Liza, Elite, 0.05');    
+    sales_api.add_order('Liza', 0.05);
 end;
 /
 
@@ -57,31 +38,17 @@ select * from review_order_discounts
 /
 
 exec dbms_session.sleep(5);
-prompt upgrading Nina to preferred customer status succeeds because orders are placed prior to status update
-declare
-    l_date date := sysdate;
+prompt upgrading Nina to preferred customer status creates a new effective status period
 begin
     dbms_output.put_line('#Upgrade Nina to Preferred status');
-    update customers
-    set status = 'Preferred', status_updated = sysdate 
-    where customer_name = 'Nina';
-
-    dbms_output.put_line('#Place valid orders: Nina, Preferred, [0.05,0.05]');
-    insert into orders(customer_name, discount)
-    values('Nina', 0.05),('Nina', 0.05);
+    sales_api.update_customer_loyalty('Nina', 'Preferred');
     
-    commit;
-end;
-/
-
-begin
+    dbms_output.put_line('#Place valid orders: Nina, Preferred, [0.05,0.05]');
+    sales_api.add_order('Nina', 0.05);
+    sales_api.add_order('Nina', 0.05);
+    
     dbms_output.put_line('#Place invalid order: Nina, Preferred, 0.01');
-    insert into orders(customer_name, discount)
-    values('Nina', 0.01);
-exception
-    when others then
-        rollback;
-        dbms_output.put_line(sqlerrm);
+    sales_api.add_order('Nina', 0.01);    
 end;
 /
 
@@ -91,30 +58,16 @@ select * from review_order_discounts
 /
 
 exec dbms_session.sleep(5);
-declare
-    l_date date := sysdate;
 begin
     dbms_output.put_line('#Upgrade Nina to Elite status');
-    update customers 
-    set status = 'Elite', status_updated = sysdate 
-    where customer_name = 'Nina';
-
-    dbms_output.put_line('#Place valid orders: Nina, Elite, [0.10,0.11]');
-    insert into orders(customer_name, discount)
-    values('Nina', 0.10),('Nina', 0.11);
+    sales_api.update_customer_loyalty('Nina', 'Elite');
     
-    commit;
-end;
-/
-
-begin
+    dbms_output.put_line('#Place valid orders: Nina, Elite, [0.10,0.11]');
+    sales_api.add_order('Nina', 0.10);
+    sales_api.add_order('Nina', 0.11);
+    
     dbms_output.put_line('#Place invalid order: Nina, Elite, 0.05');
-    insert into orders(customer_name, discount)
-    values('Nina', 0.05);
-exception
-    when others then
-        rollback;
-        dbms_output.put_line(sqlerrm);
+    sales_api.add_order('Nina', 0.05);
 end;
 /
 
@@ -122,16 +75,42 @@ prompt Nina's status is updated to elite, and all earlier orders show as Legacy 
 select * from review_order_discounts
 /
 
---TODO: convert to using sql only
-prompt changing loyalty discounts can be done with assertion enabled, existing data that violates the assertion is ignored
-exec dbms_session.sleep(5);
+prompt changing loyalty discounts cannot be done with assertion enabled, existing data violates the assertion
 begin
     dbms_output.put_line('#Change Preferred to 0.0625 minimum discount');
     sales_api.update_loyalty_discount('Preferred', 0.0625);
     
     dbms_output.put_line('#Change Elite to 0.1125 minimum discount');        
     sales_api.update_loyalty_discount('Elite', 0.1125);
+end;
+/
 
+prompt set the assertion to enable novalidate and see if loyalty discounts can be updated
+prompt this fails because existing orders are validated with the new discount minimum
+alter assertion loyalty_discount_applied enable novalidate;
+begin
+    dbms_output.put_line('#Change Preferred to 0.0625 minimum discount');
+    sales_api.update_loyalty_discount('Preferred', 0.0625);
+    
+    dbms_output.put_line('#Change Elite to 0.1125 minimum discount');        
+    sales_api.update_loyalty_discount('Elite', 0.1125);
+end;
+/
+
+
+prompt to change the discount minimums, the assertion must be disabled
+prompt after updating the discounts, the assertion can be only enabled in novalidate state
+begin
+    dbms_output.put_line('disable the assertion to update discount minimums');
+    execute immediate 'alter assertion loyalty_discount_applied disable novalidate';
+    dbms_output.put_line('#Change Preferred to 0.0625 minimum discount');
+    sales_api.update_loyalty_discount('Preferred', 0.0625);
+    
+    dbms_output.put_line('#Change Elite to 0.1125 minimum discount');        
+    sales_api.update_loyalty_discount('Elite', 0.1125);
+    
+    dbms_output.put_line('enable the assertion in novalidate state');
+    execute immediate 'alter assertion loyalty_discount_applied enable novalidate';
 end;
 /
 
@@ -153,9 +132,8 @@ begin
 end;
 /
 
-prompt while new orders will be validated by the assertion, existing orders that would not meet the assertion are ignored (shown as Legacy Order)
+prompt while new orders will be validated by the assertion, not all existing orders meet the revised minimum discount requirements
 select * from review_order_discounts
 /
-
 
 
