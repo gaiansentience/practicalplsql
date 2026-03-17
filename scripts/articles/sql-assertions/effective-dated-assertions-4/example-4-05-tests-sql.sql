@@ -1,5 +1,7 @@
-column loyalty_discount format a18;
-column discount format a18;
+column loyalty_discount format a16
+column order_discount format a16
+column customer_status_current format a25
+column loyalty_discount_current format a25
 set pagesize 100
 
 set serveroutput on;

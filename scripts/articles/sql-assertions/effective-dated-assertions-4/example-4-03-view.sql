@@ -8,10 +8,12 @@ select
         else 'Exceeds Minimum' 
     end as discount_valid
     , o.placed
-    , p.effective
-    , p.expires
-    , s.effective as status_effective
-    , s.expires as status_expires
+    , p.effective as status_effective
+    , p.expires as status_expires
+    , s.effective as discount_min_effective
+    , s.expires as discount_min_expires
+    , to_char(case when p.active#row is not null then true end) as customer_status_current
+    , to_char(case when s.active#row is not null then true end) as loyalty_discount_current
 from 
     customers c 
     join customer_loyalty p on c.customer_name = p.customer_name
