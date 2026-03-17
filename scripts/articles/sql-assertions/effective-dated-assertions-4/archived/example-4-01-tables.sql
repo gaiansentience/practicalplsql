@@ -4,6 +4,8 @@ create table if not exists loyalty(
 )
 /
 
+--use loyalty discount minimum effective periods
+--use virtual column with conditional unique index to enforce single active row per status discount
 create table if not exists loyalty_discounts(
     status varchar2(10)
         constraint loyalty_discounts_fk_loyalty
@@ -15,8 +17,9 @@ create table if not exists loyalty_discounts(
     constraint loyalty_discounts_ck_dates 
         check (effective < expires),
     constraint loyalty_discounts_pk 
-        primary key (status, effective)
-    
+        primary key (status, effective),
+    active#row as (nvl2(expires, null, status)) virtual,
+    constraint loyalty_discounts_u_active#row unique (active#row) deferrable initially deferred
 )
 /
 
@@ -27,9 +30,7 @@ begin
     
     insert into loyalty_discounts(status, discount_min)
     values
-        ('New', 0),
-        ('Preferred', .05),
-        ('Elite', 0.10);
+        ('New', 0), ('Preferred', .05), ('Elite', 0.10);
     
     commit;
 end;
@@ -41,6 +42,8 @@ create table if not exists customers(
 )
 /
 
+--use customer loyalty status effective periods
+--use virtual column with conditional unique index to enforce single active row per customer status
 create table if not exists customer_loyalty(
     customer_name varchar2(10)
         constraint customer_loyalty_fk_customers
@@ -55,7 +58,9 @@ create table if not exists customer_loyalty(
     constraint customer_loyalty_ck_dates 
         check (effective < expires),
     constraint customer_loyalty_pk 
-        primary key (customer_name, effective)
+        primary key (customer_name, effective),
+    active#row as (nvl2(expires, null, customer_name)) virtual,
+    constraint customer_loyalty_u_active#row unique (active#row) deferrable initially deferred
 )
 /
 

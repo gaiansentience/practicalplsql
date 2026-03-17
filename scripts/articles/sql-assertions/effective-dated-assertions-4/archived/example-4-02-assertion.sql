@@ -34,3 +34,5 @@ create assertion if not exists customer_loyalty_fk_loyalty_discounts check (
     )
 )
 /
+
+--TODO: add assertions to make effective periods contiguous

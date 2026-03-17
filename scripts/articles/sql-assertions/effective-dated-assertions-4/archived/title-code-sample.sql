@@ -5,7 +5,7 @@ declare
         dynamic_data boolean;
         static_rules boolean;    
     begin
-        dynamic_data := true_today and (not true_always or true_always is null);
+        dynamic_data := true_today and not true_always;
         static_rules := not dynamic_data;
     
         dbms_output.put_line(
@@ -16,7 +16,6 @@ declare
     end what_to_choose;
 begin
     what_to_choose(true_today => true, true_always => true);
-    what_to_choose(true_today => true, true_always => false);
-    what_to_choose(true_today => true, true_always => null);    
+    what_to_choose(true_today => true, true_always => false); 
 end;
 /
