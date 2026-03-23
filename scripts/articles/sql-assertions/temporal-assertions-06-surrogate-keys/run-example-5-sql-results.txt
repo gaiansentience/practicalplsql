@@ -1,0 +1,171 @@
+running example with sql only
+
+Table LOYALTY created.
+
+
+Table LOYALTY_DISCOUNTS created.
+
+insert the discount minimum/maximum for each loyalty status
+
+PL/SQL procedure successfully completed.
+
+
+Table CUSTOMERS created.
+
+
+Table CUSTOMER_LOYALTY created.
+
+
+Table ORDERS created.
+
+
+Assertion LOYALTY_DISCOUNT_APPLIED created.
+
+
+Assertion CUSTOMER_LOYALTY_FK_LOYALTY_DISCOUNTS created.
+
+
+View REVIEW_ORDER_DISCOUNTS created.
+
+
+Session altered.
+
+#Create customer Nina, status New
+#Place valid orders: Nina, New, [0, 0.05]
+#Create customer Prue, status Preferred
+#Place valid order: Prue, Preferred, 0.05
+#Create customer Liza, Elite
+#Place valid orders: Liza, Elite, [0.10,0.11]
+#Place invalid order: Prue, Preferred, 0
+ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+#Place invalid order: Liza, Elite, 0.05
+ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+
+
+PL/SQL procedure successfully completed.
+
+all valid orders have discount minimum that matches customer status
+
+CUSTOMER     ORDER_ID ORDER_PLACED        DISCOUNT STATUS     STATUS_MIN STATUS_MAX ORDER_STATUS STATUS_EFFECTIVE    STATUS_EXPIRES      DISCOUNT_EFFECTIVE  DISCOUNT_EXPIRES   
+---------- ---------- ------------------- -------- ---------- ---------- ---------- ------------ ------------------- ------------------- ------------------- -------------------
+Liza                4 2026-03-15 14:57:03 10%      Elite      10%        20%        Minimum      2026-03-15 14:57:03                     2026-03-15 14:57:02                    
+Liza                5 2026-03-15 14:57:03 11%      Elite      10%        20%        Valid        2026-03-15 14:57:03                     2026-03-15 14:57:02                    
+Nina                1 2026-03-15 14:57:02 0%       New        0%         10%        Minimum      2026-03-15 14:57:02                     2026-03-15 14:57:02                    
+Nina                2 2026-03-15 14:57:02 5%       New        0%         10%        Valid        2026-03-15 14:57:02                     2026-03-15 14:57:02                    
+Prue                3 2026-03-15 14:57:03 5%       Preferred  5%         15%        Minimum      2026-03-15 14:57:02                     2026-03-15 14:57:02                    
+
+
+PL/SQL procedure successfully completed.
+
+#Upgrade Nina to Preferred status
+#Place valid orders: Nina, Preferred, [0.05,0.05]
+#Place invalid order: Nina, Preferred, 0.01
+ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+
+
+PL/SQL procedure successfully completed.
+
+Nina's original orders still satisfy the assertion based on the status that was effective (New)
+Nina's new orders after status was upgraded to Preferred also satisfy the assertion
+
+CUSTOMER     ORDER_ID ORDER_PLACED        DISCOUNT STATUS     STATUS_MIN STATUS_MAX ORDER_STATUS STATUS_EFFECTIVE    STATUS_EXPIRES      DISCOUNT_EFFECTIVE  DISCOUNT_EXPIRES   
+---------- ---------- ------------------- -------- ---------- ---------- ---------- ------------ ------------------- ------------------- ------------------- -------------------
+Liza                4 2026-03-15 14:57:03 10%      Elite      10%        20%        Minimum      2026-03-15 14:57:03                     2026-03-15 14:57:02                    
+Liza                5 2026-03-15 14:57:03 11%      Elite      10%        20%        Valid        2026-03-15 14:57:03                     2026-03-15 14:57:02                    
+Nina                1 2026-03-15 14:57:02 0%       New        0%         10%        Minimum      2026-03-15 14:57:02 2026-03-15 14:57:08 2026-03-15 14:57:02                    
+Nina                2 2026-03-15 14:57:02 5%       New        0%         10%        Valid        2026-03-15 14:57:02 2026-03-15 14:57:08 2026-03-15 14:57:02                    
+Nina                8 2026-03-15 14:57:08 5%       Preferred  5%         15%        Minimum      2026-03-15 14:57:08                     2026-03-15 14:57:02                    
+Nina                9 2026-03-15 14:57:08 5%       Preferred  5%         15%        Minimum      2026-03-15 14:57:08                     2026-03-15 14:57:02                    
+Prue                3 2026-03-15 14:57:03 5%       Preferred  5%         15%        Minimum      2026-03-15 14:57:02                     2026-03-15 14:57:02                    
+
+7 rows selected. 
+
+
+PL/SQL procedure successfully completed.
+
+#Upgrade Nina to Elite status
+#Place valid orders: Nina, Elite, [0.10,0.11]
+#Place invalid order: Nina, Elite, 0.05
+ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+
+
+PL/SQL procedure successfully completed.
+
+Nina's status is updated to Elite, all earlier orders show valid discounts for the status that was effective when the orders were placed
+
+CUSTOMER     ORDER_ID ORDER_PLACED        DISCOUNT STATUS     STATUS_MIN STATUS_MAX ORDER_STATUS STATUS_EFFECTIVE    STATUS_EXPIRES      DISCOUNT_EFFECTIVE  DISCOUNT_EXPIRES   
+---------- ---------- ------------------- -------- ---------- ---------- ---------- ------------ ------------------- ------------------- ------------------- -------------------
+Liza                4 2026-03-15 14:57:03 10%      Elite      10%        20%        Minimum      2026-03-15 14:57:03                     2026-03-15 14:57:02                    
+Liza                5 2026-03-15 14:57:03 11%      Elite      10%        20%        Valid        2026-03-15 14:57:03                     2026-03-15 14:57:02                    
+Nina                1 2026-03-15 14:57:02 0%       New        0%         10%        Minimum      2026-03-15 14:57:02 2026-03-15 14:57:08 2026-03-15 14:57:02                    
+Nina                2 2026-03-15 14:57:02 5%       New        0%         10%        Valid        2026-03-15 14:57:02 2026-03-15 14:57:08 2026-03-15 14:57:02                    
+Nina                8 2026-03-15 14:57:08 5%       Preferred  5%         15%        Minimum      2026-03-15 14:57:08 2026-03-15 14:57:13 2026-03-15 14:57:02                    
+Nina                9 2026-03-15 14:57:08 5%       Preferred  5%         15%        Minimum      2026-03-15 14:57:08 2026-03-15 14:57:13 2026-03-15 14:57:02                    
+Nina               11 2026-03-15 14:57:13 10%      Elite      10%        20%        Minimum      2026-03-15 14:57:13                     2026-03-15 14:57:02                    
+Nina               12 2026-03-15 14:57:13 11%      Elite      10%        20%        Valid        2026-03-15 14:57:13                     2026-03-15 14:57:02                    
+Prue                3 2026-03-15 14:57:03 5%       Preferred  5%         15%        Minimum      2026-03-15 14:57:02                     2026-03-15 14:57:02                    
+
+9 rows selected. 
+
+
+PL/SQL procedure successfully completed.
+
+#Change Preferred discount to 6.25% min, 16.25% max
+#Change Elite discount to 11.25% min, 21.25% max
+#Place valid orders: Prue, Preferred [0.07, 0.065]
+#Place valid order: Nina, Elite, 0.12
+#Place invalid order: Prue, Preferred, 0.05
+ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+#Place invalid order: Nina, Elite, 0.10
+ORA-08601: SQL assertion (PRACTICALPLSQL.LOYALTY_DISCOUNT_APPLIED) violated.
+
+
+PL/SQL procedure successfully completed.
+
+after the change in minimum discounts for Preferred and Elite, all orders are validated correctly and show valid for the discount requirements in effect
+
+CUSTOMER     ORDER_ID ORDER_PLACED        DISCOUNT STATUS     STATUS_MIN STATUS_MAX ORDER_STATUS STATUS_EFFECTIVE    STATUS_EXPIRES      DISCOUNT_EFFECTIVE  DISCOUNT_EXPIRES   
+---------- ---------- ------------------- -------- ---------- ---------- ---------- ------------ ------------------- ------------------- ------------------- -------------------
+Liza                4 2026-03-15 14:57:03 10%      Elite      10%        20%        Minimum      2026-03-15 14:57:03                     2026-03-15 14:57:02 2026-03-15 14:57:18
+Liza                5 2026-03-15 14:57:03 11%      Elite      10%        20%        Valid        2026-03-15 14:57:03                     2026-03-15 14:57:02 2026-03-15 14:57:18
+Nina                1 2026-03-15 14:57:02 0%       New        0%         10%        Minimum      2026-03-15 14:57:02 2026-03-15 14:57:08 2026-03-15 14:57:02                    
+Nina                2 2026-03-15 14:57:02 5%       New        0%         10%        Valid        2026-03-15 14:57:02 2026-03-15 14:57:08 2026-03-15 14:57:02                    
+Nina                8 2026-03-15 14:57:08 5%       Preferred  5%         15%        Minimum      2026-03-15 14:57:08 2026-03-15 14:57:13 2026-03-15 14:57:02 2026-03-15 14:57:18
+Nina                9 2026-03-15 14:57:08 5%       Preferred  5%         15%        Minimum      2026-03-15 14:57:08 2026-03-15 14:57:13 2026-03-15 14:57:02 2026-03-15 14:57:18
+Nina               11 2026-03-15 14:57:13 10%      Elite      10%        20%        Minimum      2026-03-15 14:57:13                     2026-03-15 14:57:02 2026-03-15 14:57:18
+Nina               12 2026-03-15 14:57:13 11%      Elite      10%        20%        Valid        2026-03-15 14:57:13                     2026-03-15 14:57:02 2026-03-15 14:57:18
+Nina               16 2026-03-15 14:57:18 12%      Elite      11.25%     21.25%     Valid        2026-03-15 14:57:13                     2026-03-15 14:57:18                    
+Prue                3 2026-03-15 14:57:03 5%       Preferred  5%         15%        Minimum      2026-03-15 14:57:02                     2026-03-15 14:57:02 2026-03-15 14:57:18
+Prue               14 2026-03-15 14:57:18 7%       Preferred  6.25%      16.25%     Valid        2026-03-15 14:57:02                     2026-03-15 14:57:18                    
+Prue               15 2026-03-15 14:57:18 6.5%     Preferred  6.25%      16.25%     Valid        2026-03-15 14:57:02                     2026-03-15 14:57:18                    
+
+12 rows selected. 
+
+drop all objects
+
+View REVIEW_ORDER_DISCOUNTS dropped.
+
+
+Package SALES_API dropped.
+
+
+Assertion CUSTOMER_LOYALTY_FK_LOYALTY_DISCOUNTS dropped.
+
+
+Assertion LOYALTY_DISCOUNT_APPLIED dropped.
+
+
+Table ORDERS dropped.
+
+
+Table CUSTOMER_LOYALTY dropped.
+
+
+Table CUSTOMERS dropped.
+
+
+Table LOYALTY_DISCOUNTS dropped.
+
+
+Table LOYALTY dropped.
+

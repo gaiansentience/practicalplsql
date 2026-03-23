@@ -1,13 +1,13 @@
 alter session set container=FREEPDB1;
 
-create user if not exists devgym identified by oracle;
+create user if not exists practicalplsql identified by oracle;
 
-alter user devgym quota unlimited on users;
+alter user practicalplsql quota unlimited on users;
 
-grant connect, db_developer_role to devgym;
+grant connect, db_developer_role to practicalplsql;
 
-grant create domain to devgym;
+grant create domain to practicalplsql;
 
-grant create assertion to devgym;
+grant create assertion to practicalplsql;
 
-grant create mining model to devgym;
+grant create mining model to practicalplsql;

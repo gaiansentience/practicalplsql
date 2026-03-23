@@ -1,0 +1,55 @@
+--apply legacy style solution to loyalty table
+create table if not exists loyalty(
+    status varchar2(10) 
+        constraint loyalty_pk primary key,
+    discount_min number(5,4) default 0 not null,
+    discount_updated date default sysdate not null
+)
+/
+
+--insert the discount minimum for each loyalty status
+begin
+    insert into loyalty(status, discount_min)
+    values
+        ('New', 0), ('Preferred', .05), ('Elite', 0.10);
+    
+    commit;
+end;
+/
+
+create table if not exists customers(
+    customer_name varchar2(10) 
+        constraint customers_pk primary key
+)
+/
+
+--make customer loyalty a slowly changing dimension
+--use a unique constraint on a virtual column to enforce a single active row
+create table if not exists customer_loyalty(
+    customer_name varchar2(10)
+        constraint customer_loyalty_fk_customers
+        references customers(customer_name),
+    status varchar2(10) default 'New' 
+        constraint customer_loyalty_fk_loyalty
+        references loyalty(status) not null,
+    effective date default sysdate not null,
+    expires date,
+    constraint customer_loyalty_ck_dates 
+        check (effective < expires),
+    constraint customer_loyalty_pk 
+        primary key (customer_name, effective),
+    active#row as (nvl2(expires, null, customer_name)) virtual,
+    constraint customer_loyalty_u_active#row unique (active#row) deferrable initially deferred
+)
+/
+
+create table if not exists orders(
+    order_id integer generated always as identity 
+        constraint orders_pk primary key,
+    customer_name varchar2(10)
+        constraint orders_fk_customers
+        references customers(customer_name) not null,
+    discount number(5,4) default 0 not null,
+    placed date default sysdate not null
+)
+/
