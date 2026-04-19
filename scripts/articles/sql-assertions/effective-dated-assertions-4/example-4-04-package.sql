@@ -11,12 +11,12 @@ as
     procedure update_customer_loyalty(
         p_customer_name in customers.customer_name%type, 
         p_status in loyalty.status%type,
-        p_expire_previous in boolean default true);
+        p_expire_current in boolean default true);
         
     procedure update_loyalty_discount(
         p_status in loyalty.status%type, 
         p_discount_min in loyalty_discounts.discount_min%type,
-        p_expire_previous in boolean default true);
+        p_expire_current in boolean default true);
 end sales_api;
 /
 
@@ -75,25 +75,71 @@ as
             rollback;
             print_tx_state(l_info, false);
     end add_order;
+
+    procedure expire_customer_loyalty(
+        p_customer_name in customers.customer_name%type,
+        p_expires in date default sysdate)
+    is
+        l_info t_details := 'update customer ' || p_customer_name 
+            || ' current status to expired';
+    begin
+
+        savepoint expire_loyalty_period;
+        
+        update customer_loyalty
+        set expires = p_expires
+        where customer_name = p_customer_name and expires is null;
+        
+        print_tx_state(l_info);
+    exception
+        when others then
+            rollback to expire_loyalty_period;
+            print_tx_state(l_info, false);
+            raise;
+    end expire_customer_loyalty;
     
+    procedure insert_customer_loyalty(
+        p_customer_name in customers.customer_name%type, 
+        p_status in loyalty.status%type,
+        p_effective in date default sysdate)
+    is
+        l_info t_details := 'insert customer ' || p_customer_name 
+            || ' status of ' || p_status;
+    begin
+
+        savepoint insert_loyalty_period;
+        
+        insert into customer_loyalty(customer_name, status, effective)
+        values (p_customer_name, p_status, p_effective);
+        
+        print_tx_state(l_info);
+    exception
+        when others then
+            rollback to insert_loyalty_period;
+            print_tx_state(l_info, false);
+            raise;
+    end insert_customer_loyalty;
+
     procedure update_customer_loyalty(
         p_customer_name in customers.customer_name%type, 
         p_status in loyalty.status%type,
-        p_expire_previous in boolean default true)
+        p_expire_current in boolean default true)
     is
         l_info t_details := 'update customer ' || p_customer_name 
             || ' status to ' || p_status
-            || case when p_expire_previous then ' [expire previous, insert new]' else '[insert new only]' end;
+            || case when p_expire_current then ' [expire previous, insert new]' else '[insert new only]' end;
         l_date date := sysdate;
     begin
-        if p_expire_previous then
-            update customer_loyalty
-            set expires = l_date
-            where customer_name = p_customer_name and expires is null;
+        if p_expire_current then
+            expire_customer_loyalty(p_customer_name, l_date);
+--            update customer_loyalty
+--            set expires = l_date
+--            where customer_name = p_customer_name and expires is null;
         end if;
-        
-        insert into customer_loyalty(customer_name, status, effective)
-        values (p_customer_name, p_status, l_date);
+
+        insert_customer_loyalty(p_customer_name, p_status, l_date);        
+--        insert into customer_loyalty(customer_name, status, effective)
+--        values (p_customer_name, p_status, l_date);
         
         commit;    
         print_tx_state(l_info);
@@ -106,14 +152,14 @@ as
     procedure update_loyalty_discount(
         p_status in loyalty.status%type, 
         p_discount_min in loyalty_discounts.discount_min%type,
-        p_expire_previous in boolean default true)
+        p_expire_current in boolean default true)
     is
         l_info t_details := 'update status ' || p_status 
             || ' discount minimum to ' || (100 * p_discount_min) || '%'
-            || case when p_expire_previous then ' [expire previous, insert new]' else '[insert new only]' end;
+            || case when p_expire_current then ' [expire previous, insert new]' else '[insert new only]' end;
         l_date date := sysdate;
     begin
-        if p_expire_previous then
+        if p_expire_current then
             update loyalty_discounts
             set expires = l_date
             where status = p_status and expires is null;
