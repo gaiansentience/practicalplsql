@@ -40,13 +40,6 @@ select * from review_order_discounts
 /
 
 exec dbms_session.sleep(5);
-prompt upgrading Nina to preferred customer status without expiring previous record violates overlap assertion
-begin
-    dbms_output.put_line('#Upgrade Nina to Preferred status WITHOUT EXPIRING PREVIOUS STATUS');
-    sales_api.update_customer_loyalty('Nina', 'Preferred', p_expire_previous => false);
-end;
-/
-
 prompt upgrading Nina to preferred customer status creates a new effective status period
 begin
     dbms_output.put_line('#Upgrade Nina to Preferred status');
@@ -86,17 +79,6 @@ select * from review_order_discounts
 
 
 exec dbms_session.sleep(5);
-
-prompt inserting a new discount without expiring the previous discount violates overlap assertion
-begin
-    dbms_output.put_line('#Change Preferred to 0.0625 minimum discount WITHOUT EXPIRING PREVIOUS DISCOUNT');
-    sales_api.update_loyalty_discount('Preferred', 0.0625, p_expire_previous => false);
-    
-    dbms_output.put_line('#Change Elite to 0.1125 minimum discount WITHOUT EXPIRING PREVIOUS DISCOUNT');        
-    sales_api.update_loyalty_discount('Elite', 0.1125, p_expire_previous => false);
-end;
-/
-
 begin
     dbms_output.put_line('#Change Preferred to 0.0625 minimum discount');
     sales_api.update_loyalty_discount('Preferred', 0.0625);

@@ -2,7 +2,7 @@
     # name of the Docker Compose service
     db:
       # Docker hub image
-      image: gvenzl/oracle-free:23.26.1-slim
+      image: gvenzl/oracle-free:latest
       # make container restart on host reboot
       restart: unless-stopped
       # forward container port to localhost
@@ -11,10 +11,14 @@
       # set environment variables in the container
       environment:
         ORACLE_PASSWORD: oracle
-        APP_USER: devgym
+        APP_USER: practicalplsql
         APP_USER_PASSWORD: oracle
+      # add GID for vboxsf on docker host to container process
+      # this allows accessing fileshare on virtualbox host
+      #group_add:
+      #  - "974"
       # mount init-scripts to initialize schema   
       volumes:
         - ./initdb.d/setup:/container-entrypoint-initdb.d
         - ./initdb.d/startup:/container-entrypoint-startdb.d
-        - /home/oracle/container-data:/home/oracle/ext-data
+        - /home/oracle/ext-data:/home/oracle/ext-data

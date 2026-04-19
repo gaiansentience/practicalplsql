@@ -63,25 +63,6 @@ select * from review_order_discounts
 
 
 exec dbms_session.sleep(5);
-
-prompt new test to see if overlapping periods can be created
-prompt because overlap assertion is deferrable, sqlerrm doesnt have the error, must use format_error_stack
-declare
-    l_date date := sysdate;
-begin
-    dbms_output.put_line('#Upgrade Nina to Preferred status WITHOUT EXPIRING PREVIOUS STATUS');
-    insert into customer_loyalty(customer_name, status, effective)
-    values('Nina', 'Preferred', l_date);
-    
-    commit;
-exception
-    when others then
-        rollback;
-        dbms_output.put_line('SQLERRM: ' || sqlerrm);
-        dbms_output.put_line('FORMAT_ERROR_STACK: ' || dbms_utility.format_error_stack());
-end;
-/
-
 declare
     l_date date := sysdate;
 begin
@@ -153,25 +134,6 @@ select * from review_order_discounts
 /
 
 exec dbms_session.sleep(5);
-
-prompt test no_overlaps assertion with loyalty discounts
-prompt because assertion to prevent overlaps is deferred, sqlerrm wont show assertion error
-declare
-    l_date date := sysdate;
-begin
-    dbms_output.put_line('#Change Preferred to 0.0625 minimum discount WITHOUT EXPIRING PREVIOUS DISCOUNT');    
-    insert into loyalty_discounts (status, discount_min, effective)
-    values ('Preferred', 0.0625, l_date);
-    
-    commit;
-exception
-    when others then
-        rollback;
-        dbms_output.put_line('SQLERRM: ' || sqlerrm);
-        dbms_output.put_line('FORMAT_ERROR_STACK: ' || dbms_utility.format_error_stack());
-end;
-/
-
 declare
     l_date date := sysdate;
 begin
