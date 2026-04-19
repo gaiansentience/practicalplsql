@@ -76,4 +76,3 @@ create assertion if not exists customer_loyalty_check_overlap_periods check (
 
 --TODO: add assertion to require effective dates to be > all previous effective dates
 --not exists a status with null expires where exists a period expired is not null and effective date >
---handled by overlap assertions

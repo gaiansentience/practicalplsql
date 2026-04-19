@@ -17,7 +17,7 @@ create table if not exists loyalty_discounts(
     created_by varchar2(30) default user not null,
     create_date date default sysdate not null,
     changed_by varchar2(30) default on null for insert and update user not null,
-    change_date date default on null for insert and update sysdate not null,    
+    change_date date default on null for insert and update sysdate not null,
     constraint loyalty_discounts_ck_dates 
         check (effective < expires),
     constraint loyalty_discounts_pk 
@@ -62,7 +62,7 @@ create table if not exists customer_loyalty(
     created_by varchar2(30) default user not null,
     create_date date default sysdate not null,
     changed_by varchar2(30) default on null for insert and update user not null,
-    change_date date default on null for insert and update sysdate not null,    
+    change_date date default on null for insert and update sysdate not null,
     constraint customer_loyalty_ck_dates 
         check (effective < expires),
     constraint customer_loyalty_pk 
