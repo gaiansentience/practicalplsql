@@ -1,4 +1,5 @@
 --test.assertion.limit_two_chairs.sql
+
 set feedback off;
 set serveroutput on;
 
@@ -35,8 +36,6 @@ begin
         (d, r, 'Russell');
         
     commit;
-    dbms_output.put_line('Success - ' || l_action);
-    display_staff(d);
 exception
     when others then
         rollback;

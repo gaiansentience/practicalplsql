@@ -1,10 +1,13 @@
 --test.assertion.limit_one_admin.sql
 
+set serveroutput on;
+
 declare
     l_action varchar2(1000) := '***add multiple dept admins';
     d univ_depts.dept_name%type := 'Philosophy';
     a univ_roles.role_name%type := 'admin';    
 begin
+    dbms_output.put_line('Staff before ' || l_action);
     display_staff(d);
     insert into univ_dept_roles (
         dept_name, role_name, staff_name)
@@ -12,8 +15,6 @@ begin
         , (d, a, 'Picasso');
         
     commit;
-    dbms_output.put_line('Success - ' || l_action);
-    display_staff(d);
 exception
     when others then
         rollback;

@@ -4,7 +4,7 @@ declare
     with staff(name, role) as (
         values 
             ('Newton', 'chair'), ('James', 'chair')
-            , ('Edwards', 'chair'), ('Teller', 'intern')
+            , ('Edwards', 'chair'), ('Teller', 'chair')
             , ('Smith', 'intern'), ('Green', 'intern')
     )
     select role, listagg(name, ', ') as role_staff
@@ -20,7 +20,3 @@ begin
     end if;
 end;
 /
-
-
-
-

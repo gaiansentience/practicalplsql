@@ -26,6 +26,13 @@ begin
 end;
 /
 
+--Success - ***add staff with two roles
+--Philosophy staff members:
+--    admin: Pike
+--    chair: Descartes, Wittgenstein
+--    faculty: Descartes, Moore, Pascal, Picasso, Russell, Wittgenstein
+--    fellow: Picasso
+--    secretary: Kirk
 
 declare
     l_action varchar2(1000) := '***add staff member with three roles';
@@ -49,5 +56,8 @@ exception
         dbms_output.put_line(dbms_utility.format_error_stack());
 end;
 /
+
+--Error - ***add staff member with three roles
+--ORA-08601: SQL assertion (PRACTICALPLSQL.LIMIT_TWO_ROLES) violated.
 
 set feedback on;

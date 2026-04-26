@@ -2,7 +2,6 @@
 
 set serveroutput on;
 
-prompt cannot create department with immediate assertion
 declare
     l_action varchar2(1000) := 'Create Philosophy dept with no faculty';
 begin

@@ -27,4 +27,3 @@ create assertion if not exists interns_require_fellows check (
     )
 )
 /
-    
