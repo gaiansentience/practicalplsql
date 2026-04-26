@@ -13,3 +13,6 @@ create assertion if not exists limit_two_chairs check (
 )
 /
 
+--Error report -
+--ORA-08689: CREATE ASSERTION failed
+--ORA-08661: Aggregates are not supported.
