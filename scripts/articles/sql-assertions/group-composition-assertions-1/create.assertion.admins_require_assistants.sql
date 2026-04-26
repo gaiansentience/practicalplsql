@@ -1,11 +1,5 @@
-alter session disable parallel dml;
+--create.assertion.admins_require_assistants.sql
 
-select user, banner_full from v$version;
-
-
-
---relative composition
---univ_depts with admins must have assistants
 create assertion if not exists admins_require_assistants check (
 not exists (
     select 'a department'
@@ -24,5 +18,4 @@ not exists (
     )
 )
 /
-    
---?? must be deferrable??.. no, assistants can be inserted first
+drop assertion if exists admins_require_assistants;

@@ -1,4 +1,5 @@
 --test.assertion.support_staff_required.sql
+
 set serveroutput on;
 set feedback off;
 
@@ -74,7 +75,6 @@ begin
 end;
 /
         
-prompt finalize support staff
 declare
     l_action varchar2(1000) := '***finalize support staff';
     d univ_depts.dept_name%type := 'Philosophy';
