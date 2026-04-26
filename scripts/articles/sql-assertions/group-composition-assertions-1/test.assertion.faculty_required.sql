@@ -10,6 +10,10 @@ begin
     delete univ_depts;
     commit;
     dbms_output.put_line('Success - ' || l_action);
+exception
+    when others then
+        rollback;
+        dbms_output.put_line(sqlerrm);
 end;
 /
 
@@ -85,7 +89,6 @@ end;
 /
 
 
-prompt cannot delete all faculty from department
 declare
     l_action varchar2(100) := 'Remove all faculty';
     d univ_depts.dept_name%type := 'Philosophy';
@@ -104,9 +107,8 @@ exception
 end;
 /
 
---can only delete all faculty when also deleting department in same transaction
 declare
-    l_action varchar2(100) := 'Remove Philosophy dept and all faculty';
+    l_action varchar2(100) := 'Remove dept and all faculty';
     d univ_depts.dept_name%type := 'Philosophy';
     r univ_roles.role_name%type := 'faculty';    
 begin
