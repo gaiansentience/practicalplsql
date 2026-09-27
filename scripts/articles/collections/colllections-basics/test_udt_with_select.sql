@@ -17,6 +17,10 @@ select udt_id(t.id)  bulk collect into l_odd_ids
 from table(l_ids) T 
 where mod(t.id,2) = 1;
 
+
+--???using 21 iteration methods to populate a collection from another collection??
+l_even_ids := udt_id_nt(for v in values of l_ids when mod(v.id,2) = 0 sequence => v);
+
 select udt_id(t.id) bulk collect into l_even_ids
 from table(l_ids) T 
 where mod(t.id,2) = 0;

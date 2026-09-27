@@ -6,7 +6,7 @@ declare
 type r_timing is record(
     starts timestamp default localtimestamp, 
     ends timestamp default null, 
-    duration interval day to second(9) default null, 
+    duration interval day(9) to second(9) default null, 
     loops number default 0, 
     counter varchar2(20) default null);
 type r_timing_aa is table of r_timing index by pls_integer;

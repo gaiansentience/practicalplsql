@@ -1,11 +1,18 @@
 create table my_customers(
-    customer_id integer constraint my_customers_pk primary key,
-    name varchar2(50) not null constraint my_customers_u_name unique
+    customer_id integer 
+        constraint my_customers_pk primary key,
+    name varchar2(50) not null 
+        constraint my_customers_u_name unique
 );
 
 create table my_customer_contacts(
-    customer_id constraint my_customer_contacts_fk_my_customer references my_customers(customer_id) not null,
-    email varchar2(255) not null,
+    customer_id integer 
+        constraint my_customer_contacts_fk_my_customer 
+        references my_customers(customer_id) 
+        not null,
+    email varchar2(255) not null
+        constraint my_customer_contacts_uk_email
+        unique,
     is_primary boolean default false not null,
     constraint my_customer_contacts_pk
         primary key (customer_id, email),
@@ -20,6 +27,9 @@ set customer_id = 1, email = 'ted@abc.com', is_primary = true;
 
 insert into my_customer_contacts
 set customer_id = 1, email = 'tina@abc.com', is_primary = false;
+
+insert into my_customer_contacts
+set customer_id = 1, email = 'rachel@abc.com', is_primary = false;
 
 commit;
 

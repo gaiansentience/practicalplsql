@@ -11,7 +11,8 @@ create table if not exists my_customer_contacts(
 );
 
 create assertion my_customers_pk check (
-    all (select rowid, customer_id from my_customers) a
+    all (select rowid, customer_id 
+        from my_customers) a
     satisfy (
         not exists (
             select 'another customer has the same id'
@@ -23,19 +24,21 @@ create assertion my_customers_pk check (
 /
 
 create assertion my_customers_u_name check (
-    all (select customer_id, name from my_customers) a
+    all (select customer_id, name 
+        from my_customers) a
     satisfy (
         not exists (
             select 'another customer with same name'
             from my_customers c
-            where c.name = a.name and c.customer_id <> a.customer_id
+            where c.name = a.name and c.customer_id > a.customer_id
         )
     )
 )
 /
 
 create assertion my_customer_contacts_fk_my_customer check (
-    all (select customer_id from my_customer_contacts) a
+    all (select customer_id 
+        from my_customer_contacts) a
     satisfy (
         exists (
             select 'customer exists'
@@ -47,24 +50,27 @@ create assertion my_customer_contacts_fk_my_customer check (
 /
 
 create assertion my_customer_contacts_pk check (
-    all (select rowid, customer_id, email from my_customer_contacts) a
+    all (select rowid, customer_id, email 
+        from my_customer_contacts) a
     satisfy (
         not exists (
             select 'another contact row with the same customer id and email'
             from my_customer_contacts c
-            where c.customer_id = a.customer_id and c.email = a.email and c.rowid <> a.rowid
+            where c.customer_id = a.customer_id and c.email = a.email and c.rowid > a.rowid
         )
     )
 )
 /
 
 create assertion only_one_primary_contact_per_customer check (
-    all (select customer_id, email from my_customer_contacts where is_primary) a
+    all (select customer_id, email 
+        from my_customer_contacts 
+        where is_primary) a
     satisfy (
         not exists (
             select 'another primary contact for the same customer'
             from my_customer_contacts c
-            where c.customer_id = a.customer_id and c.email <> a.email and c.is_primary
+            where c.customer_id = a.customer_id and c.email > a.email and c.is_primary
         )    
     )
 )
