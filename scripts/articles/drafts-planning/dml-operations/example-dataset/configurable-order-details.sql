@@ -7,6 +7,33 @@
 --orders can be large and complex based on configurations
 --orders can be copied from other orders (template orders or specific orders)
 
+--some complex use cases
+        --copy order-items and order-item-details
+        --limit copy by compatibility
+        --some items are incompatible
+        --some item details are incompatible even if items are compatible
+        
+        --add a third level of item detail configurations
+        
+        
+        --using values of with forall and sql%bulk_rowcount
+        
+        --bulk collect valid items to copy
+        
+        --use forall to insert items
+        
+        --get indices of items with details
+        
+        --use values of to insert compatible item details
+        
+        --use sql%bulk_rowcount to see items that had no compatible details
+        --get indices of items with incompatible details
+        
+        --delete items inserted with incompatible details
+
+
+
+
 
 create sequence channel_id_seq;
 
