@@ -1,0 +1,5 @@
+
+drop assertion if exists department_max_paired_roles_not_exceeded;
+drop assertion if exists department_unique_roles_are_not_duplicated;
+drop assertion if exists department_has_all_required_roles;
+drop assertion if exists department_has_all_required_role_dependencies;

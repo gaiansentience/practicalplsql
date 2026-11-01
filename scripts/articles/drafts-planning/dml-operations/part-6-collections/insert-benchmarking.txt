@@ -1,0 +1,71 @@
+
+Table TEST_INSERT_COLLECTION created.
+
+
+Table TEST_SOURCE_RECORDS created.
+
+
+Type UDT_ID_OBJ compiled
+
+
+Type UDT_ID_OBJ_NT compiled
+
+
+Type UDT_NUMBER_NT compiled
+
+
+Package PKG_TEST compiled
+
+
+Package Body PKG_TEST compiled
+
++000000000 00:00:00.396046000, records=1000000, test: ***INSERT SELECT SQL BASELINE***
+
++000000000 00:00:26.359412000, records=1000000, test: ***INSERT CURSOR LOOP PLSQL BASELINE***
+
++000000000 00:00:27.382771000, records=1000000, test: ***INSERT COLLECTION LOOP PLSQL BASELINE***
+
+Errors: insert select *** TABLE(c)*** package nested table of record ORA-00902: invalid datatype
+
++000000000 00:00:00.459032000, records=1000000, test: insert values ***FORALL*** package nested table of record
+
+Errors: insert select *** TABLE(c)*** package nested table of number ORA-00902: invalid datatype
+
++000000000 00:00:00.370512000, records=1000000, test: insert values ***FORALL*** package nested table of number
+
++000000000 00:00:01.081361000, records=1000000, test: insert select *** TABLE(c)*** nested table of object
+
++000000000 00:00:00.382103000, records=1000000, test: insert values ***FORALL*** nested table of object
+
++000000000 00:00:00.353733000, records=1000000, test: insert select *** TABLE(c)*** nested table of number
+
++000000000 00:00:00.376775000, records=1000000, test: insert values ***FORALL*** nested table of number
+
++000000000 00:00:02.013712000, records=1000000, test: insert select *** TABLE(c)*** nested table of number bulk limit 100
++000000000 00:00:01.186946000, records=1000000, test: insert select *** TABLE(c)*** nested table of number bulk limit 1000
++000000000 00:00:00.622459000, records=1000000, test: insert select *** TABLE(c)*** nested table of number bulk limit 10000
++000000000 00:00:00.520166000, records=1000000, test: insert select *** TABLE(c)*** nested table of number bulk limit 100000
+
++000000000 00:00:01.594493000, records=1000000, test: insert values ***FORALL*** nested table of number bulk limit 100
++000000000 00:00:01.080965000, records=1000000, test: insert values ***FORALL*** nested table of number bulk limit 1000
++000000000 00:00:00.532621000, records=1000000, test: insert values ***FORALL*** nested table of number bulk limit 10000
++000000000 00:00:00.523228000, records=1000000, test: insert values ***FORALL*** nested table of number bulk limit 100000
+
+1 => +00 00:00:00.353733000, 1000000, insert select *** TABLE(c)*** nested table of number, ratio to best: 100%, ratio to worst: 7741.08%
+2 => +00 00:00:00.370512000, 1000000, insert values ***FORALL*** package nested table of number, ratio to best: 95.47%, ratio to worst: 7390.52%
+3 => +00 00:00:00.376775000, 1000000, insert values ***FORALL*** nested table of number, ratio to best: 93.88%, ratio to worst: 7267.67%
+4 => +00 00:00:00.382103000, 1000000, insert values ***FORALL*** nested table of object, ratio to best: 92.58%, ratio to worst: 7166.33%
+5 => +00 00:00:00.396046000, 1000000, ***INSERT SELECT SQL BASELINE***, ratio to best: 89.32%, ratio to worst: 6914.04%
+6 => +00 00:00:00.459032000, 1000000, insert values ***FORALL*** package nested table of record, ratio to best: 77.06%, ratio to worst: 5965.33%
+7 => +00 00:00:00.520166000, 1000000, insert select *** TABLE(c)*** nested table of number bulk limit 100000, ratio to best: 68%, ratio to worst: 5264.24%
+8 => +00 00:00:00.523228000, 1000000, insert values ***FORALL*** nested table of number bulk limit 100000, ratio to best: 67.61%, ratio to worst: 5233.43%
+9 => +00 00:00:00.532621000, 1000000, insert values ***FORALL*** nested table of number bulk limit 10000, ratio to best: 66.41%, ratio to worst: 5141.14%
+10 => +00 00:00:00.622459000, 1000000, insert select *** TABLE(c)*** nested table of number bulk limit 10000, ratio to best: 56.83%, ratio to worst: 4399.13%
+11 => +00 00:00:01.080965000, 1000000, insert values ***FORALL*** nested table of number bulk limit 1000, ratio to best: 32.72%, ratio to worst: 2533.18%
+12 => +00 00:00:01.081361000, 1000000, insert select *** TABLE(c)*** nested table of object, ratio to best: 32.71%, ratio to worst: 2532.25%
+13 => +00 00:00:01.186946000, 1000000, insert select *** TABLE(c)*** nested table of number bulk limit 1000, ratio to best: 29.8%, ratio to worst: 2306.99%
+14 => +00 00:00:01.594493000, 1000000, insert values ***FORALL*** nested table of number bulk limit 100, ratio to best: 22.18%, ratio to worst: 1717.33%
+15 => +00 00:00:02.013712000, 1000000, insert select *** TABLE(c)*** nested table of number bulk limit 100, ratio to best: 17.57%, ratio to worst: 1359.82%
+16 => +00 00:00:26.359412000, 1000000, ***INSERT CURSOR LOOP PLSQL BASELINE***, ratio to best: 1.34%, ratio to worst: 103.88%
+17 => +00 00:00:27.382771000, 1000000, ***INSERT COLLECTION LOOP PLSQL BASELINE***, ratio to best: 1.29%, ratio to worst: 100%
+
