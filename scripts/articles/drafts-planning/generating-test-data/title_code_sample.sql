@@ -15,3 +15,16 @@ begin
     end loop;    
 end;
 /
+
+
+
+
+with names(f,l) as (
+values ('Albert','Einstein'),('Marie','Curie'),('Maya','Angelou'),('Rosa','Parks')
+)
+select f.f, l.l
+from 
+    names f
+    cross join names l
+order by l.l, f.f
+/

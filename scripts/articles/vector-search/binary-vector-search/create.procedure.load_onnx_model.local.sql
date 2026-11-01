@@ -1,5 +1,7 @@
 --create.procedure.load_onnx_model.local.sql
 
+--requires create.directory.ml_models_dir.sql
+
 
 create or replace procedure load_onnx_model(f in varchar2, m in varchar2)
 is
