@@ -177,3 +177,15 @@ end;
 /
 
 set feedback on
+
+/*
+block1 sleeps 1.5 seconds
+block1 +00 00:00:01.500200
+block2 sleeps 0.5 seconds
+block2 +00 00:00:00.500131
+both +00 00:00:02.000738
+all timers
+both +00 00:00:02.000738
+block1 +00 00:00:01.500200
+block2 +00 00:00:00.500131
+*/
